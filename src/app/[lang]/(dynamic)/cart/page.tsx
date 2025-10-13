@@ -5,11 +5,12 @@ import { Metadata } from "next";
 import { createTranslator } from "next-intl";
 import Image from "next/image";
 
-type Props = { params: { lang: Locale } };
+type Props = { params: Promise<{ lang: Locale }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const ps = await params;
-  const messages = await getMessages(ps.lang);
+  const lang = ps.lang;
+  const messages = await getMessages(lang);
   const t = createTranslator({ locale: ps.lang, messages });
   return {
     title: t("seo.cart.title"),

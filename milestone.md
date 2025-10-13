@@ -254,6 +254,166 @@ App Router 構成とベースデザイン（レイアウト・フォント・色
 - 画像最適化確認（AVIF/WebP 配信）
 - 各ページが SSR/ISR で安定動作
 
+
+### 簡易フロー
+Request /ja/products?page=1&artisan=abc
+   ↓ (Server Component)
+Repository.getProducts(params, lang='ja')  // unstable_cache + tag 'products'
+   ↓ (Supabase with RLS, anon key)
+rows → Zod → Mapper（翻訳フォールバック、SOLD OUT判定、価格整形）
+   ↓
+UI（ProductGrid, Pagination）を描画
+
+
+# M4 微細マイルストーン
+
+## M4.1 ルーティング雛形 & ページ骨組み
+- **目的**: URL/階層を固め、SSR/ISR方針を差し込む土台を作る  
+- **範囲**:  
+  - `/[lang]/(dynamic)/products`, `/products/[id]`  
+  - `/[lang]/(dynamic)/artisans`, `/artisans/[id]`  
+  - `/[lang]/(dynamic)/news`, `/news/[id]`  
+  - `export const revalidate = 60`（暫定）/ `loading.tsx` / `not-found.tsx`
+- **成果物**: 最小のpage.tsxとメタ定義、パンくず/戻る導線のダミー
+- **DoD**: 3言語でルート遷移が404なく通る。Lighthouse エラーなし。
+- **時間**: 0.5〜1日  
+- **依存**: なし（最初に着手）
+
+## M4.2 Repository 層（Supabaseクエリ）最小実装
+- **目的**: UIからDB依存を切り離す契約を確立  
+- **範囲**: `src/lib/repositories/*`
+  - `getProducts({page, per, sort, filters}, lang)`  
+  - `getProductById(id, lang)`  
+  - `getArtisans({page, per}, lang)` / `getArtisanById`  
+  - `getNews({page, per}, lang)` / `getNewsById|Slug`
+  - `unstable_cache` + `tags: ['products'|'artisans'|'news']`
+- **成果物**: 型付きの関数群、ダミーデータでの戻り検証
+- **DoD**: 主要関数が型エラーなしでビルド通過、失敗時に`Result`型で理由が取れる
+- **時間**: 1〜1.5日  
+- **依存**: M1のスキーマ前提
+
+## M4.3 Mapper/Domain 層（翻訳・SOLD OUT判定）
+- **目的**: UIに優しい形へ整形（言語フォールバック・価格整形・在庫判定）  
+- **範囲**: `src/lib/models/*`
+  - `toProductCard`, `toProductDetail`, `toArtisanCard` など  
+  - `lang`フォールバック（`zh→ja` 等）  
+  - `isSoldOut` / `priceFormatted` / 日付フォーマット
+- **成果物**: UI用DTOとZodスキーマ
+- **DoD**: 欠損翻訳でjaに落ち、UI側はnull分岐不要
+- **時間**: 0.5〜1日  
+- **依存**: M4.2
+
+## M4.4 一覧UI（Grid & Card）実装
+- **目的**: 一覧が“見える&速い&読みやすい”状態へ  
+- **範囲**:
+  - `ProductCard/Grid`, `ArtisanCard/Grid`, `NewsCard/List`  
+  - `Pagination`, `EmptyState`, `ErrorState`  
+  - URLクエリ: `?page=&per=&sort=&artisan=&material=`
+- **成果物**: 3ページの一覧テンプレ＋共通コンポーネント
+- **DoD**: 3言語で一覧表示、空/エラー/ローディングが視覚確認できる
+- **時間**: 1.5〜2日  
+- **依存**: M4.3
+
+## M4.5 詳細ページ（導線込み）
+- **目的**: 商品の“伝わる”詳細、職人/お知らせの回遊導線  
+- **範囲**:
+  - `ProductDetail`: 写真・素材・サイズ・価格・SOLD OUT・「この商品を作った人」  
+  - `ArtisanDetail`: プロフィール・「この職人の商品を見る」  
+  - `NewsDetail`: 本文表示・「一覧に戻る」
+- **成果物**: 3種類の詳細テンプレ＋回遊リンク
+- **DoD**: 3言語で詳細が崩れず、リンクが正しく機能
+- **時間**: 1.5日  
+- **依存**: M4.4
+
+## M4.6 Cloudinary 統合（最適化画像）
+- **目的**: 画像の軽量化と質の担保  
+- **範囲**:
+  - `next.config.ts` ローダ設定  
+  - `lib/image.ts`（幅/画質/format自動）  
+  - カード/詳細の`next/image`差し替え
+- **成果物**: AVIF/WebP配信、CLS最小化（w/h指定）
+- **DoD**: 代表ページで画像が圧縮配信、Lighthouse Perf +10pt目安
+- **時間**: 0.5日  
+- **依存**: M4.4/4.5
+
+## M4.7 i18n 仕上げ（固定文言&日付/通貨）
+- **目的**: 3言語の体験を均一に  
+- **範囲**:
+  - `messages/{ja,en,zh}.json` キー整理  
+  - 固定UI（見出し/ボタン/空状態）を `useTranslations()` 化  
+  - 通貨フォーマット/日付ローカライズ
+- **成果物**: 文言ファイルと適用済みUI
+- **DoD**: 言語切替で固定文言/数値/日付が切り替わる
+- **時間**: 0.5日  
+- **依存**: M4.4/4.5
+
+## M4.8 SEO/OGP・メタ（最低限）
+- **目的**: 検索/シェアで破綻しない初期値  
+- **範囲**:
+  - `metadata`（title/description/alternates）  
+  - 一覧のcanonical（ページング対応）  
+  - 詳細のOGP（Cloudinaryテンプレ or 既存画像）
+- **成果物**: メタタグ反映、`hreflang`はM3準拠
+- **DoD**: 代表URLでOG検証OK、重複タイトルなし
+- **時間**: 0.5日  
+- **依存**: M4.5/4.6
+
+## M4.9 アクセシビリティ/状態管理の磨き込み
+- **目的**: 読みやすさ&操作性の底上げ  
+- **範囲**:
+  - `alt`/見出し階層/ランドマーク/フォーカス可視化  
+  - ローディング`aria-live`、パンくず`nav[aria-label]`
+- **成果物**: a11yチェックリスト準拠のUI
+- **DoD**: Axe/Lighthouse Accessibility ≥ 90
+- **時間**: 0.5日  
+- **依存**: M4.4〜4.7
+
+## M4.10 最小E2Eと計測仕込み
+- **目的**: 壊れにくさ確認と将来の分析の布石  
+- **範囲**:
+  - Playwright（Smoke）：一覧→詳細→導線確認  
+  - 主要ボタンに`data-analytics`属性（クリック計測の準備）
+- **成果物**: `e2e/smoke.spec.ts`、GitHub Actionsジョブ（任意）
+- **DoD**: CIでSmokeが通る、主要導線失敗時に赤くなる
+- **時間**: 0.5〜1日  
+- **依存**: M4全体
+
+---
+
+## 並行可能性・“切れる”中間ゴール
+- **並行**:  
+  - M4.2（Repo）と M4.4（一覧UI）の一部（モック）  
+  - M4.6（Cloudinary）はUIベース完成後に短時間で差し替え  
+- **中間公開（Beta Cut）**:  
+  - **Cut-1**: M4.1〜4.4完了 → 一覧3種をまず公開（詳細は簡易版）  
+  - **Cut-2**: M4.5/4.6/4.7 → 詳細＋画像最適化＋i18n仕上げ  
+  - **Cut-3**: M4.8/4.9/4.10 → SEO/a11y/E2Eで硬化
+
+---
+
+## 全体の受け入れ条件（M4完了）
+- 一覧/詳細（商品・職人・お知らせ）が**3言語で閲覧可**  
+- **SOLD OUT**が一覧&詳細で正しく表示  
+- 回遊導線：**商品→職人**／**職人→該当商品の一覧**／**お知らせ詳細→一覧**が機能  
+- 画像はCloudinary最適化で配信  
+- 空/エラー/ローディング/a11yが揃い、Lighthouse（Perf/SEO/Accessibility）≥ 85  
+- `npm run build`/`start`成功、Smoke E2EがCI通過
+
+---
+
+## 付録：チェックリスト（Issue貼り付け用・抜粋）
+- [ ] ルーティング雛形（6ルート）  
+- [ ] Repo関数（6本）＋ `unstable_cache` タグ設定  
+- [ ] Mapper（Card/Detail DTO + Zod）  
+- [ ] Grid/Card/Empty/Error/Pagination  
+- [ ] 詳細3種＋導線リンク  
+- [ ] Cloudinaryローダ + image util  
+- [ ] i18n文言（固定UI/通貨/日付）  
+- [ ] metadata/canonical/OGP  
+- [ ] a11y（alt/landmarks/focus/aria-live）  
+- [ ] Playwright smoke（3言語×一覧→詳細→戻る）
+
+
 ---
 
 ### **M5. カート & カード決済フロー（6 日）**
