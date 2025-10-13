@@ -7,7 +7,6 @@ import { NextIntlClientProvider } from "next-intl";
 
 export const dynamic = "force-static";
 
-// このレイアウト配下（= (static) グループ）をロケールごとに事前生成
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
 }

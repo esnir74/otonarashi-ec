@@ -12,13 +12,7 @@ export default async function DynamicLayout({
 }) {
   const { lang } = await params;
 
-  // 翻訳メッセージ
-  let messages: Record<string, unknown>;
-  try {
-    messages = (await import(`@/messages/${lang}.json`)).default;
-  } catch {
-    messages = (await import(`@/messages/ja.json`)).default;
-  }
+  const messages = (await import(`@/messages/${lang}.json`)).default;
 
   return (
     <NextIntlClientProvider locale={lang} messages={messages}>

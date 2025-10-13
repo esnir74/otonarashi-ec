@@ -12,6 +12,5 @@ export default async function LangLayout({
   const { lang } = await params;
   if (!locales.includes(lang as Locale)) notFound();
 
-  // ここでは何も固定しない（= auto）
   return <>{children}</>;
 }
