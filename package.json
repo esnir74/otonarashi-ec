@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "audit": "lhci autorun --upload.target=temporary-public-storage",
-    "lint": "eslint"
+    "lint": "eslint",
+    "types:gen": "pnpx supabase gen types typescript --local > src/lib/database.types.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.75.0",
@@ -15,7 +16,8 @@
     "next-intl": "^4.3.12",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "stripe": "^19.1.0"
+    "stripe": "^19.1.0",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
