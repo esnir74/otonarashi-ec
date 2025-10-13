@@ -1,9 +1,16 @@
 // src/i18n/request.ts
 import { getRequestConfig } from "next-intl/server";
+import { routing } from "./routing";
 
-// まずは最小構成。あとで cookie や URL から動的に決めてもOK
-export default getRequestConfig(async () => {
-  const locale = "ja"; // とりあえず既定。後で動的化
+export default getRequestConfig(async ({ requestLocale }) => {
+  // URL パラメータからロケールを取得（[lang] セグメント）
+  let locale = (await requestLocale) ?? routing.defaultLocale;
+
+  // サポートされているロケールかチェック
+  if (!routing.locales.includes(locale as (typeof routing.locales)[number])) {
+    locale = routing.defaultLocale;
+  }
+
   return {
     locale,
     messages: (await import(`../messages/${locale}.json`)).default,

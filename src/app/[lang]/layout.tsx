@@ -1,6 +1,14 @@
 // src/app/[lang]/layout.tsx
+import "@/app/globals.css";
+import Footer from "@/components/layout/Footer";
+import Header from "@/components/layout/Header";
 import { Locale, locales } from "@/i18n/locales";
+import { NextIntlClientProvider } from "next-intl";
 import { notFound } from "next/navigation";
+
+export function generateStaticParams() {
+  return locales.map((lang) => ({ lang }));
+}
 
 export default async function LangLayout({
   children,
@@ -12,5 +20,14 @@ export default async function LangLayout({
   const { lang } = await params;
   if (!locales.includes(lang as Locale)) notFound();
 
-  return <>{children}</>;
+  // メッセージを読み込み
+  const messages = (await import(`@/messages/${lang}.json`)).default;
+
+  return (
+    <NextIntlClientProvider locale={lang} messages={messages}>
+      <Header />
+      <main>{children}</main>
+      <Footer />
+    </NextIntlClientProvider>
+  );
 }
