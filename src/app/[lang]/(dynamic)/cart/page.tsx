@@ -33,7 +33,7 @@ export default async function CartPage({
         name: "着物アップサイクル トートバッグ",
         description: "着物生地を再構築した一点もののトートバッグ",
         image:
-          "https://plastic-orange-nj499nnl5x.edgeone.app/PXL_20250904_165759826.jpg",
+          "https://pleased-rose-4nfebgyj2u.edgeone.app/PXL_20250904_154528784.jpg",
         quantity: 1,
       },
       //   {

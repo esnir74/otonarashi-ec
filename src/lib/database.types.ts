@@ -371,6 +371,7 @@ export type Database = {
           id: string
           price_cents: number
           product_category_id: string
+          sale_start_at: string
           sku: string
           slug: string
           status: Database["public"]["Enums"]["product_status"]
@@ -382,6 +383,7 @@ export type Database = {
           id?: string
           price_cents: number
           product_category_id: string
+          sale_start_at?: string
           sku: string
           slug: string
           status?: Database["public"]["Enums"]["product_status"]
@@ -393,6 +395,7 @@ export type Database = {
           id?: string
           price_cents?: number
           product_category_id?: string
+          sale_start_at?: string
           sku?: string
           slug?: string
           status?: Database["public"]["Enums"]["product_status"]
@@ -437,9 +440,9 @@ export type Database = {
     Enums: {
       lang: "ja" | "en" | "zh"
       news_status: "draft" | "published"
-      order_status: "paid"
+      order_status: "pending_payment" | "paid"
       payment_method: "card" | "postal_transfer"
-      product_status: "draft" | "published" | "soldout"
+      product_status: "draft" | "published" | "archived"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -572,9 +575,9 @@ export const Constants = {
     Enums: {
       lang: ["ja", "en", "zh"],
       news_status: ["draft", "published"],
-      order_status: ["paid"],
+      order_status: ["pending_payment", "paid"],
       payment_method: ["card", "postal_transfer"],
-      product_status: ["draft", "published", "soldout"],
+      product_status: ["draft", "published", "archived"],
     },
   },
 } as const
