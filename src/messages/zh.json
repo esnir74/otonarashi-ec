@@ -10,5 +10,20 @@
     "news": "公告",
     "contact": "联系",
     "cart": "购物车"
+  },
+  "seo": {
+    "siteName": "Otonarashi",
+    "home": {
+      "title": "在日常中感受和服之美 – Otonarashi",
+      "description": "Otonarashi 官方商店。将传统之美与现代生活融合的和服再造单品，每件皆为手工独一无二。"
+    },
+    "product": {
+      "title": "{name} – Otonarashi",
+      "description": "{name}｜材质: {material}。独一无二的和服再造作品，手工匠心打造。"
+    },
+    "cart": {
+      "title": "购物车 – Otonarashi",
+      "description": "Otonarashi 的购物车页面。确认您的购物信息并继续付款。"
+    }
   }
 }
