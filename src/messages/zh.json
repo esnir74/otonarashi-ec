@@ -1,0 +1,14 @@
+{
+  "common": {
+    "brand": "Otonarashi",
+    "tagline": "把和服的色彩带入日常。"
+  },
+  "nav": {
+    "concept": "理念",
+    "products": "商品",
+    "artisans": "匠人",
+    "news": "公告",
+    "contact": "联系",
+    "cart": "购物车"
+  }
+}

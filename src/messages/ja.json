@@ -1,0 +1,14 @@
+{
+  "common": {
+    "brand": "オトナラシ",
+    "tagline": "日常に、着物の彩りを"
+  },
+  "nav": {
+    "concept": "コンセプト",
+    "products": "商品",
+    "artisans": "職人",
+    "news": "お知らせ",
+    "contact": "お問い合わせ",
+    "cart": "カート"
+  }
+}

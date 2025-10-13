@@ -1,0 +1,14 @@
+{
+  "common": {
+    "brand": "Otonarashi",
+    "tagline": "Bringing kimono colors into everyday life."
+  },
+  "nav": {
+    "concept": "Concept",
+    "products": "Products",
+    "artisans": "Artisans",
+    "news": "News",
+    "contact": "Contact",
+    "cart": "Cart"
+  }
+}
