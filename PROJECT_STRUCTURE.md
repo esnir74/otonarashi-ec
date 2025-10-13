@@ -4,6 +4,8 @@
 
 ## 📁 ディレクトリ構造
 
+tailwindはバージョン３
+
 ```
 otonarashi-ec/
 ├── public/                         # 静的ファイル（画像、アイコンなど）
