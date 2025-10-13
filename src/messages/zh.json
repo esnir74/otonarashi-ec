@@ -17,6 +17,18 @@
       "title": "在日常中感受和服之美 – Otonarashi",
       "description": "Otonarashi 官方商店。将传统之美与现代生活融合的和服再造单品，每件皆为手工独一无二。"
     },
+    "products": {
+      "title": "商品一览 – Otonarashi",
+      "description": "浏览我们独一无二的和服再造商品系列。手提包、小袋、服饰等，将和服风格融入日常生活。"
+    },
+    "artisans": {
+      "title": "匠人介绍 – Otonarashi",
+      "description": "认识 Otonarashi 背后的匠人团队。每一件作品都由作坊成员手工精心制作，追求卓越工艺。"
+    },
+    "news": {
+      "title": "公告 – Otonarashi",
+      "description": "了解 Otonarashi 的最新活动、展览、采访和合作信息。"
+    },
     "product": {
       "title": "{name} – Otonarashi",
       "description": "{name}｜材质: {material}。独一无二的和服再造作品，手工匠心打造。"

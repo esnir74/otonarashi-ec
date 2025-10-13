@@ -1,3 +1,14 @@
+import { type Locale } from "@/i18n/locales";
+import { createPageMetadata } from "@/lib/metadata";
+import { Metadata } from "next";
+
+type Props = { params: Promise<{ lang: Locale }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { lang } = await params;
+  return createPageMetadata(lang, "artisans", "artisans");
+}
+
 export const revalidate = 60;
 
 export default async function ArtisansPage() {

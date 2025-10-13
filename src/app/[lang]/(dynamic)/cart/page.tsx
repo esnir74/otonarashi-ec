@@ -1,21 +1,14 @@
 // app/page.tsx
 import { type Locale } from "@/i18n/locales";
-import { getMessages } from "@/lib/i18n";
+import { createPageMetadata } from "@/lib/metadata";
 import { Metadata } from "next";
-import { createTranslator } from "next-intl";
 import Image from "next/image";
 
 type Props = { params: Promise<{ lang: Locale }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const ps = await params;
-  const lang = ps.lang;
-  const messages = await getMessages(lang);
-  const t = createTranslator({ locale: ps.lang, messages });
-  return {
-    title: t("seo.cart.title"),
-    description: t("seo.cart.description"),
-  };
+  const { lang } = await params;
+  return createPageMetadata(lang, "cart", "cart");
 }
 
 export default async function CartPage({

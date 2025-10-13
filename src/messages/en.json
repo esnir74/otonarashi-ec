@@ -17,6 +17,18 @@
       "title": "Kimono colors in your everyday life – Otonarashi",
       "description": "Official store of Otonarashi, an upcycled kimono brand. Handcrafted one-of-a-kind pieces that blend tradition with modern life."
     },
+    "products": {
+      "title": "Products – Otonarashi",
+      "description": "Browse our collection of one-of-a-kind upcycled kimono items. Tote bags, pouches, apparel, and more to bring kimono style into your daily life."
+    },
+    "artisans": {
+      "title": "Artisans – Otonarashi",
+      "description": "Meet the artisan team behind Otonarashi. Each piece is carefully handcrafted by workshop members who dedicate themselves to quality craftsmanship."
+    },
+    "news": {
+      "title": "News – Otonarashi",
+      "description": "Stay updated with Otonarashi's latest events, exhibitions, interviews, and collaborations."
+    },
     "product": {
       "title": "{name} – Otonarashi",
       "description": "{name} | Material: {material}. One-of-a-kind upcycled kimono piece, carefully handcrafted."
