@@ -26,7 +26,7 @@ export default async function LangLayout({
   return (
     <NextIntlClientProvider locale={lang} messages={messages}>
       <Header />
-      <main>{children}</main>
+      <main className="flex-1">{children}</main>
       <Footer />
     </NextIntlClientProvider>
   );
