@@ -2,14 +2,13 @@ import { z } from "zod";
 import type { Database } from "../database.types";
 
 // Supabase型定義
-type ProductRow = Database["public"]["Tables"]["products"]["Row"];
 type ProductStatus = Database["public"]["Enums"]["product_status"];
 
 /**
  * 商品カード表示用DTO（一覧ページ用）
  */
 export const ProductCardSchema = z.object({
-  id: z.string().uuid(),
+  id: z.string(),
   slug: z.string(),
   name: z.string(),
   price_cents: z.number().int().positive(),

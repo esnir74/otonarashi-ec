@@ -1,4 +1,4 @@
-import ProductCardComponent from "@/components/layout/ProductCardComponent";
+import ProductCardComponent from "@/components/product/ProductCardComponent";
 import { type Locale } from "@/i18n/locales";
 import { createPageMetadata } from "@/lib/metadata";
 import { getProducts } from "@/lib/repositories/products";
