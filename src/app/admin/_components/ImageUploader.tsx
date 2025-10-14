@@ -38,7 +38,7 @@ export default function ImageUploader({ productId }: { productId: string }) {
 
   return (
     <div className="flex items-center gap-3">
-      <input type="file" accept="image/*" onChange={onChange} disabled={busy} />
+      <input type="file" accept="image/webp" onChange={onChange} disabled={busy} />
       {busy && <span className="text-sm text-neutral-500">処理中…</span>}
       {msg && <span className="text-sm">{msg}</span>}
     </div>
