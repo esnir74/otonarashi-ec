@@ -8,7 +8,7 @@ const supabaseAdmin = createClient<Database>(
   process.env.SUPABASE_SERVICE_ROLE_KEY! // ← SRキー（サーバ限定）
 );
 
-export async function cod(req: NextRequest) {
+export async function POST(req: NextRequest) {
   const { path } = (await req.json()) as { path: string }; // 例: products/<pid>/variants/800.webp
   if (!path) return new Response("Bad Request", { status: 400 });
 
