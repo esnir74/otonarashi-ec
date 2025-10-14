@@ -303,25 +303,34 @@ export type Database = {
       }
       product_images: {
         Row: {
+          blur_data: string | null
+          created_at: string
           id: string
           is_main: boolean
+          key: string
           product_id: string
           sort: number
-          url: string
+          variants: Json
         }
         Insert: {
+          blur_data?: string | null
+          created_at?: string
           id?: string
           is_main?: boolean
+          key: string
           product_id: string
           sort?: number
-          url: string
+          variants?: Json
         }
         Update: {
+          blur_data?: string | null
+          created_at?: string
           id?: string
           is_main?: boolean
+          key?: string
           product_id?: string
           sort?: number
-          url?: string
+          variants?: Json
         }
         Relationships: [
           {

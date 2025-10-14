@@ -18,6 +18,24 @@ otonarashi-ec/
 │   │   │   │   └── page.tsx        # トップページ（コンセプト）
 │   │   │   └── (dynamic)/          # 動的ページ用Route Group
 │   │   │       ├── layout.tsx      # パススルーレイアウト
+│   │   │       ├── products/       # 商品関連
+│   │   │       │   ├── page.tsx    # 商品一覧
+│   │   │       │   ├── [slug]/
+│   │   │       │   │   └── page.tsx # 商品詳細
+│   │   │       │   ├── loading.tsx
+│   │   │       │   └── not-found.tsx
+│   │   │       ├── artisans/       # 職人紹介
+│   │   │       │   ├── page.tsx    # 職人一覧
+│   │   │       │   ├── loading.tsx
+│   │   │       │   └── not-found.tsx
+│   │   │       ├── news/           # お知らせ
+│   │   │       │   ├── page.tsx    # お知らせ一覧
+│   │   │       │   ├── [slug]/
+│   │   │       │   │   └── page.tsx # お知らせ詳細
+│   │   │       │   ├── loading.tsx
+│   │   │       │   └── not-found.tsx
+│   │   │       ├── contact/
+│   │   │       │   └── page.tsx    # コンタクトフォーム
 │   │   │       ├── cart/
 │   │   │       │   └── page.tsx    # カートページ
 │   │   │       └── success/
@@ -36,19 +54,35 @@ otonarashi-ec/
 │   │   ├── globals.css             # グローバルスタイル
 │   │   ├── page.module.css
 │   │   └── fonts.ts                # フォント設定
-│   ├── components/
-│   │   └── layout/
-│   │       ├── Header.tsx          # ヘッダー（ナビゲーション + 言語切替）
-│   │       ├── Footer.tsx          # フッター
-│   │       └── LangSwitcher.tsx    # 言語切替UI
+│   ├── components/                 # Reactコンポーネント
+│   │   ├── layout/                 # レイアウト関連
+│   │   │   ├── Header.tsx          # ヘッダー（ナビゲーション + 言語切替）
+│   │   │   ├── Footer.tsx          # フッター
+│   │   │   └── LangSwitcher.tsx    # 言語切替UI
+│   │   ├── product/                # 商品関連
+│   │   │   └── ProductCardComponent.tsx  # 商品カード
+│   │   └── news/                   # ニュース関連
+│   │       └── NewsListItem.tsx    # ニュースリストアイテム
 │   ├── i18n/                       # 国際化設定
 │   │   ├── locales.ts              # サポート言語定義（ja, en, zh）
 │   │   ├── routing.ts              # next-intlルーティング設定
 │   │   └── request.ts              # next-intl リクエスト設定
 │   ├── lib/                        # ユーティリティ・ライブラリ
+│   │   ├── models/                 # データモデル（Zodスキーマ）
+│   │   │   ├── product.ts          # 商品モデル
+│   │   │   ├── artisan.ts          # 職人モデル
+│   │   │   └── news.ts             # ニュースモデル
+│   │   ├── repositories/           # データ取得層
+│   │   │   ├── products.ts         # 商品データ取得
+│   │   │   ├── artisans.ts         # 職人データ取得
+│   │   │   └── news.ts             # ニュースデータ取得
+│   │   ├── types/                  # 型定義
+│   │   │   └── result.ts           # Result型（エラーハンドリング）
 │   │   ├── stripe.ts               # Stripe SDK初期化
 │   │   ├── supabaseClient.ts       # Supabase クライアント
 │   │   ├── checkout.ts             # チェックアウト処理
+│   │   ├── metadata.ts             # メタデータ生成
+│   │   ├── i18n.ts                 # i18nユーティリティ
 │   │   └── database.types.ts       # Supabase型定義
 │   ├── messages/                   # 翻訳ファイル
 │   │   ├── ja.json                 # 日本語
@@ -127,6 +161,11 @@ app/[lang]/layout.tsx
 | `src/app/[lang]/(static)/layout.tsx` | 静的ページ用（`force-static`） |
 | `src/app/[lang]/(dynamic)/layout.tsx` | 動的ページ用（デフォルトレンダリング） |
 | `src/components/layout/LangSwitcher.tsx` | 言語切替UI（現在のパスを保持したまま言語変更） |
+| `src/components/product/ProductCardComponent.tsx` | 商品カードコンポーネント |
+| `src/components/news/NewsListItem.tsx` | ニュースリストアイテムコンポーネント |
+| `src/lib/models/*.ts` | Zodスキーマによるデータモデル定義 |
+| `src/lib/repositories/*.ts` | Supabaseからのデータ取得（キャッシュ付き） |
+| `src/lib/types/result.ts` | Result型によるエラーハンドリング |
 | `src/messages/*.json` | 翻訳データ（common, navなど） |
 
 ---
@@ -136,6 +175,12 @@ app/[lang]/layout.tsx
 | パス | 戦略 | 理由 |
 |------|------|------|
 | `/[lang]` (static) | **SSG** (`force-static`) | コンセプトページは完全静的 |
+| `/[lang]/products` | **ISR** (`revalidate: 60`) | 商品一覧は60秒キャッシュ |
+| `/[lang]/products/[slug]` | **ISR** (`revalidate: 60`) | 商品詳細は60秒キャッシュ |
+| `/[lang]/artisans` | **ISR** (`revalidate: 60`) | 職人一覧は60秒キャッシュ |
+| `/[lang]/news` | **ISR** (`revalidate: 60`) | お知らせ一覧は60秒キャッシュ |
+| `/[lang]/news/[slug]` | **ISR** (`revalidate: 60`) | お知らせ詳細は60秒キャッシュ |
+| `/[lang]/contact` | **SSG** | コンタクトフォームは静的 |
 | `/[lang]/cart` | **SSG** | カートUIは静的生成可能 |
 | `/[lang]/success` | **SSR** (`force-dynamic`) | Stripe決済確認が必要（動的処理） |
 | `/api/checkout` | **Dynamic** | Stripe APIコール |
@@ -158,14 +203,20 @@ npm run start
 
 ---
 
-## 📝 今後の実装予定（milestone.mdより）
+## 📝 実装状況
 
-- [ ] 商品一覧ページ（`/[lang]/products`）
-- [ ] 商品詳細ページ（`/[lang]/products/[id]`）
-- [ ] 職人紹介ページ（`/[lang]/artisans`）
-- [ ] お知らせページ（`/[lang]/news`）
-- [ ] コンタクトフォーム（`/[lang]/contact`）
+### 完了
+- [x] 商品一覧ページ（`/[lang]/products`）
+- [x] 商品詳細ページ（`/[lang]/products/[slug]`）
+- [x] 職人紹介ページ（`/[lang]/artisans`）
+- [x] お知らせ一覧ページ（`/[lang]/news`）
+- [x] お知らせ詳細ページ（`/[lang]/news/[slug]`）
+- [x] コンタクトフォーム（`/[lang]/contact`）
+
+### 今後の実装予定
 - [ ] 管理画面（`/admin`）
+- [ ] カート機能の完全実装
+- [ ] 決済フローの完全実装
 
 ---
 

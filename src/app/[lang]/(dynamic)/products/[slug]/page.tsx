@@ -1,6 +1,7 @@
 import { type Locale } from "@/i18n/locales";
 import { getProductBySlug } from "@/lib/repositories/products";
 import { isOk } from "@/lib/types/result";
+import Image from "next/image";
 
 type Props = { params: Promise<{ lang: Locale; slug: string }> };
 
@@ -41,24 +42,36 @@ export default async function ProductDetailPage({ params }: Props) {
         {isComingSoon ? `Coming Soon : ${formattedDate}発売` : "Available Now"}
       </p>
       {product.main_image_url && (
-        <div className="my-4">
-          <img
+        <div className="my-4 relative w-64 h-64">
+          <Image
             src={product.main_image_url}
             alt={product.name}
-            className="w-64 h-64 object-cover rounded-md"
+            fill
+            sizes="(min-width: 1024px) 50vw, (min-width: 768px) 75vw, 100vw"
+            placeholder={product.main_image_blur ? "blur" : "empty"}
+            blurDataURL={product.main_image_blur || undefined}
+            className="object-cover rounded-md"
           />
         </div>
       )}
       {product.sub_image_urls.length > 0 && (
         <div className="flex space-x-4 my-4">
-          {product.sub_image_urls.map((url, index) => (
-            <img
-              key={index}
-              src={url}
-              alt={`${product.name} - ${index + 1}`}
-              className="w-32 h-32 object-cover rounded-md"
-            />
-          ))}
+          {product.sub_image_urls.map((url, index) => {
+            const blurData = product.sub_image_blurs?.[index];
+            return (
+              <div key={index} className="relative w-32 h-32">
+                <Image
+                  src={url}
+                  alt={`${product.name} - ${index + 1}`}
+                  fill
+                  sizes="200px"
+                  placeholder={blurData ? "blur" : "empty"}
+                  blurDataURL={blurData || undefined}
+                  className="object-cover rounded-md"
+                />
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

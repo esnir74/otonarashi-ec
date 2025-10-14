@@ -3,6 +3,7 @@ import { createPageMetadata } from "@/lib/metadata";
 import { getNewsById } from "@/lib/repositories/news";
 import { isOk } from "@/lib/types/result";
 import { Metadata } from "next";
+import Image from "next/image";
 
 type Props = { params: Promise<{ lang: Locale; slug: string }> };
 
@@ -79,11 +80,13 @@ export default async function NewsDetailPage({ params }: Props) {
 
         {/* アイキャッチ画像 */}
         {news.eyecatch_url && (
-          <div className="mb-12">
-            <img
+          <div className="mb-12 relative w-full aspect-video">
+            <Image
               src={news.eyecatch_url}
               alt={news.title}
-              className="w-full h-auto rounded-lg object-cover"
+              fill
+              sizes="(min-width: 1024px) 768px, 100vw"
+              className="rounded-lg object-cover"
             />
           </div>
         )}

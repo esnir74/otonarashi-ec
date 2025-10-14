@@ -23,6 +23,9 @@ export default function ProductCardComponent({
           src={product.main_image_url || "/placeholder.png"}
           alt={product.name}
           fill
+          sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+          placeholder={product.main_image_blur ? "blur" : "empty"}
+          blurDataURL={product.main_image_blur || undefined}
           className="object-cover rounded-md"
         />
       </div>
