@@ -1,6 +1,6 @@
 import type { Locale } from "@/i18n/locales";
 import { unstable_cache } from "next/cache";
-import { ProductCard, ProductDetail, ImageVariants } from "../models/product";
+import { ImageVariants, ProductCard, ProductDetail } from "../models/product";
 import { createClient } from "../supabaseClient";
 import { Result, err, ok } from "../types/result";
 import { getMainImageUrl, getSubImageUrls } from "../utils/imageUrl";
@@ -29,7 +29,8 @@ export async function getProducts(
             stock,
             sale_start_at,
             product_translations!inner(title),
-            product_images!inner(variants, blur_data, is_main, sort)
+            product_images!inner(variants, blur_data, is_main, sort),
+            product_category(name_ja, name_en, name_zh)
           `
           )
           .eq("product_translations.lang", lang)
@@ -53,6 +54,15 @@ export async function getProducts(
             ? row.product_translations[0]
             : row.product_translations;
 
+          const category = Array.isArray(row.product_category)
+            ? row.product_category[0]
+            : row.product_category;
+
+          // カテゴリ名を言語に応じて取得
+          const categoryName = category
+            ? category[`name_${lang}` as keyof typeof category]
+            : category["name_ja"] ?? null;
+
           // product_images も同様
           const images = Array.isArray(row.product_images)
             ? row.product_images
@@ -67,12 +77,14 @@ export async function getProducts(
           }));
 
           // メイン画像のblur_dataを取得
-          const mainImage = typedImages.find((img) => img.is_main) || typedImages[0];
+          const mainImage =
+            typedImages.find((img) => img.is_main) || typedImages[0];
 
           return {
             id: row.id,
             slug: row.slug,
             name: translation?.title ?? "No title",
+            category_name: categoryName as string,
             price_cents: row.price_cents,
             main_image_url: getMainImageUrl(typedImages, "800"),
             main_image_blur: mainImage?.blur_data || null,
@@ -183,7 +195,7 @@ export async function getProductBySlug(
         // カテゴリ名を言語に応じて取得
         const categoryName = category
           ? category[`name_${lang}` as keyof typeof category]
-          : null;
+          : category["name_ja"] ?? null;
 
         const product: ProductDetail = {
           id: data.id,

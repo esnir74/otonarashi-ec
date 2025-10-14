@@ -46,6 +46,7 @@ export const ProductCardSchema = z.object({
   status: z.enum(["draft", "published", "archived"] as const),
   stock: z.number().int().nonnegative(),
   sale_start_at: z.string(),
+  category_name: z.string(),
 });
 
 export type ProductCard = z.infer<typeof ProductCardSchema>;
