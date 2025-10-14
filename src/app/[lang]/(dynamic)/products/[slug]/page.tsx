@@ -1,9 +1,31 @@
 import { type Locale } from "@/i18n/locales";
+import { createPageMetadata } from "@/lib/metadata";
 import { getProductBySlug } from "@/lib/repositories/products";
 import { isOk } from "@/lib/types/result";
+import { Metadata } from "next";
 import Image from "next/image";
 
 type Props = { params: Promise<{ lang: Locale; slug: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { lang, slug } = await params;
+  const result = await getProductBySlug(slug, lang);
+
+  if (!isOk(result)) {
+    return createPageMetadata(lang, "products", "products");
+  }
+
+  const product = result.value;
+  return {
+    title: `${product.name} – オトナラシ`,
+    description: product.description.substring(0, 160) || `${product.name}｜¥${product.price_cents.toLocaleString()}｜一点ものの着物アップサイクル。`,
+    openGraph: {
+      title: product.name,
+      description: `¥${product.price_cents.toLocaleString()} - ${product.name}`,
+      images: product.main_image_url ? [product.main_image_url] : [],
+    },
+  };
+}
 
 export default async function ProductDetailPage({ params }: Props) {
   const { lang, slug } = await params;

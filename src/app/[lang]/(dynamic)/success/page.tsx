@@ -1,11 +1,22 @@
 export const dynamic = "force-dynamic";
 
+import { type Locale } from "@/i18n/locales";
 import { getCheckoutStatus } from "@/lib/checkout";
+import { createPageMetadata } from "@/lib/metadata";
+import { Metadata } from "next";
 import { unstable_noStore as noStore } from "next/cache";
 import { redirect } from "next/navigation";
 import PendingClient from "./PendingClient";
 
-type Props = { searchParams: Promise<{ session_id?: string }> };
+type Props = {
+  params: Promise<{ lang: Locale }>;
+  searchParams: Promise<{ session_id?: string }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { lang } = await params;
+  return createPageMetadata(lang, "success", "success");
+}
 
 export default async function SuccessPage({ searchParams }: Props) {
   noStore();

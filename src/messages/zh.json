@@ -36,6 +36,14 @@
     "cart": {
       "title": "购物车 – Otonarashi",
       "description": "Otonarashi 的购物车页面。确认您的购物信息并继续付款。"
+    },
+    "contact": {
+      "title": "联系我们 – Otonarashi",
+      "description": "联系 Otonarashi 咨询业务、媒体或购买事宜。我们随时为您服务。"
+    },
+    "success": {
+      "title": "感谢您的购买 – Otonarashi",
+      "description": "您的订单已确认。请查看您的电子邮件以获取确认详情。"
     }
   }
 }

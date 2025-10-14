@@ -1,9 +1,18 @@
-"use client";
+import { type Locale } from "@/i18n/locales";
+import { createPageMetadata } from "@/lib/metadata";
+import { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
-import { useTranslations } from "next-intl";
+type Props = { params: Promise<{ lang: Locale }> };
 
-export default function Page() {
-  const tC = useTranslations("common");
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { lang } = await params;
+  return createPageMetadata(lang, "home", "");
+}
+
+export default async function Page({ params }: Props) {
+  const { lang } = await params;
+  const tC = await getTranslations({ locale: lang, namespace: "common" });
 
   return (
     //
