@@ -8,5 +8,5 @@ export default createMiddleware({
 });
 
 export const config = {
-  matcher: ["/((?!api|_next|.*\\..*).*)"], // api, 静的ファイル, _next は除外
+  matcher: ["/((?!api|_next|admin|.*\\..*).*)"], // api, 静的ファイル, _next は除外
 };
