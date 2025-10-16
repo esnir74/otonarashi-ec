@@ -18,7 +18,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const product = result.value;
   return {
     title: `${product.name} – オトナラシ`,
-    description: product.description.substring(0, 160) || `${product.name}｜¥${product.price_cents.toLocaleString()}｜一点ものの着物アップサイクル。`,
+    description:
+      product.description.substring(0, 160) ||
+      `${
+        product.name
+      }｜¥${product.price_cents.toLocaleString()}｜一点ものの着物アップサイクル。`,
     openGraph: {
       title: product.name,
       description: `¥${product.price_cents.toLocaleString()} - ${product.name}`,
@@ -42,7 +46,7 @@ export default async function ProductDetailPage({ params }: Props) {
     ? new Date(product.sale_start_at) > new Date()
     : false;
 
-  // 発売日のフォーマット例: 10月05日 00:00 
+  // 発売日のフォーマット例: 10月05日 00:00
   const formattedDate = product.sale_start_at
     ? new Date(product.sale_start_at).toLocaleString("ja-JP", {
         year: "numeric",
@@ -96,6 +100,14 @@ export default async function ProductDetailPage({ params }: Props) {
           })}
         </div>
       )}
+      <footer className="mt-16 pt-8 border-t border-gray-300">
+        <a
+          href={`/${lang}/products`}
+          className="inline-block text-gray-600 hover:text-gray-800 transition-colors"
+        >
+          ← Back to Products
+        </a>
+      </footer>
     </div>
   );
 }
