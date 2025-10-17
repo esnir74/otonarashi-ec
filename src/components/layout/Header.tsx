@@ -56,7 +56,7 @@ export default function Header() {
           <NavLink href={`${base}/artisans`}>{tNav("artisans")}</NavLink>
           <NavLink href={`${base}/news`}>{tNav("news")}</NavLink>
           <NavLink href={`${base}/contact`}>{tNav("contact")}</NavLink>
-          <NavLink href={`${base}/cart`}>{tNav("cart")}</NavLink>
+          <NavLink href={`${base}/checkout`}>{tNav("checkout")}</NavLink>
         </nav>
 
         {/* === 言語切り替え === */}

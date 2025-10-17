@@ -9,7 +9,7 @@
     "artisans": "Artisans",
     "news": "News",
     "contact": "Contact",
-    "cart": "Cart"
+    "checkout": "Checkout"
   },
   "seo": {
     "siteName": "Otonarashi",
@@ -33,13 +33,13 @@
       "title": "{name} – Otonarashi",
       "description": "{name} | Material: {material}. One-of-a-kind upcycled kimono piece, carefully handcrafted."
     },
-    "cart": {
-      "title": "Cart – Otonarashi",
-      "description": "Otonarashi's cart page. Review your shopping and proceed to payment."
-    },
     "contact": {
       "title": "Contact – Otonarashi",
       "description": "Contact Otonarashi for inquiries about business, press, or purchases. We're here to help."
+    },
+    "checkout": {
+      "title": "Checkout – Otonarashi",
+      "description": "Otonarashi's purchase page. Please review your order details and proceed to payment."
     },
     "success": {
       "title": "Thank you for your purchase – Otonarashi",

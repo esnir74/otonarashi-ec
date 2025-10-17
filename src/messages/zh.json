@@ -9,7 +9,7 @@
     "artisans": "匠人",
     "news": "公告",
     "contact": "联系",
-    "cart": "购物车"
+    "checkout": "结账"
   },
   "seo": {
     "siteName": "Otonarashi",
@@ -33,13 +33,13 @@
       "title": "{name} – Otonarashi",
       "description": "{name}｜材质: {material}。独一无二的和服再造作品，手工匠心打造。"
     },
-    "cart": {
-      "title": "购物车 – Otonarashi",
-      "description": "Otonarashi 的购物车页面。确认您的购物信息并继续付款。"
-    },
     "contact": {
       "title": "联系我们 – Otonarashi",
       "description": "联系 Otonarashi 咨询业务、媒体或购买事宜。我们随时为您服务。"
+    },
+    "checkout": {
+      "title": "结账 – Otonarashi",
+      "description": "Otonarashi 的购买页面。请核对您的订单详情并继续付款。"
     },
     "success": {
       "title": "感谢您的购买 – Otonarashi",

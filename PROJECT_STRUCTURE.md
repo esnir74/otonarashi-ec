@@ -36,8 +36,8 @@ otonarashi-ec/
 │   │   │       │   └── not-found.tsx
 │   │   │       ├── contact/
 │   │   │       │   └── page.tsx    # コンタクトフォーム
-│   │   │       ├── cart/
-│   │   │       │   └── page.tsx    # カートページ
+│   │   │       ├── chechout/
+│   │   │       │   └── page.tsx    # 購入ページ
 │   │   │       └── success/
 │   │   │           ├── page.tsx    # 購入完了ページ（force-dynamic）
 │   │   │           └── PendingClient.tsx
@@ -141,8 +141,8 @@ otonarashi-ec/
 /ja         → 日本語トップ
 /en         → 英語トップ
 /zh         → 中国語トップ
-/ja/cart    → 日本語カート
-/en/cart    → 英語カート
+/ja/checkout    → 日本語カート
+/en/checkout    → 英語カート
 ```
 
 ### 2. 処理フロー
@@ -164,7 +164,7 @@ app/[lang]/layout.tsx
 `generateStaticParams()` により、ビルド時に全言語バージョンを事前生成：
 ```
 ● /[lang]         → /ja, /en, /zh
-● /[lang]/cart    → /ja/cart, /en/cart, /zh/cart
+● /[lang]/checkout    → /ja/checkout, /en/checkout, /zh/checkout
 ● /[lang]/success → /ja/success, /en/success, /zh/success
 ```
 
@@ -207,7 +207,7 @@ app/[lang]/layout.tsx
 | `/[lang]/news` | **ISR** (`revalidate: 60`) | お知らせ一覧は60秒キャッシュ |
 | `/[lang]/news/[slug]` | **ISR** (`revalidate: 60`) | お知らせ詳細は60秒キャッシュ |
 | `/[lang]/contact` | **SSG** | コンタクトフォームは静的 |
-| `/[lang]/cart` | **SSG** | カートUIは静的生成可能 |
+| `/[lang]/checkout` | **SSG** | カートUIは静的生成可能 |
 | `/[lang]/success` | **SSR** (`force-dynamic`) | Stripe決済確認が必要（動的処理） |
 | `/api/checkout` | **Dynamic** | Stripe APIコール |
 | `/api/checkout-status` | **Dynamic** | Supabase DBクエリ |
@@ -238,7 +238,7 @@ npm run start
 - [x] お知らせ一覧ページ（`/[lang]/news`）
 - [x] お知らせ詳細ページ（`/[lang]/news/[slug]`）
 - [x] コンタクトフォーム（`/[lang]/contact`）
-- [x] カートページ（`/[lang]/cart`）
+- [x] カートページ（`/[lang]/checkout`）
 - [x] 購入完了ページ（`/[lang]/success`）
 - [x] 管理画面（`/admin`）
   - [x] 商品一覧・編集（`/admin/products`）

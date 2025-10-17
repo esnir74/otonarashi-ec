@@ -2,16 +2,15 @@
 import { type Locale } from "@/i18n/locales";
 import { createPageMetadata } from "@/lib/metadata";
 import { Metadata } from "next";
-import Image from "next/image";
 
 type Props = { params: Promise<{ lang: Locale }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
-  return createPageMetadata(lang, "cart", "cart");
+  return createPageMetadata(lang, "checkout", "checkout");
 }
 
-export default async function CartPage({
+export default async function CheckoutPage({
   searchParams,
 }: {
   searchParams: Promise<{ canceled?: string }>;
@@ -66,24 +65,6 @@ export default async function CartPage({
           </section>
         </form>
       </main>
-
-      <footer>
-        <a
-          href="https://nextjs.org/learn"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        {/* ... 省略 ... */}
-      </footer>
     </div>
   );
 }
