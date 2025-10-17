@@ -1,6 +1,6 @@
 # オトナラシEC プロジェクト構成
 
-更新日: 2025-10-13
+更新日: 2025-10-17
 
 ## 📁 ディレクトリ構造
 
@@ -41,18 +41,30 @@ otonarashi-ec/
 │   │   │       └── success/
 │   │   │           ├── page.tsx    # 購入完了ページ（force-dynamic）
 │   │   │           └── PendingClient.tsx
+│   │   ├── admin/                  # 管理画面
+│   │   │   ├── layout.tsx          # 管理画面レイアウト
+│   │   │   ├── page.tsx            # 管理画面トップ
+│   │   │   ├── products/           # 商品管理
+│   │   │   │   ├── page.tsx        # 商品一覧（管理）
+│   │   │   │   └── [id]/
+│   │   │   │       └── page.tsx    # 商品編集
+│   │   │   └── _components/
+│   │   │       └── ImageUploader.tsx # 画像アップロードコンポーネント
 │   │   ├── api/                    # API Routes
 │   │   │   ├── checkout/
 │   │   │   │   └── route.ts        # Stripe Checkout作成
-│   │   │   └── checkout-status/
-│   │   │       └── route.ts        # 決済状況確認
-│   │   ├── success/                # レガシーページ（削除予定？）
+│   │   │   ├── checkout-status/
+│   │   │   │   └── route.ts        # 決済状況確認
+│   │   │   └── images/             # 画像管理API
+│   │   │       ├── sign/
+│   │   │       │   └── route.ts    # 画像アップロード署名生成
+│   │   │       └── save/
+│   │   │           └── route.ts    # 画像保存処理
+│   │   ├── success/                # レガシーページ（言語なし）
 │   │   │   ├── page.tsx
 │   │   │   └── PendingClient.tsx
 │   │   ├── layout.tsx              # ルートレイアウト（HTML構造）
-│   │   ├── page.tsx                # デモページ（削除予定？）
-│   │   ├── globals.css             # グローバルスタイル
-│   │   ├── page.module.css
+│   │   ├── page.tsx                # ルートページ（リダイレクト用）
 │   │   └── fonts.ts                # フォント設定
 │   ├── components/                 # Reactコンポーネント
 │   │   ├── layout/                 # レイアウト関連
@@ -66,6 +78,7 @@ otonarashi-ec/
 │   ├── i18n/                       # 国際化設定
 │   │   ├── locales.ts              # サポート言語定義（ja, en, zh）
 │   │   ├── routing.ts              # next-intlルーティング設定
+│   │   ├── navigation.ts           # 多言語対応ナビゲーションヘルパー
 │   │   └── request.ts              # next-intl リクエスト設定
 │   ├── lib/                        # ユーティリティ・ライブラリ
 │   │   ├── models/                 # データモデル（Zodスキーマ）
@@ -78,11 +91,15 @@ otonarashi-ec/
 │   │   │   └── news.ts             # ニュースデータ取得
 │   │   ├── types/                  # 型定義
 │   │   │   └── result.ts           # Result型（エラーハンドリング）
+│   │   ├── utils/                  # ユーティリティ関数
+│   │   │   └── imageUrl.ts         # 画像URL生成ヘルパー
 │   │   ├── stripe.ts               # Stripe SDK初期化
 │   │   ├── supabaseClient.ts       # Supabase クライアント
 │   │   ├── checkout.ts             # チェックアウト処理
 │   │   ├── metadata.ts             # メタデータ生成
 │   │   ├── i18n.ts                 # i18nユーティリティ
+│   │   ├── image-resize.ts         # 画像リサイズ処理
+│   │   ├── upload-product-images.ts # 商品画像アップロード
 │   │   └── database.types.ts       # Supabase型定義
 │   ├── messages/                   # 翻訳ファイル
 │   │   ├── ja.json                 # 日本語
@@ -92,6 +109,8 @@ otonarashi-ec/
 ├── .env.local                      # 環境変数（Git管理外）
 ├── next.config.ts                  # Next.js設定
 ├── tsconfig.json                   # TypeScript設定
+├── tailwind.config.js              # Tailwind CSS設定
+├── postcss.config.js               # PostCSS設定
 ├── package.json                    # 依存パッケージ
 ├── CLAUDE.md                       # プロジェクト概要・仕様書
 └── PROJECT_STRUCTURE.md            # このファイル
@@ -109,8 +128,9 @@ otonarashi-ec/
 | **決済** | Stripe 19.1.0 |
 | **データベース** | Supabase (@supabase/supabase-js 2.75.0) |
 | **ホスティング** | Cloudflare Pages |
-| **画像最適化** | Cloudinary |
+| **画像ストレージ** | Supabase Storage |
 | **メール送信** | SendGrid (Supabase Edge Functions経由) |
+| **バリデーション** | Zod 4.1.12 |
 
 ---
 
@@ -157,15 +177,21 @@ app/[lang]/layout.tsx
 | `src/middleware.ts` | 言語プレフィックスの自動付与（`/` → `/ja`） |
 | `src/i18n/request.ts` | next-intlの設定（URLから言語を動的取得） |
 | `src/i18n/routing.ts` | ルーティング定義（defineRouting） |
+| `src/i18n/navigation.ts` | 多言語対応ナビゲーションヘルパー（Link、redirect等） |
 | `src/app/[lang]/layout.tsx` | **多言語レイアウトの中核**（Provider + Header/Footer） |
 | `src/app/[lang]/(static)/layout.tsx` | 静的ページ用（`force-static`） |
 | `src/app/[lang]/(dynamic)/layout.tsx` | 動的ページ用（デフォルトレンダリング） |
+| `src/app/admin/layout.tsx` | 管理画面レイアウト |
+| `src/app/admin/_components/ImageUploader.tsx` | 画像アップロードコンポーネント |
 | `src/components/layout/LangSwitcher.tsx` | 言語切替UI（現在のパスを保持したまま言語変更） |
 | `src/components/product/ProductCardComponent.tsx` | 商品カードコンポーネント |
 | `src/components/news/NewsListItem.tsx` | ニュースリストアイテムコンポーネント |
 | `src/lib/models/*.ts` | Zodスキーマによるデータモデル定義 |
 | `src/lib/repositories/*.ts` | Supabaseからのデータ取得（キャッシュ付き） |
 | `src/lib/types/result.ts` | Result型によるエラーハンドリング |
+| `src/lib/utils/imageUrl.ts` | 画像URL生成ヘルパー |
+| `src/lib/image-resize.ts` | 画像リサイズ処理 |
+| `src/lib/upload-product-images.ts` | 商品画像アップロード処理 |
 | `src/messages/*.json` | 翻訳データ（common, navなど） |
 
 ---
@@ -212,11 +238,24 @@ npm run start
 - [x] お知らせ一覧ページ（`/[lang]/news`）
 - [x] お知らせ詳細ページ（`/[lang]/news/[slug]`）
 - [x] コンタクトフォーム（`/[lang]/contact`）
+- [x] カートページ（`/[lang]/cart`）
+- [x] 購入完了ページ（`/[lang]/success`）
+- [x] 管理画面（`/admin`）
+  - [x] 商品一覧・編集（`/admin/products`）
+  - [x] 画像アップロード機能
+- [x] API Routes
+  - [x] Stripe Checkout作成（`/api/checkout`）
+  - [x] 決済状況確認（`/api/checkout-status`）
+  - [x] 画像管理（`/api/images/*`）
 
 ### 今後の実装予定
-- [ ] 管理画面（`/admin`）
-- [ ] カート機能の完全実装
-- [ ] 決済フローの完全実装
+- [ ] 管理画面の機能拡張
+  - [ ] 職人管理
+  - [ ] お知らせ管理
+  - [ ] 注文管理
+- [ ] Supabase Edge Functions
+  - [ ] Stripe Webhook処理
+  - [ ] メール送信（SendGrid連携）
 
 ---
 
