@@ -87,7 +87,7 @@ export default async function AdminProductsPage() {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-900">
-                    ¥{product.price_cents.toLocaleString()}
+                    ¥{product.price_yen.toLocaleString()}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">

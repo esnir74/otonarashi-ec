@@ -22,10 +22,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       product.description.substring(0, 160) ||
       `${
         product.name
-      }｜¥${product.price_cents.toLocaleString()}｜一点ものの着物アップサイクル。`,
+      }｜¥${product.price_yen.toLocaleString()}｜一点ものの着物アップサイクル。`,
     openGraph: {
       title: product.name,
-      description: `¥${product.price_cents.toLocaleString()} - ${product.name}`,
+      description: `¥${product.price_yen.toLocaleString()} - ${product.name}`,
       images: product.main_image_url ? [product.main_image_url] : [],
     },
   };
@@ -61,7 +61,7 @@ export default async function ProductDetailPage({ params }: Props) {
   return (
     <div>
       <h1>{product.name}</h1>
-      <p>Price: ¥{product.price_cents.toLocaleString()}</p>
+      <p>Price: ¥{product.price_yen.toLocaleString()}</p>
       <p>Status: {product.status}</p>
       <p>{product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}</p>
       <p>

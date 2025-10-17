@@ -34,7 +34,7 @@ export default function ProductCardComponent({
         <div>
           <h2 className="text-lg font-semibold mb-1">{product.name}</h2>
           <p className="text-gray-700">
-            ¥{(product.price_cents).toLocaleString()}
+            ¥{(product.price_yen).toLocaleString()}
           </p>
         </div>
 

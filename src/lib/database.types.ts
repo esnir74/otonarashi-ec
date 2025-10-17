@@ -181,21 +181,21 @@ export type Database = {
           order_id: string
           product_id: string
           qty: number
-          unit_price_cents: number
+          unit_price_yen: number
         }
         Insert: {
           id?: string
           order_id: string
           product_id: string
           qty: number
-          unit_price_cents: number
+          unit_price_yen: number
         }
         Update: {
           id?: string
           order_id?: string
           product_id?: string
           qty?: number
-          unit_price_cents?: number
+          unit_price_yen?: number
         }
         Relationships: [
           {
@@ -223,7 +223,7 @@ export type Database = {
           customer_name: string
           email: string
           id: string
-          items_subtotal_cents: number
+          items_subtotal_yen: number
           lang: Database["public"]["Enums"]["lang"]
           order_number: string
           org_name: string | null
@@ -231,9 +231,9 @@ export type Database = {
           phone: string
           postal_code: string
           prefecture: string
-          shipping_cents: number
+          shipping_yen: number
           status: Database["public"]["Enums"]["order_status"]
-          total_cents: number
+          total_yen: number
         }
         Insert: {
           address_line1: string
@@ -243,7 +243,7 @@ export type Database = {
           customer_name: string
           email: string
           id?: string
-          items_subtotal_cents: number
+          items_subtotal_yen: number
           lang?: Database["public"]["Enums"]["lang"]
           order_number: string
           org_name?: string | null
@@ -251,9 +251,9 @@ export type Database = {
           phone: string
           postal_code: string
           prefecture: string
-          shipping_cents: number
+          shipping_yen: number
           status?: Database["public"]["Enums"]["order_status"]
-          total_cents: number
+          total_yen: number
         }
         Update: {
           address_line1?: string
@@ -263,7 +263,7 @@ export type Database = {
           customer_name?: string
           email?: string
           id?: string
-          items_subtotal_cents?: number
+          items_subtotal_yen?: number
           lang?: Database["public"]["Enums"]["lang"]
           order_number?: string
           org_name?: string | null
@@ -271,9 +271,9 @@ export type Database = {
           phone?: string
           postal_code?: string
           prefecture?: string
-          shipping_cents?: number
+          shipping_yen?: number
           status?: Database["public"]["Enums"]["order_status"]
-          total_cents?: number
+          total_yen?: number
         }
         Relationships: []
       }
@@ -378,7 +378,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
-          price_cents: number
+          price_yen: number
           product_category_id: string
           sale_start_at: string
           sku: string
@@ -390,7 +390,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
-          price_cents: number
+          price_yen: number
           product_category_id: string
           sale_start_at?: string
           sku: string
@@ -402,7 +402,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
-          price_cents?: number
+          price_yen?: number
           product_category_id?: string
           sale_start_at?: string
           sku?: string
@@ -439,7 +439,7 @@ export type Database = {
           p_postal_code: string
           p_prefecture: string
           p_product_ids: string[]
-          p_shipping_cents?: number
+          p_shipping_yen?: number
         }
         Returns: {
           order_id: string
