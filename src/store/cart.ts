@@ -1,6 +1,6 @@
 // store/cart.ts
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 export type CartItem = {
   id: string;
@@ -9,14 +9,25 @@ export type CartItem = {
   lang: string; // 追加時の言語
 };
 
+export type CartSnapshot = {
+  items: CartItem[];
+  updatedAt: number;
+};
+
 type CartState = {
   items: CartItem[];
+  lastServerSync: number;
 
   // actions
   addItem: (item: CartItem) => boolean; // 一点物:追加できたら true / 既存で追加しなかったら false
   removeItem: (id: string) => void;
   clearCart: () => void;
-  updateItemName: (id: string, name: string, lang: string) => void; // 翻訳後の名前と言語を更新
+  replaceItems: (
+    items: CartItem[],
+    options?: { source?: "server" | "client"; updatedAt?: number }
+  ) => void;
+  syncFromServer: (snapshot: CartSnapshot) => void;
+  updateItemName: (id: string, name: string, lang: string) => void;
 
   // selectors
   total: () => number; // 合計金額(円)
@@ -27,6 +38,7 @@ export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       items: [],
+      lastServerSync: 0,
 
       // 一点物:すでにカートにある場合は追加しない
       addItem: (item) => {
@@ -42,10 +54,23 @@ export const useCartStore = create<CartState>()(
         })),
 
       clearCart: () => set({ items: [] }),
-
+      replaceItems: (items, options) =>
+        set((state) => ({
+          items: [...items],
+          lastServerSync:
+            options?.source === "server"
+              ? options.updatedAt ?? state.lastServerSync
+              : state.lastServerSync,
+        })),
+      syncFromServer: (snapshot) => {
+        get().replaceItems(snapshot.items, {
+          source: "server",
+          updatedAt: snapshot.updatedAt,
+        });
+      },
       updateItemName: (id, name, lang) =>
-        set((s) => ({
-          items: s.items.map((item) =>
+        set((state) => ({
+          items: state.items.map((item) =>
             item.id === id ? { ...item, name, lang } : item
           ),
         })),
@@ -58,7 +83,15 @@ export const useCartStore = create<CartState>()(
       name: "cart-v1",
       partialize: (state) => ({
         items: state.items,
+        lastServerSync: state.lastServerSync,
       }),
+      version: 2,
+      storage: createJSONStorage(() => localStorage),
+      onRehydrateStorage: () => (_state, error) => {
+        if (error) {
+          console.error("[useCartStore] Failed to rehydrate state", error);
+        }
+      },
     }
   )
 );

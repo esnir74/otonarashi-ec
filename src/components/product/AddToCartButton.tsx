@@ -16,7 +16,7 @@ type Props = {
 
 export default function AddToCartButton({ item, disabled, label }: Props) {
   const t = useTranslations("product");
-  const addLocal = useCartStore((s) => s.addItem);
+  const syncFromServer = useCartStore((s) => s.syncFromServer);
   const alreadyInCart = useCartStore((s) =>
     s.items.some((x) => x.id === item.id)
   );
@@ -24,12 +24,25 @@ export default function AddToCartButton({ item, disabled, label }: Props) {
   const [isPending, startTransition] = useTransition();
 
   const addToCart = async (it: CartItem) => {
+    console.log("[AddToCart] Start addToCart", { item: it, alreadyInCart });
+
     if (alreadyInCart) {
+      console.log("[AddToCart] Already in cart, opening drawer");
       openCart();
       return;
     }
+
+    console.log("[AddToCart] Calling addToCartServer");
     const res = await addToCartServer(it); // 在庫確認＋Cookie更新（サーバ）
-    if (res.ok) addLocal(it); // ローカルStore同期
+    console.log("[AddToCart] Server response:", res);
+
+    syncFromServer(res.snapshot);
+
+    if (!res.ok) {
+      console.warn("[AddToCart] Server rejected add", res.reason);
+    }
+
+    console.log("[AddToCart] Opening cart drawer after sync");
     openCart();
   };
 

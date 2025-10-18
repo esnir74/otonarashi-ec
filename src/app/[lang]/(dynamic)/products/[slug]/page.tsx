@@ -5,6 +5,7 @@ import { createPageMetadata } from "@/lib/metadata";
 import { getProductBySlug } from "@/lib/repositories/products";
 import { isOk } from "@/lib/types/result";
 import { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 type Props = { params: Promise<{ lang: Locale; slug: string }> };
 
@@ -34,6 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductDetailPage({ params }: Props) {
   const { lang, slug } = await params;
+  const t = await getTranslations({ locale: lang, namespace: "product" });
 
   const result = await getProductBySlug(slug, lang);
   if (!isOk(result)) {
@@ -95,17 +97,17 @@ export default async function ProductDetailPage({ params }: Props) {
           <div className="mb-4 flex flex-wrap items-center gap-2">
             {isComingSoon ? (
               <span className="inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-800">
-                Coming soon
+                {t("comingSoon")}
               </span>
             ) : (
               <span className="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-800">
-                In stock
+                {t("inStock")}
               </span>
             )}
 
             {isComingSoon && formattedDate && (
               <span className="text-sm text-neutral-600">
-                {formattedDate} 発売予定
+                {t("releaseDate", { date: formattedDate })}
               </span>
             )}
           </div>
@@ -120,7 +122,7 @@ export default async function ProductDetailPage({ params }: Props) {
                 lang,
               }}
               disabled={isComingSoon}
-              label={isComingSoon ? "発売前です" : undefined}
+              label={isComingSoon ? t("preRelease") : undefined}
             />
           </div>
 
@@ -133,7 +135,7 @@ export default async function ProductDetailPage({ params }: Props) {
                 <p className="whitespace-pre-line">{product.description}</p>
               </div>
             ) : (
-              <p className="text-neutral-500">商品説明は準備中です。</p>
+              <p className="text-neutral-500">{t("noDescription")}</p>
             )}
           </div>
 
@@ -143,7 +145,7 @@ export default async function ProductDetailPage({ params }: Props) {
               href={`/${lang}/products`}
               className="inline-flex items-center gap-2 text-sm text-neutral-600 transition-colors hover:text-neutral-800"
             >
-              <span aria-hidden>←</span> 一覧に戻る
+              <span aria-hidden>←</span> {t("backToList")}
             </a>
           </div>
         </aside>

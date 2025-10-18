@@ -55,6 +55,16 @@ function isApiLayerLiveResponse(d: unknown): d is ApiLayerLiveResponse {
 }
 
 export async function GET(_req: Request) {
+  // デバッグ用
+  const tmp = `{"eurRate": 0.005696201458033063,
+"usdRate": 0.0066521872940628335
+}`;
+
+  const demoRate = parseFxRateJSON(tmp);
+  if (demoRate) {
+    return Response.json({ rate: demoRate, cached: true, source: "redis" });
+  }
+
   const redis = await getRedisClient();
 
   const key = `fx:JPY`;

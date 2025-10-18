@@ -1,7 +1,6 @@
 import { type Locale } from "@/i18n/locales";
 import { createPageMetadata } from "@/lib/metadata";
 import { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
 
 type Props = { params: Promise<{ lang: Locale }> };
 
@@ -12,14 +11,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Page({ params }: Props) {
   const { lang } = await params;
-  const tC = await getTranslations({ locale: lang, namespace: "common" });
+  const brand = "オトナラシ";
+  const tagline = "日常に、着物の彩りを";
 
   return (
-    //
     <section>
       <div>
-        <h1>{tC("brand")}</h1>
-        <p>{tC("tagline")}</p>
+        <h1>{brand}</h1>
+        <p>{tagline}</p>
       </div>
       <div>
         <div>

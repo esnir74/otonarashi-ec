@@ -18,7 +18,7 @@ import {
 import { useCartStore } from "@/store/cart";
 import { useUIStore } from "@/store/ui";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 type TranslatedItem = {
@@ -40,6 +40,7 @@ const fmtJPY = (n: number) =>
   );
 
 export default function CartDrawer() {
+  const router = useRouter();
   const pathname = usePathname() || "/ja";
   const [, lang] = pathname.split("/");
   const base = `/${lang || "ja"}`;
@@ -50,8 +51,13 @@ export default function CartDrawer() {
 
   const items = useCartStore((s) => s.items);
   const removeItem = useCartStore((s) => s.removeItem);
-  const updateItemName = useCartStore((s) => s.updateItemName);
+  const syncFromServer = useCartStore((s) => s.syncFromServer);
   const total = useCartStore((s) => s.total());
+
+  // デバッグ: itemsが更新された時にログ
+  useEffect(() => {
+    console.log("[CartDrawer] Items updated:", items);
+  }, [items]);
 
   const [agreed, setAgreed] = useState(true); // MGG 風チェック。必要なら必須にしてもOK
   const [removingId, setRemovingId] = useState<string | null>(null);
@@ -66,28 +72,41 @@ export default function CartDrawer() {
 
   // 言語が異なる商品の翻訳を取得
   useEffect(() => {
+    console.log("[CartDrawer] Translation effect triggered", {
+      open,
+      itemsLength: items.length,
+      items,
+      lang,
+    });
+
     if (!open || items.length === 0) {
+      console.log("[CartDrawer] Setting translated items directly (not open or empty)");
       setTranslatedItems(items);
       return;
     }
 
     // 現在の言語と異なる商品のIDを収集
     const needsTranslation = items.filter((item) => item.lang !== lang);
+    console.log("[CartDrawer] Needs translation:", needsTranslation);
 
     if (needsTranslation.length === 0) {
       // 全て同じ言語ならそのまま
+      console.log("[CartDrawer] No translation needed, setting items directly");
       setTranslatedItems(items);
       return;
     }
 
     // Server Action経由で翻訳を取得
     const fetchTranslations = async () => {
+      console.log("[CartDrawer] Fetching translations...");
       try {
         const productIds = needsTranslation.map((item) => item.id);
+        console.log("[CartDrawer] Product IDs to translate:", productIds);
         const translations = await getProductTranslationsServer(
           productIds,
           lang as "ja" | "en" | "zh"
         );
+        console.log("[CartDrawer] Received translations:", translations);
 
         // 翻訳情報を収集
         const updatesToServer: CartItemUpdate[] = [];
@@ -105,13 +124,18 @@ export default function CartDrawer() {
 
         // 先にCookie更新（サーバー側）
         if (updatesToServer.length > 0) {
+          console.log("[CartDrawer] Updating cart items on server:", updatesToServer);
           const serverResult = await updateCartItemsServer(updatesToServer);
+          console.log("[CartDrawer] Server update result:", serverResult);
 
           // サーバー更新成功後、ローカルストアも更新
           if (serverResult.ok) {
-            updatesToServer.forEach((update) => {
-              updateItemName(update.id, update.name, update.lang);
-            });
+            syncFromServer(serverResult.snapshot);
+          } else {
+            console.warn(
+              "[CartDrawer] Failed to update items on server, reason:",
+              serverResult.reason
+            );
           }
         }
 
@@ -126,6 +150,7 @@ export default function CartDrawer() {
           };
         });
 
+        console.log("[CartDrawer] Setting translated items:", updated);
         setTranslatedItems(updated);
       } catch (error) {
         console.error("Translation fetch error:", error);
@@ -151,14 +176,12 @@ export default function CartDrawer() {
     setRemovingId(id);
     try {
       const res = await removeFromCartServer(id);
-      if (res.ok) {
-        removeItem(id);
-        return;
-      }
-      if (res.reason === "NOT_FOUND") {
-        removeItem(id);
+      syncFromServer(res.snapshot);
+      if (!res.ok) {
+        console.warn("[CartDrawer] removeFromCartServer returned:", res.reason);
       }
     } catch {
+      // ネットワークエラー時はローカルだけでも更新しておく
       removeItem(id);
     } finally {
       setRemovingId((current) => (current === id ? null : current));
@@ -289,9 +312,18 @@ export default function CartDrawer() {
           <Button
             className="w-full h-12 text-base bg-[#23303B] hover:bg-[#1B2630] text-white"
             disabled={isEmpty || !agreed}
-            onClick={() => useUIStore.getState().closeCart()}
+            onClick={() => {
+              console.log("[CartDrawer] Checkout button clicked", {
+                base,
+                path: `${base}/checkout`,
+                isEmpty,
+                agreed,
+              });
+              useUIStore.getState().closeCart();
+              router.push(`${base}/checkout`);
+            }}
           >
-            <Link href={`${base}/checkout`}>Checkout</Link>
+            Checkout
           </Button>
         </div>
       </SheetContent>

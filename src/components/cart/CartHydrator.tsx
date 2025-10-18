@@ -9,14 +9,33 @@ export default function CartHydrator({
 }: {
   initialSnapshot: CartSnapshot;
 }) {
-  const setAll = useCartStore((s) => s.clearCart); // 使い回し: まず空に
-  const add = useCartStore((s) => s.addItem);
+  const syncFromServer = useCartStore((s) => s.syncFromServer);
 
   useEffect(() => {
-    // SSRの cookie スナップショットからクライアント store を同期
-    setAll();
-    for (const it of initialSnapshot.items) add(it);
-  }, [initialSnapshot, setAll, add]);
+    let cancelled = false;
+    let unsubscribe: (() => void) | undefined;
+
+    const applySnapshot = () => {
+      if (cancelled) return;
+      syncFromServer({
+        items: initialSnapshot.items,
+        updatedAt: initialSnapshot.updatedAt,
+      });
+    };
+
+    if (useCartStore.persist.hasHydrated?.()) {
+      applySnapshot();
+    } else {
+      unsubscribe = useCartStore.persist.onFinishHydration?.(() => {
+        applySnapshot();
+      });
+    }
+
+    return () => {
+      cancelled = true;
+      unsubscribe?.();
+    };
+  }, [initialSnapshot, syncFromServer]);
 
   return null;
 }
