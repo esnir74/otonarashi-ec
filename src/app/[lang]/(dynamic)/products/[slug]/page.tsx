@@ -1,4 +1,4 @@
-import { AddToCartButton } from "@/components/product/AddToCartButton";
+import AddToCartButton from "@/components/product/AddToCartButton";
 import { type Locale } from "@/i18n/locales";
 import { createPageMetadata } from "@/lib/metadata";
 import { getProductBySlug } from "@/lib/repositories/products";

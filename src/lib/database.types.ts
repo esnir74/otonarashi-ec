@@ -222,7 +222,10 @@ export type Database = {
           currency: string
           customer_name: string
           email: string
+          exchange_rate: number
+          exchange_rate_timestamp: string
           id: string
+          items_subtotal_amount: number
           items_subtotal_yen: number
           lang: Database["public"]["Enums"]["lang"]
           order_number: string
@@ -231,8 +234,10 @@ export type Database = {
           phone: string
           postal_code: string
           prefecture: string
+          shipping_amount: number
           shipping_yen: number
           status: Database["public"]["Enums"]["order_status"]
+          total_amount: number
           total_yen: number
         }
         Insert: {
@@ -242,7 +247,10 @@ export type Database = {
           currency?: string
           customer_name: string
           email: string
+          exchange_rate?: number
+          exchange_rate_timestamp: string
           id?: string
+          items_subtotal_amount: number
           items_subtotal_yen: number
           lang?: Database["public"]["Enums"]["lang"]
           order_number: string
@@ -251,8 +259,10 @@ export type Database = {
           phone: string
           postal_code: string
           prefecture: string
+          shipping_amount: number
           shipping_yen: number
-          status?: Database["public"]["Enums"]["order_status"]
+          status: Database["public"]["Enums"]["order_status"]
+          total_amount: number
           total_yen: number
         }
         Update: {
@@ -262,7 +272,10 @@ export type Database = {
           currency?: string
           customer_name?: string
           email?: string
+          exchange_rate?: number
+          exchange_rate_timestamp?: string
           id?: string
+          items_subtotal_amount?: number
           items_subtotal_yen?: number
           lang?: Database["public"]["Enums"]["lang"]
           order_number?: string
@@ -271,8 +284,10 @@ export type Database = {
           phone?: string
           postal_code?: string
           prefecture?: string
+          shipping_amount?: number
           shipping_yen?: number
           status?: Database["public"]["Enums"]["order_status"]
+          total_amount?: number
           total_yen?: number
         }
         Relationships: []
@@ -386,6 +401,7 @@ export type Database = {
           status: Database["public"]["Enums"]["product_status"]
           stock: number
           updated_at: string
+          weight_grams: number
         }
         Insert: {
           created_at?: string
@@ -398,6 +414,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["product_status"]
           stock?: number
           updated_at?: string
+          weight_grams: number
         }
         Update: {
           created_at?: string
@@ -410,6 +427,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["product_status"]
           stock?: number
           updated_at?: string
+          weight_grams?: number
         }
         Relationships: [
           {
@@ -433,17 +451,27 @@ export type Database = {
           p_currency: string
           p_customer_name: string
           p_email: string
+          p_exchange_rate: number
+          p_exchange_rate_timestamp: string
+          p_items_subtotal_amount: number
+          p_items_subtotal_yen: number
           p_lang: Database["public"]["Enums"]["lang"]
           p_order_number: string
+          p_org_name?: string
+          p_payment_method: Database["public"]["Enums"]["payment_method"]
           p_phone: string
           p_postal_code: string
           p_prefecture: string
           p_product_ids: string[]
-          p_shipping_yen?: number
+          p_qtys?: number[]
+          p_shipping_amount: number
+          p_shipping_yen: number
+          p_status: Database["public"]["Enums"]["order_status"]
+          p_total_amount: number
+          p_total_yen: number
+          p_unit_prices_yen: number[]
         }
-        Returns: {
-          order_id: string
-        }[]
+        Returns: string
       }
     }
     Enums: {

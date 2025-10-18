@@ -1,6 +1,6 @@
 # オトナラシEC プロジェクト構成
 
-更新日: 2025-10-17
+更新日: 2025-10-18
 
 ## 📁 ディレクトリ構造
 
@@ -92,7 +92,9 @@ otonarashi-ec/
 │   │   ├── types/                  # 型定義
 │   │   │   └── result.ts           # Result型（エラーハンドリング）
 │   │   ├── utils/                  # ユーティリティ関数
-│   │   │   └── imageUrl.ts         # 画像URL生成ヘルパー
+│   │   │   ├── imageUrl.ts         # 画像URL生成ヘルパー
+│   │   │   ├── calcShipping.ts     # 送料計算（EMS料金表ベース）
+│   │   │   └── calcShipping.test.ts # 送料計算テスト
 │   │   ├── stripe.ts               # Stripe SDK初期化
 │   │   ├── supabaseClient.ts       # Supabase クライアント
 │   │   ├── checkout.ts             # チェックアウト処理
@@ -190,6 +192,8 @@ app/[lang]/layout.tsx
 | `src/lib/repositories/*.ts` | Supabaseからのデータ取得（キャッシュ付き） |
 | `src/lib/types/result.ts` | Result型によるエラーハンドリング |
 | `src/lib/utils/imageUrl.ts` | 画像URL生成ヘルパー |
+| `src/lib/utils/calcShipping.ts` | 送料計算（国別・重量別EMS料金表） |
+| `src/lib/utils/calcShipping.test.ts` | 送料計算ロジックのテスト |
 | `src/lib/image-resize.ts` | 画像リサイズ処理 |
 | `src/lib/upload-product-images.ts` | 商品画像アップロード処理 |
 | `src/messages/*.json` | 翻訳データ（common, navなど） |
@@ -246,7 +250,15 @@ npm run start
 - [x] API Routes
   - [x] Stripe Checkout作成（`/api/checkout`）
   - [x] 決済状況確認（`/api/checkout-status`）
+  - [x] 為替レート取得（`/api/fx-rate`）
+  - [x] PaymentIntent作成（`/api/create-payment-intent`）
+  - [x] 配送先更新（`/api/update-shipping`）
   - [x] 画像管理（`/api/images/*`）
+- [x] 送料計算ロジック
+  - [x] EMS料金表ベース（5地帯・500g〜30kg）
+  - [x] 国別ゾーン振り分け
+  - [x] 商品重量合計計算
+  - [x] テストカバレッジ完備
 
 ### 今後の実装予定
 - [ ] 管理画面の機能拡張
