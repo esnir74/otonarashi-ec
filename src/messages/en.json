@@ -1,16 +1,4 @@
 {
-  "common": {
-    "brand": "Otonarashi",
-    "tagline": "Bringing kimono colors into everyday life."
-  },
-  "nav": {
-    "concept": "Concept",
-    "products": "Products",
-    "artisans": "Artisans",
-    "news": "News",
-    "contact": "Contact",
-    "checkout": "Checkout"
-  },
   "seo": {
     "siteName": "Otonarashi",
     "home": {
@@ -45,5 +33,16 @@
       "title": "Thank you for your purchase – Otonarashi",
       "description": "Your order has been confirmed. Please check your email for confirmation details."
     }
+  },
+  "product": {
+    "comingSoon": "Coming soon",
+    "inStock": "In stock",
+    "releaseDate": "Release date: {date}",
+    "preRelease": "Pre-release",
+    "noDescription": "Product description coming soon.",
+    "backToList": "Back to list",
+    "addToCart": "Add to cart",
+    "viewCart": "View cart",
+    "inCartMessage": "This item is already in your cart"
   }
 }

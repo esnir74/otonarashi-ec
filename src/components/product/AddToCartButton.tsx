@@ -3,6 +3,7 @@
 import { addToCartServer } from "@/app/actions/cart";
 import { CartItem, useCartStore } from "@/store/cart";
 import { useUIStore } from "@/store/ui";
+import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 
 type Props = {
@@ -14,6 +15,7 @@ type Props = {
 };
 
 export default function AddToCartButton({ item, disabled, label }: Props) {
+  const t = useTranslations("product");
   const addLocal = useCartStore((s) => s.addItem);
   const alreadyInCart = useCartStore((s) =>
     s.items.some((x) => x.id === item.id)
@@ -32,7 +34,7 @@ export default function AddToCartButton({ item, disabled, label }: Props) {
   };
 
   const isDisabled = disabled || isPending;
-  const text = alreadyInCart ? "カートを見る" : label ?? "Add to cart";
+  const text = alreadyInCart ? t("viewCart") : label ?? t("addToCart");
 
   return (
     <div className="space-y-2">
@@ -50,9 +52,7 @@ export default function AddToCartButton({ item, disabled, label }: Props) {
       </button>
 
       {alreadyInCart && (
-        <p className="text-sm text-neutral-600">
-          この商品はカートに入っています
-        </p>
+        <p className="text-sm text-neutral-600">{t("inCartMessage")}</p>
       )}
     </div>
   );

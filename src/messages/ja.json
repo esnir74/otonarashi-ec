@@ -1,16 +1,4 @@
 {
-  "common": {
-    "brand": "オトナラシ",
-    "tagline": "日常に、着物の彩りを"
-  },
-  "nav": {
-    "concept": "コンセプト",
-    "products": "商品",
-    "artisans": "職人",
-    "news": "お知らせ",
-    "contact": "お問い合わせ",
-    "checkout": "決済"
-  },
   "seo": {
     "siteName": "オトナラシ",
     "home": {
@@ -45,5 +33,16 @@
       "title": "ご購入ありがとうございました – オトナラシ",
       "description": "ご注文を承りました。確認メールをお送りしておりますので、ご確認ください。"
     }
+  },
+  "product": {
+    "comingSoon": "Coming soon",
+    "inStock": "In stock",
+    "releaseDate": "{date} 発売予定",
+    "preRelease": "発売前です",
+    "noDescription": "商品説明は準備中です。",
+    "backToList": "一覧に戻る",
+    "addToCart": "カートに追加",
+    "viewCart": "カートを見る",
+    "inCartMessage": "この商品はカートに入っています"
   }
 }

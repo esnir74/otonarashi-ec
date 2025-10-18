@@ -4,14 +4,20 @@
 import CartDrawer from "@/components/cart/CartDrawer";
 import { useCartStore } from "@/store/cart";
 import { useUIStore } from "@/store/ui";
-import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import LangSwitcher from "./LangSwitcher";
 
+const NAV_ITEMS = [
+  { href: "", label: "Concept" },
+  { href: "/products", label: "Products" },
+  { href: "/artisans", label: "Artisans" },
+  { href: "/news", label: "News" },
+  { href: "/contact", label: "Contact" },
+];
+
 export default function Header({ initialCount }: { initialCount: number }) {
-  const tNav = useTranslations("nav");
   const pathname = usePathname() || "/ja";
   const [, lang] = pathname.split("/");
   const base = `/${lang || "ja"}`;
@@ -48,7 +54,7 @@ export default function Header({ initialCount }: { initialCount: number }) {
           <Link href={base} className="flex items-center gap-2">
             <Image
               src="/logo.png"
-              alt="オトナラシ ロゴ"
+              alt="Otonarashi logo"
               width={160}
               height={60}
               priority
@@ -57,11 +63,11 @@ export default function Header({ initialCount }: { initialCount: number }) {
           </Link>
 
           <nav className="hidden md:flex items-center gap-2">
-            <NavLink href={`${base}`}>{tNav("concept")}</NavLink>
-            <NavLink href={`${base}/products`}>{tNav("products")}</NavLink>
-            <NavLink href={`${base}/artisans`}>{tNav("artisans")}</NavLink>
-            <NavLink href={`${base}/news`}>{tNav("news")}</NavLink>
-            <NavLink href={`${base}/contact`}>{tNav("contact")}</NavLink>
+            {NAV_ITEMS.map(({ href, label }) => (
+              <NavLink key={href || "home"} href={`${base}${href}`}>
+                {label}
+              </NavLink>
+            ))}
           </nav>
 
           {/* 右上：数字だけの丸バッジ（クリックでドロワー） */}

@@ -1,37 +1,25 @@
 {
-  "common": {
-    "brand": "Otonarashi",
-    "tagline": "把和服的色彩带入日常。"
-  },
-  "nav": {
-    "concept": "理念",
-    "products": "商品",
-    "artisans": "匠人",
-    "news": "公告",
-    "contact": "联系",
-    "checkout": "结账"
-  },
   "seo": {
     "siteName": "Otonarashi",
     "home": {
-      "title": "在日常中感受和服之美 – Otonarashi",
-      "description": "Otonarashi 官方商店。将传统之美与现代生活融合的和服再造单品，每件皆为手工独一无二。"
+      "title": "将和服的色彩带入日常生活 – Otonarashi",
+      "description": "Otonarashi 升级再造和服品牌官方商店。将传统与现代生活融合的手工独一无二作品。"
     },
     "products": {
-      "title": "商品一览 – Otonarashi",
-      "description": "浏览我们独一无二的和服再造商品系列。手提包、小袋、服饰等，将和服风格融入日常生活。"
+      "title": "产品 – Otonarashi",
+      "description": "浏览我们独一无二的升级再造和服产品系列。托特包、小袋、服装等，将和服风格带入您的日常生活。"
     },
     "artisans": {
-      "title": "匠人介绍 – Otonarashi",
-      "description": "认识 Otonarashi 背后的匠人团队。每一件作品都由作坊成员手工精心制作，追求卓越工艺。"
+      "title": "工匠 – Otonarashi",
+      "description": "认识 Otonarashi 背后的工匠团队。每件作品都由致力于优质工艺的工作室成员精心手工制作。"
     },
     "news": {
-      "title": "公告 – Otonarashi",
-      "description": "了解 Otonarashi 的最新活动、展览、采访和合作信息。"
+      "title": "新闻 – Otonarashi",
+      "description": "了解 Otonarashi 的最新活动、展览、采访和合作。"
     },
     "product": {
       "title": "{name} – Otonarashi",
-      "description": "{name}｜材质: {material}。独一无二的和服再造作品，手工匠心打造。"
+      "description": "{name} | 材质: {material}。独一无二的升级再造和服作品，精心手工制作。"
     },
     "contact": {
       "title": "联系我们 – Otonarashi",
@@ -39,11 +27,22 @@
     },
     "checkout": {
       "title": "结账 – Otonarashi",
-      "description": "Otonarashi 的购买页面。请核对您的订单详情并继续付款。"
+      "description": "Otonarashi 的购买页面。请查看订单详情并继续付款。"
     },
     "success": {
       "title": "感谢您的购买 – Otonarashi",
       "description": "您的订单已确认。请查看您的电子邮件以获取确认详情。"
     }
+  },
+  "product": {
+    "comingSoon": "即将推出",
+    "inStock": "有库存",
+    "releaseDate": "发售日期: {date}",
+    "preRelease": "预售中",
+    "noDescription": "产品说明即将推出。",
+    "backToList": "返回列表",
+    "addToCart": "加入购物车",
+    "viewCart": "查看购物车",
+    "inCartMessage": "此商品已在购物车中"
   }
 }
