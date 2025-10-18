@@ -1,10 +1,10 @@
 import AddToCartButton from "@/components/product/AddToCartButton";
+import ProductGallery from "@/components/product/ProductGallery";
 import { type Locale } from "@/i18n/locales";
 import { createPageMetadata } from "@/lib/metadata";
 import { getProductBySlug } from "@/lib/repositories/products";
 import { isOk } from "@/lib/types/result";
 import { Metadata } from "next";
-import Image from "next/image";
 
 type Props = { params: Promise<{ lang: Locale; slug: string }> };
 
@@ -38,16 +38,19 @@ export default async function ProductDetailPage({ params }: Props) {
   const result = await getProductBySlug(slug, lang);
   if (!isOk(result)) {
     console.error("Failed to fetch product:", result.error);
-    return <div>Failed to load product.</div>;
+    return (
+      <div className="px-4 py-10 text-sm text-red-600">
+        Failed to load product.
+      </div>
+    );
   }
 
   const product = result.value;
-  console.log(product);
+
   const isComingSoon = product.sale_start_at
     ? new Date(product.sale_start_at) > new Date()
     : false;
 
-  // 発売日のフォーマット例: 10月05日 00:00
   const formattedDate = product.sale_start_at
     ? new Date(product.sale_start_at).toLocaleString("ja-JP", {
         year: "numeric",
@@ -59,60 +62,91 @@ export default async function ProductDetailPage({ params }: Props) {
       })
     : null;
 
-  return (
-    <div>
-      <h1>{product.name}</h1>
-      <p>Price: ¥{product.price_yen.toLocaleString()}</p>
-      <p>Status: {product.status}</p>
-      <p>{product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}</p>
-      <p>
-        {isComingSoon ? `Coming Soon : ${formattedDate}発売` : "Available Now"}
-      </p>
-      {product.main_image_url && (
-        <div className="my-4 relative w-64 h-64">
-          <Image
-            src={product.main_image_url}
-            alt={product.name}
-            fill
-            sizes="(min-width: 1024px) 50vw, (min-width: 768px) 75vw, 100vw"
-            placeholder={product.main_image_blur ? "blur" : "empty"}
-            blurDataURL={product.main_image_blur || undefined}
-            className="object-cover rounded-md"
-          />
-        </div>
-      )}
-      {product.sub_image_urls.length > 0 && (
-        <div className="flex space-x-4 my-4">
-          {product.sub_image_urls.map((url, index) => {
-            const blurData = product.sub_image_blurs?.[index];
-            return (
-              <div key={index} className="relative w-32 h-32">
-                <Image
-                  src={url}
-                  alt={`${product.name} - ${index + 1}`}
-                  fill
-                  sizes="200px"
-                  placeholder={blurData ? "blur" : "empty"}
-                  blurDataURL={blurData || undefined}
-                  className="object-cover rounded-md"
-                />
-              </div>
-            );
-          })}
-        </div>
-      )}
-      <AddToCartButton
-        item={{ id: product.id, name: product.name, price: product.price_yen }}
-      />
+  // 画像配列（メイン＋サブ）
+  const images = [
+    ...(product.main_image_url ? [product.main_image_url] : []),
+    ...product.sub_image_urls,
+  ];
 
-      <footer className="mt-16 pt-8 border-t border-gray-300">
-        <a
-          href={`/${lang}/products`}
-          className="inline-block text-gray-600 hover:text-gray-800 transition-colors"
-        >
-          ← Back to Products
-        </a>
-      </footer>
+  return (
+    <div className="mx-auto max-w-6xl px-4 pb-24 pt-8 lg:px-8">
+      <div className="grid gap-10 lg:grid-cols-12">
+        {/* ギャラリー（左） */}
+        <ProductGallery
+          images={images}
+          productName={product.name}
+          mainImageBlur={product.main_image_blur}
+          subImageBlurs={product.sub_image_blurs}
+        />
+
+        {/* 情報（右） */}
+        <aside className="lg:col-span-5">
+          {/* タイトル＆価格（モバイル：上、デスクトップ：右カラム） */}
+          <div className="mb-4">
+            <h1 className="text-xl lg:text-2xl font-semibold tracking-tight text-slate-900">
+              {product.name}
+            </h1>
+            <div className="mt-1 text-lg lg:text-xl font-medium text-slate-900">
+              ¥{product.price_yen.toLocaleString()}
+            </div>
+          </div>
+
+          {/* Coming soon / 発売日 */}
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            {isComingSoon ? (
+              <span className="inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-800">
+                Coming soon
+              </span>
+            ) : (
+              <span className="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-800">
+                In stock
+              </span>
+            )}
+
+            {isComingSoon && formattedDate && (
+              <span className="text-sm text-neutral-600">
+                {formattedDate} 発売予定
+              </span>
+            )}
+          </div>
+
+          {/* CTA */}
+          <div className="mb-6">
+            <AddToCartButton
+              item={{
+                id: product.id,
+                name: product.name,
+                price: product.price_yen,
+              }}
+              disabled={isComingSoon}
+              label={isComingSoon ? "発売前です" : undefined}
+            />
+          </div>
+
+          {/* 説明 */}
+          <div className="prose prose-neutral max-w-none text-sm leading-7 md:text-base">
+            {product.description ? (
+              <div
+              // すでに整形済みテキストを想定。HTMLをそのまま差し込みたい場合はdangerouslySetInnerHTMLに変更
+              >
+                <p className="whitespace-pre-line">{product.description}</p>
+              </div>
+            ) : (
+              <p className="text-neutral-500">商品説明は準備中です。</p>
+            )}
+          </div>
+
+          {/* 戻るリンク */}
+          <div className="mt-10 border-t pt-6">
+            <a
+              href={`/${lang}/products`}
+              className="inline-flex items-center gap-2 text-sm text-neutral-600 transition-colors hover:text-neutral-800"
+            >
+              <span aria-hidden>←</span> 一覧に戻る
+            </a>
+          </div>
+        </aside>
+      </div>
     </div>
   );
 }
