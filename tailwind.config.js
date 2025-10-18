@@ -50,11 +50,18 @@ module.exports = {
   		},
   		fontFamily: {
   			serif: [
-  				'Noto Serif JP"',
+  				'"Source Han Serif JP"',
+  				'"Hiragino Mincho ProN"',
+  				'"Yu Mincho"',
+  				'YuMincho',
   				'serif'
   			],
   			sans: [
-  				'Noto Sans JP"',
+  				'"Source Han Sans JP"',
+  				'"Hiragino Kaku Gothic ProN"',
+  				'"Hiragino Sans"',
+  				'"Yu Gothic"',
+  				'YuGothic',
   				'sans-serif'
   			]
   		},
@@ -62,8 +69,25 @@ module.exports = {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
+  		},
+  		keyframes: {
+  			'drawer-slide-in': {
+  				'0%': { transform: 'translateX(100%)' },
+  				'100%': { transform: 'translateX(0)' }
+  			},
+  			'item-fade-up': {
+  				'0%': { opacity: '0', transform: 'translateY(12px)' },
+  				'100%': { opacity: '1', transform: 'translateY(0)' }
+  			}
+  		},
+  		animation: {
+  			'drawer-slide-in': 'drawer-slide-in 300ms cubic-bezier(0.16, 1, 0.3, 1)',
+  			'item-fade-up': 'item-fade-up 200ms cubic-bezier(0.16, 1, 0.3, 1)'
   		}
   	}
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    require("tailwind-scrollbar")({ nocompatible: true }),
+  ],
 };
