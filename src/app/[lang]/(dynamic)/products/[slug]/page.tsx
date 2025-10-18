@@ -1,3 +1,4 @@
+import { AddToCartButton } from "@/components/product/AddToCartButton";
 import { type Locale } from "@/i18n/locales";
 import { createPageMetadata } from "@/lib/metadata";
 import { getProductBySlug } from "@/lib/repositories/products";
@@ -100,6 +101,10 @@ export default async function ProductDetailPage({ params }: Props) {
           })}
         </div>
       )}
+      <AddToCartButton
+        item={{ id: product.id, name: product.name, price: product.price_yen }}
+      />
+
       <footer className="mt-16 pt-8 border-t border-gray-300">
         <a
           href={`/${lang}/products`}
