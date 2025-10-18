@@ -1,6 +1,11 @@
 import { cookies } from "next/headers";
 
-export type CartSnapItem = { id: string; name: string; price: number };
+export type CartSnapItem = {
+  id: string;
+  name: string;
+  price: number;
+  lang: string;
+};
 export type CartSnapshot = { items: CartSnapItem[]; updatedAt: number };
 
 const COOKIE_NAME = "cart_snapshot_v1";

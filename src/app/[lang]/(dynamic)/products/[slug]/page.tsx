@@ -117,6 +117,7 @@ export default async function ProductDetailPage({ params }: Props) {
                 id: product.id,
                 name: product.name,
                 price: product.price_yen,
+                lang,
               }}
               disabled={isComingSoon}
               label={isComingSoon ? "発売前です" : undefined}

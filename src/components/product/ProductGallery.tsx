@@ -21,16 +21,6 @@ export default function ProductGallery({
   const thumbScrollRef = useRef<HTMLDivElement>(null);
   const isScrollingRef = useRef(false);
 
-  if (images.length === 0) {
-    return (
-      <div className="relative aspect-square w-full overflow-hidden bg-neutral-100">
-        <div className="flex h-full items-center justify-center text-neutral-400">
-          No image
-        </div>
-      </div>
-    );
-  }
-
   const handlePrev = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -60,7 +50,7 @@ export default function ProductGallery({
   };
 
   useEffect(() => {
-    if (!scrollRef.current) return;
+    if (!scrollRef.current || images.length === 0) return;
 
     isScrollingRef.current = true;
     const width = scrollRef.current.offsetWidth;
@@ -79,7 +69,7 @@ export default function ProductGallery({
 
   // サムネイルを自動スクロール
   useEffect(() => {
-    if (!thumbScrollRef.current) return;
+    if (!thumbScrollRef.current || images.length === 0) return;
 
     const thumbButtons = thumbScrollRef.current.querySelectorAll("button");
     const activeThumb = thumbButtons[currentIndex];
@@ -91,7 +81,17 @@ export default function ProductGallery({
         inline: "center",
       });
     }
-  }, [currentIndex]);
+  }, [currentIndex, images.length]);
+
+  if (images.length === 0) {
+    return (
+      <div className="relative aspect-square w-full overflow-hidden bg-neutral-100">
+        <div className="flex h-full items-center justify-center text-neutral-400">
+          No image
+        </div>
+      </div>
+    );
+  }
 
   return (
     <section className="lg:col-span-7 min-w-0">

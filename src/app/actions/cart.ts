@@ -1,5 +1,6 @@
 // app/actions/cart.ts (server action)
 "use server";
+import { Locale } from "@/i18n/locales";
 import {
   CartSnapItem,
   readCartSnapshot,
@@ -58,4 +59,74 @@ export async function clearCartServer(): Promise<CartResult> {
   snap.updatedAt = Date.now();
   await writeCartSnapshot(snap);
   return { ok: true as const, count: 0, snapshot: snap };
+}
+
+type CartItemUpdate = {
+  id: string;
+  name: string;
+  lang: string;
+};
+
+/**
+ * カート内商品の名前と言語を一括更新（翻訳同期用）
+ */
+export async function updateCartItemsServer(
+  updates: CartItemUpdate[]
+): Promise<CartResult> {
+  const snap = await readCartSnapshot();
+
+  let updated = false;
+  for (const update of updates) {
+    const item = snap.items.find((x) => x.id === update.id);
+    if (item) {
+      // 言語が異なる場合のみ更新（無駄な書き込み防止）
+      if (item.lang !== update.lang || item.name !== update.name) {
+        item.name = update.name;
+        item.lang = update.lang;
+        updated = true;
+      }
+    }
+  }
+
+  if (updated) {
+    snap.updatedAt = Date.now();
+    await writeCartSnapshot(snap);
+  }
+
+  return { ok: true as const, count: snap.items.length, snapshot: snap };
+}
+
+/**
+ * 商品の多言語名を一括取得
+ * @param productIds - 商品IDの配列
+ * @param lang - 取得する言語
+ * @returns product_id → title のマップ
+ */
+export async function getProductTranslationsServer(
+  productIds: string[],
+  lang: Locale
+): Promise<Record<string, string>> {
+  if (productIds.length === 0) {
+    return {};
+  }
+
+  const supabase = createClient();
+
+  const { data, error } = await supabase
+    .from("product_translations")
+    .select("product_id, title")
+    .eq("lang", lang)
+    .in("product_id", productIds);
+
+  if (error) {
+    console.error("[getProductTranslationsServer] error:", error);
+    throw new Error("Failed to fetch translations");
+  }
+
+  const translations: Record<string, string> = {};
+  data?.forEach((row) => {
+    translations[row.product_id] = row.title;
+  });
+
+  return translations;
 }
