@@ -2,8 +2,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ClearCartEffect } from "@/components/checkout/ClearCartEffect";
-import { RevalidateProductsEffect } from "@/components/checkout/RevalidateProductsEffect";
+import { CheckoutSuccessContent } from "@/components/checkout/CheckoutSuccessContent";
 
 type Status = "pending" | "ok" | "out_of_stock";
 type Props = {
@@ -12,6 +11,7 @@ type Props = {
   hardTimeoutMs?: number; // 既定 180000
   pollIntervalMs?: number; // 既定 2000
   cancelHref?: string;
+  lang: string;
 };
 
 export default function PendingClient({
@@ -19,7 +19,8 @@ export default function PendingClient({
   softTimeoutMs = 15_000,
   hardTimeoutMs = 180_000,
   pollIntervalMs = 2_000,
-  cancelHref = "/?canceled=true",
+  cancelHref = "/checkout/failure?reason=out_of_stock",
+  lang,
 }: Props) {
   const [status, setStatus] = useState<Status>("pending");
   const [softTimedOut, setSoftTimedOut] = useState(false);
@@ -86,13 +87,7 @@ export default function PendingClient({
 
   // 表示
   if (status === "ok") {
-    return (
-      <div>
-        <ClearCartEffect />
-        <RevalidateProductsEffect />
-        <p>ご購入ありがとうございました。</p>
-      </div>
-    );
+    return <CheckoutSuccessContent lang={lang} />;
   }
 
   // pending 中のUI（段階的に案内を追加）

@@ -5,6 +5,7 @@ import {
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
+import type { StripeError } from "@stripe/stripe-js";
 import { useEffect, useState } from "react";
 
 export type AddressUpdate = {
@@ -33,7 +34,31 @@ type Props = {
   onPaymentMethodChange?: (method: PaymentMethod) => void;
   lang: string;
   piId: string;
+  onPaymentFailure?: (reason: string) => void;
 };
+
+function mapConfirmPaymentError(error: StripeError): string {
+  const code = error.code;
+  if (
+    error.type === "card_error" ||
+    code === "card_declined" ||
+    code === "payment_intent_authentication_failure" ||
+    code === "payment_method_unactivated"
+  ) {
+    return "payment_failed";
+  }
+  if (
+    code === "payment_canceled" ||
+    code === "payment_intent_unexpected_state" ||
+    code === "expired_card"
+  ) {
+    return "canceled";
+  }
+  if (code === "expired_session" || code === "payment_intent_incompatible_client") {
+    return "session_invalid";
+  }
+  return "checkout_error";
+}
 
 export function CheckoutForm({
   onAddressChangeAction,
@@ -42,6 +67,7 @@ export function CheckoutForm({
   onPaymentMethodChange,
   lang,
   piId,
+  onPaymentFailure,
 }: Props) {
   const stripe = useStripe();
   const elements = useElements();
@@ -122,7 +148,8 @@ export function CheckoutForm({
     setMessage(undefined);
 
     if (!piId) {
-      setMessage("Payment Intentセッションが無効です。ページを再読み込みしてください。");
+      onPaymentFailure?.("session_invalid");
+      setMessage("決済セッションが無効です。ページを再読み込みしてください。");
       setSubmitting(false);
       return;
     }
@@ -155,6 +182,12 @@ export function CheckoutForm({
       }); // Payment Element から支払い情報を収集して PaymentIntent を確認。:contentReference[oaicite:5]{index=5}
 
       if (error) {
+        const failureReason = mapConfirmPaymentError(error);
+        if (onPaymentFailure) {
+          onPaymentFailure(failureReason);
+          setSubmitting(false);
+          return;
+        }
         setMessage(error.message ?? "支払い処理でエラーが発生しました。");
       } else {
         setMessage(

@@ -2,7 +2,7 @@
 "use client";
 import type { CartSnapshot } from "@/lib/cartCookie";
 import { useCartStore } from "@/store/cart";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export default function CartHydrator({
   initialSnapshot,
@@ -10,6 +10,7 @@ export default function CartHydrator({
   initialSnapshot: CartSnapshot;
 }) {
   const syncFromServer = useCartStore((s) => s.syncFromServer);
+  const lastSignatureRef = useRef<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -21,6 +22,7 @@ export default function CartHydrator({
         items: initialSnapshot.items,
         updatedAt: initialSnapshot.updatedAt,
       });
+      lastSignatureRef.current = signature(initialSnapshot);
     };
 
     if (useCartStore.persist.hasHydrated?.()) {
@@ -37,5 +39,37 @@ export default function CartHydrator({
     };
   }, [initialSnapshot, syncFromServer]);
 
+  useEffect(() => {
+    async function refetch() {
+      try {
+        const res = await fetch("/api/cart/snapshot", { cache: "no-store" });
+        if (!res.ok) return;
+        const snap = (await res.json()) as CartSnapshot;
+        const sig = signature(snap);
+        if (sig !== lastSignatureRef.current) {
+          syncFromServer({ items: snap.items, updatedAt: snap.updatedAt });
+          lastSignatureRef.current = sig;
+        }
+      } catch (error) {
+        console.error("[CartHydrator] Failed to refetch snapshot", error);
+      }
+    }
+
+    const handleFocus = () => {
+      void refetch();
+    };
+
+    window.addEventListener("focus", handleFocus);
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, [syncFromServer]);
+
   return null;
+}
+
+function signature(snapshot: CartSnapshot) {
+  return `${snapshot.updatedAt}:${snapshot.items
+    .map((item) => item.id)
+    .join("|")}`;
 }

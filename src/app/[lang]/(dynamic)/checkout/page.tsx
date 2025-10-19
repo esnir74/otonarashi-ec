@@ -14,7 +14,7 @@ import {
 import { useCartStore } from "@/store/cart";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe, StripeElementLocale } from "@stripe/stripe-js";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 const stripePromise = loadStripe(
@@ -55,7 +55,42 @@ type PaymentIntentUpdateResponse = {
   totalYen: number;
 };
 
+function mapCreateIntentFailure(reason: string) {
+  switch (reason) {
+    case "empty_cart":
+      return "empty_cart";
+    case "product_not_found":
+    case "unavailable":
+      return "out_of_stock";
+    case "price_mismatch":
+      return "price_mismatch";
+    case "missing_fx_rate":
+      return "missing_fx_rate";
+    case "invalid_session":
+      return "session_invalid";
+    default:
+      return "checkout_error";
+  }
+}
+
+function mapUpdateShippingFailure(reason: string) {
+  switch (reason) {
+    case "empty_items":
+      return "empty_cart";
+    case "session_mismatch":
+      return "session_invalid";
+    case "currency_mismatch":
+      return "currency_mismatch";
+    case "fx_conversion_failed":
+    case "missing_fx_rate":
+      return "missing_fx_rate";
+    default:
+      return "checkout_error";
+  }
+}
+
 export default function CheckoutPage() {
+  const router = useRouter();
   const params = useParams<{ lang: Locale }>();
   const currentLang: StripeElementLocale = params?.lang ?? "ja";
   const cartItems = useCartStore((state) => state.items);
@@ -99,6 +134,20 @@ export default function CheckoutPage() {
   const [creatingIntent, setCreatingIntent] = useState(false);
   const [error, setError] = useState<string>();
   const [summaryOpen, setSummaryOpen] = useState(false);
+
+  const failurePath = useCallback(
+    (reason: string) =>
+      `/${currentLang}/checkout/failure?reason=${encodeURIComponent(reason)}`,
+    [currentLang]
+  );
+
+  const redirectToFailure = useCallback(
+    (reason: string) => {
+      setError(undefined);
+      router.replace(failurePath(reason));
+    },
+    [router, failurePath]
+  );
 
   const shippingCalculated = typeof shippingYen === "number";
   const subtotalYenValue = subtotalYen ?? fallbackSubtotal;
@@ -227,35 +276,15 @@ export default function CheckoutPage() {
         const data = await res.json();
         if (cancelled) return;
         if (res.status === 401 || res.status === 403) {
-          throw new Error("session_invalid");
+          redirectToFailure("session_invalid");
+          return;
         }
         if (!res.ok) {
-          const reason = (data?.reason as string | undefined) ?? "";
-          if (reason === "empty_cart") {
-            setError(
-              "カートが空です。商品を追加してからチェックアウトしてください。"
-            );
-            return;
-          }
-          if (reason === "product_not_found" || reason === "unavailable") {
-            setError(
-              "一部の商品が購入できません。カートを確認し、在庫状況を更新してください。"
-            );
-            return;
-          }
-          if (reason === "price_mismatch") {
-            setError(
-              "商品価格が更新されました。カートを再読み込みしてからもう一度お試しください。"
-            );
-            return;
-          }
-          if (reason === "missing_fx_rate") {
-            setError(
-              "為替レートの取得に失敗しました。時間を置いて再度お試しください。"
-            );
-            return;
-          }
-          throw new Error(`pi_create_failed:${res.status}`);
+          const failureReason = mapCreateIntentFailure(
+            (data?.reason as string | undefined) ?? ""
+          );
+          redirectToFailure(failureReason);
+          return;
         }
         const payload = data as PaymentIntentResponse;
         setClientSecret(payload.clientSecret);
@@ -274,9 +303,7 @@ export default function CheckoutPage() {
           return;
         }
         console.error(caughtError);
-        setError(
-          "チェックアウトを開始できませんでした。ページを再読み込みしてください。"
-        );
+        redirectToFailure("checkout_error");
       } finally {
         if (!cancelled) setCreatingIntent(false);
       }
@@ -287,7 +314,7 @@ export default function CheckoutPage() {
       cancelled = true;
       controller.abort();
     };
-  }, [sessionId, clientSecret, currency, fxRate, country, piToReplace]);
+  }, [sessionId, clientSecret, currency, fxRate, country, piToReplace, redirectToFailure]);
 
   const onAddressChangeAction = useCallback(
     async (update: AddressUpdate) => {
@@ -336,25 +363,14 @@ export default function CheckoutPage() {
             sessionId,
             response: data,
           });
-          setError(
-            "セッションが無効です。ページを再読み込みしてやり直してください。"
-          );
+          redirectToFailure("session_invalid");
           return;
         }
         if (!res.ok) {
-          if (data?.reason === "empty_items") {
-            setError(
-              "カート情報を取得できませんでした。ページを再読み込みしてください。"
-            );
-          } else if (data?.reason === "currency_mismatch") {
-            setError(
-              "通貨設定に不整合があります。ページを再読み込みしてください。"
-            );
-          } else {
-            setError(
-              "送料の更新に失敗しました。時間を置いて再度お試しください。"
-            );
-          }
+          const failureReason = mapUpdateShippingFailure(
+            (data?.reason as string | undefined) ?? ""
+          );
+          redirectToFailure(failureReason);
           return;
         }
 
@@ -365,12 +381,12 @@ export default function CheckoutPage() {
         setError(undefined);
       } catch (caughtError) {
         console.error(caughtError);
-        setError("通信に失敗しました。時間を置いて再度お試しください。");
+        redirectToFailure("checkout_error");
       } finally {
         setUpdating(false);
       }
     },
-    [piId, sessionId, creatingIntent, currency, fxRate]
+    [piId, sessionId, creatingIntent, currency, fxRate, redirectToFailure]
   );
 
   const handleCurrencyChange = useCallback(
@@ -513,6 +529,7 @@ export default function CheckoutPage() {
               amountLabel={amountLabel}
               lang={currentLang}
               piId={piId}
+              onPaymentFailure={redirectToFailure}
             />
           </Elements>
 

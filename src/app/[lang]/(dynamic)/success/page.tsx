@@ -1,8 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { type Locale } from "@/i18n/locales";
-import { ClearCartEffect } from "@/components/checkout/ClearCartEffect";
-import { RevalidateProductsEffect } from "@/components/checkout/RevalidateProductsEffect";
+import { CheckoutSuccessContent } from "@/components/checkout/CheckoutSuccessContent";
 import { getCheckoutStatus } from "@/lib/checkout";
 import { createPageMetadata } from "@/lib/metadata";
 import { Metadata } from "next";
@@ -32,29 +31,23 @@ export default async function SuccessPage({ params: paramsPromise, searchParams 
 
   if (status === "ok") {
     console.log("ok detected on SuccessPage");
-    return (
-      <section id="success">
-        <ClearCartEffect />
-        <RevalidateProductsEffect />
-        <h1>ご購入ありがとうございました。</h1>
-        <p>
-          ご不明点は <a href="mailto:orders@example.com">orders@example.com</a>{" "}
-          まで。
-        </p>
-      </section>
-    );
+    return <CheckoutSuccessContent lang={lang} />;
   }
 
   if (status === "out_of_stock") {
     console.warn("out_of_stock detected on SuccessPage");
-    redirect(`/${lang}?canceled=true`);
+    redirect(`/${lang}/checkout/failure?reason=out_of_stock`);
   }
 
   // pending → すぐ描画し、最小クライアントでポーリングへ
   return (
     <section id="success">
       <h1>お支払いを確認中です…</h1>
-      <PendingClient paymentIntentId={piId} cancelHref={`/${lang}?canceled=true`} />
+      <PendingClient
+        paymentIntentId={piId}
+        cancelHref={`/${lang}/checkout/failure?reason=out_of_stock`}
+        lang={lang}
+      />
     </section>
   );
 }
