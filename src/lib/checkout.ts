@@ -1,5 +1,6 @@
 // lib/checkout-status.ts
 import { createClient } from "@supabase/supabase-js";
+import Stripe from "stripe";
 import { stripe } from "./stripe";
 
 // ★ サーバ専用キーを使う（RLS設計に合わせて）
@@ -67,8 +68,8 @@ export async function computeOnce(piId: string): Promise<CheckoutStatus> {
     }
 
     return "pending";
-  } catch (error: any) {
-    if (error?.statusCode === 404) {
+  } catch (error) {
+    if (error instanceof Stripe.errors.StripeError && error.statusCode === 404) {
       console.warn("PaymentIntent not found", { piId });
       return "pending";
     }
