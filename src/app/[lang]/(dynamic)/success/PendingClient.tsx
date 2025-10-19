@@ -3,6 +3,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ClearCartEffect } from "@/components/checkout/ClearCartEffect";
+import { RevalidateProductsEffect } from "@/components/checkout/RevalidateProductsEffect";
 
 type Status = "pending" | "ok" | "out_of_stock";
 type Props = {
@@ -88,6 +89,7 @@ export default function PendingClient({
     return (
       <div>
         <ClearCartEffect />
+        <RevalidateProductsEffect />
         <p>ご購入ありがとうございました。</p>
       </div>
     );

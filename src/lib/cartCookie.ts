@@ -8,11 +8,11 @@ export type CartSnapItem = {
 };
 export type CartSnapshot = { items: CartSnapItem[]; updatedAt: number };
 
-const COOKIE_NAME = "cart_snapshot_v1";
+export const CART_COOKIE_NAME = "cart_snapshot_v1";
 
 export async function readCartSnapshot(): Promise<CartSnapshot> {
   const store = await cookies();
-  const c = store.get(COOKIE_NAME)?.value;
+  const c = store.get(CART_COOKIE_NAME)?.value;
   try {
     return c
       ? (JSON.parse(c) as CartSnapshot)
@@ -27,7 +27,7 @@ export async function writeCartSnapshot(snap: CartSnapshot) {
     const value = JSON.stringify(snap);
     const store = await cookies();
     store.set({
-      name: COOKIE_NAME,
+      name: CART_COOKIE_NAME,
       value,
       httpOnly: true, // XSS 耐性
       sameSite: "lax",
@@ -38,4 +38,9 @@ export async function writeCartSnapshot(snap: CartSnapshot) {
   } catch {
     console.error("Failed to write cart snapshot cookie");
   }
+}
+
+export async function clearCartSnapshot() {
+  const store = await cookies();
+  store.delete(CART_COOKIE_NAME);
 }

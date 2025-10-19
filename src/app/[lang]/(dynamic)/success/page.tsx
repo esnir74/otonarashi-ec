@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { type Locale } from "@/i18n/locales";
 import { ClearCartEffect } from "@/components/checkout/ClearCartEffect";
+import { RevalidateProductsEffect } from "@/components/checkout/RevalidateProductsEffect";
 import { getCheckoutStatus } from "@/lib/checkout";
 import { createPageMetadata } from "@/lib/metadata";
 import { Metadata } from "next";
@@ -27,14 +28,6 @@ export default async function SuccessPage({ params: paramsPromise, searchParams 
   const piId = query.pi_id;
   if (!piId) redirect(`/${lang}`);
 
-  // const session = (await stripe.checkout.sessions.retrieve(sessionId, {
-  //   expand: ["line_items", "payment_intent"],
-  // })) as Stripe.Checkout.Session;
-
-  // if (session.status === "open") {
-  //   redirect("/");
-  // }
-
   const status = await getCheckoutStatus(piId, { maxWaitMs: 800 });
 
   if (status === "ok") {
@@ -42,6 +35,7 @@ export default async function SuccessPage({ params: paramsPromise, searchParams 
     return (
       <section id="success">
         <ClearCartEffect />
+        <RevalidateProductsEffect />
         <h1>ご購入ありがとうございました。</h1>
         <p>
           ご不明点は <a href="mailto:orders@example.com">orders@example.com</a>{" "}

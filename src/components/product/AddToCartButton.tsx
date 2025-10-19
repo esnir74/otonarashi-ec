@@ -67,7 +67,7 @@ export default function AddToCartButton({ item, state }: Props) {
         {text}
       </button>
 
-      {alreadyInCart && (
+      {alreadyInCart && state === "inStock" && (
         <p className="text-sm text-neutral-600">{t("inCartMessage")}</p>
       )}
     </div>

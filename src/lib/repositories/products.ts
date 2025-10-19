@@ -225,7 +225,7 @@ export async function getProductBySlug(
     },
     [`product-${slug}-${lang}`],
     {
-      tags: ["products", `product-${slug}`],
+      tags: ["products", "product-detail", `product-${slug}`],
       revalidate: 60,
     }
   );
