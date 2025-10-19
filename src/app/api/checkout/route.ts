@@ -15,6 +15,25 @@ type RequestBody = {
   }>;
 };
 
+
+
+export type StripeItems = Array<{
+  id: string; // 任意の自前ID（SKU等）
+  unit_amount_yen: number; // 最小通貨単位（JPYなら円、USDならセント）
+  name: string;
+  quantity: number;
+}>;
+
+export type StripeMetadata = {
+  order_number: string;
+  items_json: string; // Items配列のJSON文字列
+  shipping_yen?: string; // 送料（JPY最小通貨単位）
+  lang?: "ja" | "en" | "zh";
+  org_name?: string; // 任意
+  exchange_rate?: string; // 為替レート
+  exchange_rate_timestamp?: string; // 為替レートのタイムスタンプ
+}
+
 export async function POST(req: NextRequest) {
   try {
     // 同一オリジンなら header から、なければ URL から取得

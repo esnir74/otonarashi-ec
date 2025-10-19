@@ -1,0 +1,39 @@
+"use client";
+
+import { useCartStore } from "@/store/cart";
+import { useEffect, useRef } from "react";
+
+type Props = {
+  trigger?: boolean;
+};
+
+export function ClearCartEffect({ trigger = true }: Props) {
+  const clearedRef = useRef(false);
+
+  useEffect(() => {
+    if (!trigger || clearedRef.current) return;
+    try {
+      useCartStore.getState().clearCart();
+      clearedRef.current = true;
+      console.log("[ClearCartEffect] Cart cleared");
+      void fetch("/api/checkout/session/clear", {
+        method: "POST",
+        cache: "no-store",
+      }).catch((error) =>
+        console.error("[ClearCartEffect] failed to clear session cookie", error)
+      );
+      void fetch("/api/cart/clear", {
+        method: "POST",
+        cache: "no-store",
+      }).catch((error) =>
+        console.error("[ClearCartEffect] failed to clear cart snapshot", error)
+      );
+    } catch (error) {
+      console.error("[ClearCartEffect] failed to clear cart", error);
+    }
+  }, [trigger]);
+
+  return null;
+}
+
+export default ClearCartEffect;

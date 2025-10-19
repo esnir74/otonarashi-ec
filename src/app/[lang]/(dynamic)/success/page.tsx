@@ -1,6 +1,8 @@
 export const dynamic = "force-dynamic";
 
 import { type Locale } from "@/i18n/locales";
+import { ClearCartEffect } from "@/components/checkout/ClearCartEffect";
+import { RevalidateProductsEffect } from "@/components/checkout/RevalidateProductsEffect";
 import { getCheckoutStatus } from "@/lib/checkout";
 import { createPageMetadata } from "@/lib/metadata";
 import { Metadata } from "next";
@@ -10,7 +12,7 @@ import PendingClient from "./PendingClient";
 
 type Props = {
   params: Promise<{ lang: Locale }>;
-  searchParams: Promise<{ session_id?: string }>;
+  searchParams: Promise<{ pi_id?: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -18,27 +20,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return createPageMetadata(lang, "success", "success");
 }
 
-export default async function SuccessPage({ searchParams }: Props) {
+export default async function SuccessPage({ params: paramsPromise, searchParams }: Props) {
   noStore();
-  const params = await searchParams;
+  const { lang } = await paramsPromise;
+  const query = await searchParams;
 
-  const sessionId = params.session_id;
-  if (!sessionId) redirect("/");
+  const piId = query.pi_id;
+  if (!piId) redirect(`/${lang}`);
 
-  // const session = (await stripe.checkout.sessions.retrieve(sessionId, {
-  //   expand: ["line_items", "payment_intent"],
-  // })) as Stripe.Checkout.Session;
-
-  // if (session.status === "open") {
-  //   redirect("/");
-  // }
-
-  const status = await getCheckoutStatus(sessionId, { maxWaitMs: 800 });
+  const status = await getCheckoutStatus(piId, { maxWaitMs: 800 });
 
   if (status === "ok") {
     console.log("ok detected on SuccessPage");
     return (
       <section id="success">
+        <ClearCartEffect />
+        <RevalidateProductsEffect />
         <h1>ご購入ありがとうございました。</h1>
         <p>
           ご不明点は <a href="mailto:orders@example.com">orders@example.com</a>{" "}
@@ -50,14 +47,14 @@ export default async function SuccessPage({ searchParams }: Props) {
 
   if (status === "out_of_stock") {
     console.warn("out_of_stock detected on SuccessPage");
-    redirect("/?canceled=true");
+    redirect(`/${lang}?canceled=true`);
   }
 
   // pending → すぐ描画し、最小クライアントでポーリングへ
   return (
     <section id="success">
       <h1>お支払いを確認中です…</h1>
-      <PendingClient sessionId={sessionId} />
+      <PendingClient paymentIntentId={piId} cancelHref={`/${lang}?canceled=true`} />
     </section>
   );
 }

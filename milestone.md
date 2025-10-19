@@ -438,6 +438,203 @@ UI（ProductGrid, Pagination）を描画
 - すでにカートにその商品がある時、もう一度カートに入れられない
 
 ---
+# カート＆購入フロー完成までの詳細マイルストーン
+
+本ドキュメントは、Zustand を用いたゲストカート + 多通貨（JPY/USD/EUR）表示 + Stripe Checkout 連携構成を完成させるための詳細マイルストーンです。  
+API レイヤーは `/api/fx-rate`（Redis キャッシュ付）を前提にしています。
+
+---
+
+## 📍 Milestone 1：Zustand カートストアの基盤構築
+
+### 目的
+- ゲストカート機能を実装（localStorage 永続化）
+- `{ productId, quantity, variantKey? }` を保持
+- 通貨選択と為替レートも状態管理
+
+### タスク
+- `store/cart.ts` を作成し、`persist` middleware で localStorage へ永続化。
+- 型定義：
+  - `CartItem = { id: string; name: string; priceJPY: number; quantity: number; variantKey?: string }`
+  - `Currency = 'JPY' | 'USD' | 'EUR'`
+  - `FxRate = { usdRate: number; eurRate: number } // いずれも 1 JPY あたり`
+- Store state：
+  - `items: CartItem[]`
+  - `selectedCurrency: Currency`（初期値 `'JPY'`）
+  - `fxRate: FxRate | null`
+- Actions：`addItem`, `removeItem`, `updateQty`, `clearCart`, `setCurrency`, `setFxRate`。
+- Derived selector：`cartTotal(currency)` → `sum(item.priceJPY * (currency === 'JPY' ? 1 : rate))`。
+
+---
+
+## 📍 Milestone 2：UI 統合（ドロワーカート）
+
+### 目的
+- 右側から開くドロワーでカート内容を表示（MGG のような UX）
+- Add to Cart → ドロワーを自動オープンし、最新状態を反映
+
+### タスク
+- `CartDrawer` コンポーネントを作成（shadcn/ui の `Sheet` or Radix UI の `Dialog/Sheet`）。
+- ヘッダーにカートアイコン＋バッジ（`items.length` または合計数量）。
+- 行アイテム：サムネ、名前、数量変更、削除。
+- 合計金額表示は `selectedCurrency` と `fxRate` に応じてリアルタイム換算。
+- ドロワー内に通貨セレクタ（`JPY / USD / EUR`）。`setCurrency` を呼ぶ。
+
+---
+
+## 📍 Milestone 3：Checkout ページの構築
+
+### 目的
+- 通貨・レートを反映した金額を表示し、Stripe Hosted Checkout へ遷移
+
+### タスク
+- `app/checkout/page.tsx`（クライアントコンポーネント）でサマリー表示。
+- 進むボタン押下時に `/api/fx-rate` を呼んで最新レートを確保（ズレ防止）。
+- JPY 基準の小計/送料を換算：
+  - `USD/EUR` は `Math.round(priceJPY * rate)` で最小通貨単位へ（Stripe は整数）。
+- `/api/checkout` へ `{ items, currency, fxRate, totals }` を POST。
+
+---
+
+## 📍 Milestone 4：/api/checkout 実装（バックエンド）
+
+### 目的
+- Supabase で在庫・価格を再検証し、注文スナップショットを作成、Stripe セッションを作成
+
+### タスク（例）
+1. リクエストスキーマ検証（Zod 等）  
+   - `currency in ['JPY','USD','EUR']`
+   - `fxRate` は `usdRate/eurRate` の数値
+2. Supabase から `product_id` 一覧で在庫/公開/価格を SELECT。未公開・在庫 0 は除外。
+3. スナップショット作成（DB）：  
+   - `order_items(unit_price_yen)` は **当時の JPY 価格** を固定保存。  
+   - `orders` には内部 JPY 合計、支払通貨金額、`exchange_rate` と `timestamp` を保存。
+4. Stripe `checkout.sessions.create`：
+   - `currency`: ユーザー選択通貨
+   - `line_items`: 換算済み `unit_amount`（整数）
+   - `client_reference_id`: `order_number`
+   - `success_url` / `cancel_url`
+5. セッション URL を返却。
+
+> **メモ**：多通貨の金額は整数（cent 等）に丸める。JPY は小数なし。
+
+---
+
+## 📍 Milestone 5：Success ページ / 最終確定
+
+### 目的
+- 戻り先で注文状態を確定し、カートをクリア
+
+### タスク
+- `app/success/page.tsx`：注文番号とローカライズメッセージ表示。
+- `/api/checkout-status`：Stripe セッション ID を受け、`payment_intent.succeeded` を確認。OK なら `orders.status='paid'` を確定。
+- フロントで `clearCart()` 実行。
+
+---
+
+## 📍 Milestone 6：運用・堅牢化
+
+### 目的
+- キャッシュ・為替・ログ・誤差対策で安定運用
+
+### タスク
+- Redis TTL：10〜30 分。`/api/fx-rate` は古いキャッシュでもフォールバック返却。
+- 丸めルールの統一：
+  - 表示：小数 2 桁（USD/EUR）
+  - Stripe 渡し：整数（`Math.round`）
+- 監査：`orders.exchange_rate`, `exchange_rate_timestamp` を必ず保存。
+- ログ：外部 API 呼び出し回数、キャッシュヒット率、Stripe エラー率を記録。
+- E2E テスト：Playwright/Jest で通貨切替〜決済フローを自動化。
+
+---
+
+## 📦 参考スニペット
+
+### Zustand ストア（概要）
+
+```ts
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+
+type Currency = "JPY" | "USD" | "EUR";
+type FxRate = { usdRate: number; eurRate: number }; // どちらも 1 JPY あたり
+type CartItem = { id: string; name: string; priceJPY: number; quantity: number; variantKey?: string };
+
+type CartState = {
+  items: CartItem[];
+  selectedCurrency: Currency;
+  fxRate: FxRate | null;
+  addItem: (item: CartItem) => void;
+  removeItem: (id: string) => void;
+  updateQty: (id: string, qty: number) => void;
+  clearCart: () => void;
+  setCurrency: (c: Currency) => void;
+  setFxRate: (r: FxRate) => void;
+  totalIn: (c: Currency) => number;
+};
+
+export const useCartStore = create<CartState>()(
+  persist(
+    (set, get) => ({
+      items: [],
+      selectedCurrency: "JPY",
+      fxRate: null,
+      addItem: (item) => set((s) => {
+        const i = s.items.findIndex(x => x.id === item.id && x.variantKey === item.variantKey);
+        if (i >= 0) {
+          const next = [...s.items];
+          next[i] = { ...next[i], quantity: next[i].quantity + item.quantity };
+          return { items: next };
+        }
+        return { items: [...s.items, item] };
+      }),
+      removeItem: (id) => set((s) => ({ items: s.items.filter(x => x.id !== id) })),
+      updateQty: (id, qty) => set((s) => ({ items: s.items.map(x => x.id === id ? { ...x, quantity: qty } : x) })),
+      clearCart: () => set({ items: [] }),
+      setCurrency: (c) => set({ selectedCurrency: c }),
+      setFxRate: (r) => set({ fxRate: r }),
+      totalIn: (c) => {
+        const { items, fxRate } = get();
+        const base = items.reduce((sum, it) => sum + it.priceJPY * it.quantity, 0);
+        if (c === "JPY") return base;
+        const rate = c === "USD" ? fxRate?.usdRate : fxRate?.eurRate;
+        if (!rate) return base; // rate 未取得時は JPY のまま
+        return Math.round(base * rate);
+      }
+    }),
+    { name: "cart-store" }
+  )
+);
+```
+
+### `/api/fx-rate` 叩いて store を更新する例
+
+```ts
+async function refreshFx() {
+  const res = await fetch("/api/fx-rate");
+  const json = await res.json();
+  if (json?.rate) {
+    useCartStore.getState().setFxRate(json.rate);
+  }
+}
+```
+
+---
+
+## ✅ 完成の定義（Definition of Done）
+
+- カート追加 → ドロワー表示→ 通貨切替が即時反映される
+- Checkout ページで最新レートが取得でき、金額が確定
+- `/api/checkout` がスナップショットを保存し Stripe セッションを作成
+- Success で注文確定、カートがクリアされる
+- 主要ケース（JPY/USD/EUR、在庫切れ、Stripe キャンセル）を E2E テストで担保
+
+---
+
+## メモ
+- JPY は最小単位が 1 円（小数なし）、USD/EUR は最小単位が 1 セント/1 ユーロセント（整数）。
+- 丸めは **サーバ側で統一**（`Math.round`）し、UI と Stripe で不一致が出ないようにする。
+
 
 ### **M6. 郵便振替決済（オフライン）（3 日）**
 

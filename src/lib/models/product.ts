@@ -40,7 +40,7 @@ export const ProductCardSchema = z.object({
   id: z.string(),
   slug: z.string(),
   name: z.string(),
-  price_cents: z.number().int().positive(),
+  price_yen: z.number().int().positive(),
   main_image_url: z.string().nullable(),
   main_image_blur: z.string().nullable().optional(), // blur placeholder
   status: z.enum(["draft", "published", "archived"] as const),
@@ -84,8 +84,8 @@ export function hasStock(product: { stock: number }): boolean {
 /**
  * 価格を表示用フォーマットに変換（円）
  */
-export function formatPrice(price_cents: number): string {
-  return `¥${(price_cents / 100).toLocaleString("ja-JP")}`;
+export function formatPrice(price_yen: number): string {
+  return `¥${price_yen.toLocaleString("ja-JP")}`;
 }
 
 /**

@@ -2,20 +2,24 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { ClearCartEffect } from "@/components/checkout/ClearCartEffect";
+import { RevalidateProductsEffect } from "@/components/checkout/RevalidateProductsEffect";
 
 type Status = "pending" | "ok" | "out_of_stock";
 type Props = {
-  sessionId: string;
+  paymentIntentId: string;
   softTimeoutMs?: number; // 既定 15000
   hardTimeoutMs?: number; // 既定 180000
   pollIntervalMs?: number; // 既定 2000
+  cancelHref?: string;
 };
 
 export default function PendingClient({
-  sessionId,
+  paymentIntentId,
   softTimeoutMs = 15_000,
   hardTimeoutMs = 180_000,
   pollIntervalMs = 2_000,
+  cancelHref = "/?canceled=true",
 }: Props) {
   const [status, setStatus] = useState<Status>("pending");
   const [softTimedOut, setSoftTimedOut] = useState(false);
@@ -29,7 +33,7 @@ export default function PendingClient({
     async function tick() {
       try {
         const res = await fetch(
-          `/api/checkout-status?session_id=${encodeURIComponent(sessionId)}`,
+          `/api/checkout-status?pi_id=${encodeURIComponent(paymentIntentId)}`,
           {
             cache: "no-store",
           }
@@ -44,7 +48,7 @@ export default function PendingClient({
         }
         if (data.status === "out_of_stock") {
           // すぐリダイレクト
-          window.location.href = "/?canceled=true";
+          window.location.href = cancelHref;
           return;
         }
 
@@ -78,12 +82,14 @@ export default function PendingClient({
       alive = false;
       clearTimeout(id);
     };
-  }, [sessionId, softTimeoutMs, hardTimeoutMs, pollIntervalMs]);
+  }, [paymentIntentId, softTimeoutMs, hardTimeoutMs, pollIntervalMs]);
 
   // 表示
   if (status === "ok") {
     return (
       <div>
+        <ClearCartEffect />
+        <RevalidateProductsEffect />
         <p>ご購入ありがとうございました。</p>
       </div>
     );

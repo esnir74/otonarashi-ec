@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabaseClient";
-import { isOk } from "@/lib/types/result";
-import ImageUploader from "../../_components/ImageUploader";
 import Link from "next/link";
+import ImageUploader from "../../_components/ImageUploader";
 
 export const dynamic = "force-dynamic";
 
@@ -65,7 +64,9 @@ export default async function AdminProductEditPage({ params }: Props) {
         <dl className="grid grid-cols-1 gap-4">
           <div>
             <dt className="text-sm font-medium text-gray-500">商品ID</dt>
-            <dd className="mt-1 text-sm text-gray-900 font-mono">{product.id}</dd>
+            <dd className="mt-1 text-sm text-gray-900 font-mono">
+              {product.id}
+            </dd>
           </div>
           <div>
             <dt className="text-sm font-medium text-gray-500">スラッグ</dt>
@@ -85,7 +86,7 @@ export default async function AdminProductEditPage({ params }: Props) {
             <div>
               <dt className="text-sm font-medium text-gray-500">価格</dt>
               <dd className="mt-1 text-sm text-gray-900">
-                ¥{product.price_cents.toLocaleString()}
+                ¥{product.price_yen.toLocaleString()}
               </dd>
             </div>
             <div>

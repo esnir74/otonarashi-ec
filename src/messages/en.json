@@ -1,16 +1,4 @@
 {
-  "common": {
-    "brand": "Otonarashi",
-    "tagline": "Bringing kimono colors into everyday life."
-  },
-  "nav": {
-    "concept": "Concept",
-    "products": "Products",
-    "artisans": "Artisans",
-    "news": "News",
-    "contact": "Contact",
-    "cart": "Cart"
-  },
   "seo": {
     "siteName": "Otonarashi",
     "home": {
@@ -33,17 +21,29 @@
       "title": "{name} – Otonarashi",
       "description": "{name} | Material: {material}. One-of-a-kind upcycled kimono piece, carefully handcrafted."
     },
-    "cart": {
-      "title": "Cart – Otonarashi",
-      "description": "Otonarashi's cart page. Review your shopping and proceed to payment."
-    },
     "contact": {
       "title": "Contact – Otonarashi",
       "description": "Contact Otonarashi for inquiries about business, press, or purchases. We're here to help."
+    },
+    "checkout": {
+      "title": "Checkout – Otonarashi",
+      "description": "Otonarashi's purchase page. Please review your order details and proceed to payment."
     },
     "success": {
       "title": "Thank you for your purchase – Otonarashi",
       "description": "Your order has been confirmed. Please check your email for confirmation details."
     }
+  },
+  "product": {
+    "comingSoon": "Coming soon",
+    "inStock": "In stock",
+    "releaseDate": "Release date: {date}",
+    "preRelease": "Pre-release",
+    "outOfStock": "Out of stock",
+    "noDescription": "Product description coming soon.",
+    "backToList": "Back to list",
+    "addToCart": "Add to cart",
+    "viewCart": "View cart",
+    "inCartMessage": "This item is already in your cart"
   }
 }

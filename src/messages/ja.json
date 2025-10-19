@@ -1,16 +1,4 @@
 {
-  "common": {
-    "brand": "オトナラシ",
-    "tagline": "日常に、着物の彩りを"
-  },
-  "nav": {
-    "concept": "コンセプト",
-    "products": "商品",
-    "artisans": "職人",
-    "news": "お知らせ",
-    "contact": "お問い合わせ",
-    "cart": "カート"
-  },
   "seo": {
     "siteName": "オトナラシ",
     "home": {
@@ -33,17 +21,29 @@
       "title": "{name} – オトナラシ",
       "description": "{name}｜素材: {material}｜一点ものの着物アップサイクル。丁寧な手仕事の質感をオンラインで。"
     },
-    "cart": {
-      "title": "カート – オトナラシ",
-      "description": "オトナラシのカートページ。お買い物の確認とお支払い手続きへ進みます。"
-    },
     "contact": {
       "title": "お問い合わせ – オトナラシ",
       "description": "オトナラシへのお問い合わせ。取引、取材、購入相談など、お気軽にご連絡ください。"
+    },
+    "checkout": {
+      "title": "決済 – オトナラシ",
+      "description": "オトナラシの決済ページ。ご注文内容をご確認の上、お支払いへお進みください。"
     },
     "success": {
       "title": "ご購入ありがとうございました – オトナラシ",
       "description": "ご注文を承りました。確認メールをお送りしておりますので、ご確認ください。"
     }
+  },
+  "product": {
+    "comingSoon": "Coming soon",
+    "inStock": "In stock",
+    "releaseDate": "{date} 発売予定",
+    "preRelease": "発売前です",
+    "outOfStock": "完売しました",
+    "noDescription": "商品説明は準備中です。",
+    "backToList": "一覧に戻る",
+    "addToCart": "カートに追加",
+    "viewCart": "カートを見る",
+    "inCartMessage": "この商品はカートに入っています"
   }
 }
