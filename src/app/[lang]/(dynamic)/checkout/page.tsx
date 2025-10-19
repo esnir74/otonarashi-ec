@@ -393,7 +393,6 @@ export default function CheckoutPage() {
     (nextCurrency: SupportedCurrency) => {
       if (nextCurrency === currency) return;
       if (nextCurrency !== "JPY" && !fxRate) {
-        setFxError("為替レートが取得できるまでお待ちください。");
         return;
       }
 
@@ -467,10 +466,10 @@ export default function CheckoutPage() {
               handleCurrencyChange(event.target.value as SupportedCurrency)
             }
             className="rounded-full border border-neutral-300 bg-white px-4 py-2 text-sm outline-none transition focus:border-neutral-900 focus:ring-2 focus:ring-neutral-200"
-            disabled={creatingIntent || updating}
+            disabled={creatingIntent || updating || fxError !== undefined}
           >
             {CURRENCY_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
+              <option key={option.value} value={option.value} disabled={option.value !== "JPY" && !fxRate}>
                 {option.label} {option.suffix}
               </option>
             ))}

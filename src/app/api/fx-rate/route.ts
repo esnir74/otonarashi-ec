@@ -56,6 +56,7 @@ function isApiLayerLiveResponse(d: unknown): d is ApiLayerLiveResponse {
 
 export async function GET(_req: Request) {
   // デバッグ用
+  // throw new Error("FX rate fetch test error");
   const tmp = `{"eurRate": 0.005696201458033063,
 "usdRate": 0.0066521872940628335
 }`;
@@ -70,7 +71,8 @@ export async function GET(_req: Request) {
   const key = `fx:JPY`;
   const cached = await redis.get(key);
 
-  if (cached) {
+  if (cached !== null) {
+    console.log("FX rate found in Redis cache:", cached);
     const rate = parseFxRateJSON(cached);
     if (rate) {
       return Response.json({ rate, cached: true, source: "redis" });
@@ -83,9 +85,7 @@ export async function GET(_req: Request) {
   const baseUrl = "https://api.exchangerate.host/live";
   if (!accessKey) return new Response("Missing API key", { status: 500 });
 
-  const url =
-    `${baseUrl}?access_key=${encodeURIComponent(accessKey)}` +
-    `&currencies=EUR,JPY`;
+  const url = `${baseUrl}?access_key=${accessKey}&currencies=EUR,JPY`;
 
   let jsonUnknown: unknown;
   try {
