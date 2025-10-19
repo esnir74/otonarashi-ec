@@ -8,13 +8,11 @@ import { useTransition } from "react";
 
 type Props = {
   item: CartItem;
-  /** 売切/ComingSoonなどで無効化したい場合に使用 */
-  disabled?: boolean;
   /** ボタン文言を差し替えたい場合に使用（例: "発売前です"） */
-  label?: string;
+  state: "preRelease" | "inStock" | "outOfStock";
 };
 
-export default function AddToCartButton({ item, disabled, label }: Props) {
+export default function AddToCartButton({ item, state }: Props) {
   const t = useTranslations("product");
   const syncFromServer = useCartStore((s) => s.syncFromServer);
   const alreadyInCart = useCartStore((s) =>
@@ -46,8 +44,13 @@ export default function AddToCartButton({ item, disabled, label }: Props) {
     openCart();
   };
 
-  const isDisabled = disabled || isPending;
-  const text = alreadyInCart ? t("viewCart") : label ?? t("addToCart");
+  const isDisabled = state !== "inStock" || isPending;
+  const text = {
+    preRelease: t("preRelease"),
+    outOfStock: t("outOfStock"),
+    inStock: alreadyInCart ? t("viewCart") : t("addToCart"),
+  }[state];
+  console.log(state);
 
   return (
     <div className="space-y-2">

@@ -39,6 +39,7 @@
     "inStock": "In stock",
     "releaseDate": "{date} 発売予定",
     "preRelease": "発売前です",
+    "outOfStock": "完売しました",
     "noDescription": "商品説明は準備中です。",
     "backToList": "一覧に戻る",
     "addToCart": "カートに追加",

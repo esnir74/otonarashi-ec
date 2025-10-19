@@ -1,4 +1,14 @@
 // POST { country?: string, sessionId: string }
+import {
+  FxRate,
+  SupportedCurrency,
+  convertYenToMinorUnit,
+  currencyToStripeCode,
+} from "@/lib/checkout/currency";
+import {
+  PaymentIntentMetadataInput,
+  buildPaymentIntentMetadata,
+} from "@/lib/checkout/metadataSchema";
 import { COOKIE_NAME, verifySessionCookie } from "@/lib/checkout/session";
 import { validateCartSnapshot } from "@/lib/checkout/validateCart";
 import { stripe } from "@/lib/stripe";
@@ -6,23 +16,21 @@ import { cookies } from "next/headers";
 
 const SHIPPING_YEN: Record<string, number> = { jp: 400, us: 1000 };
 
+type CreatePaymentIntentBody = {
+  sessionId: string;
+  country?: string;
+  lang?: "ja" | "en" | "zh";
+  currency?: SupportedCurrency;
+  fxRate?: FxRate;
+  replacePiId?: string;
+};
+
 export type StripeItems = Array<{
   id: string; // 任意の自前ID（SKU等）
   unit_amount_yen: number; // 最小通貨単位（JPYなら円、USDならセント）
   name: string;
   quantity: number;
 }>;
-
-export type StripeMetadata = {
-  session_id: string;
-  order_number: string;
-  items_json: string; // Items配列のJSON文字列
-  shipping_yen?: string; // 送料（JPY最小通貨単位）
-  lang?: "ja" | "en" | "zh";
-  org_name?: string; // 任意
-  exchange_rate?: string; // 為替レート
-  exchange_rate_timestamp?: string; // 為替レートのタイムスタンプ
-};
 
 function calcShipping(country?: string) {
   const key = (country ?? "jp").toLowerCase();
@@ -32,8 +40,36 @@ function calcShipping(country?: string) {
 export async function POST(req: Request) {
   console.log("[PaymentIntent] POST request received");
 
-  const { country, sessionId, lang } = await req.json();
-  console.log("[PaymentIntent] Request body:", { country, sessionId, lang });
+  const body = (await req.json()) as CreatePaymentIntentBody;
+  const {
+    country,
+    sessionId,
+    lang,
+    currency = "JPY",
+    fxRate,
+    replacePiId,
+  } = body;
+  console.log("[PaymentIntent] Request body:", body);
+
+  if (!sessionId) {
+    return new Response(
+      JSON.stringify({ ok: false, reason: "missing_session" }),
+      { status: 400, headers: { "content-type": "application/json" } }
+    );
+  }
+
+  if (currency !== "JPY") {
+    if (
+      !fxRate ||
+      typeof fxRate.usdRate !== "number" ||
+      typeof fxRate.eurRate !== "number"
+    ) {
+      return new Response(
+        JSON.stringify({ ok: false, reason: "missing_fx_rate" }),
+        { status: 400, headers: { "content-type": "application/json" } }
+      );
+    }
+  }
 
   const store = await cookies();
   const signed = store.get(COOKIE_NAME)?.value ?? null;
@@ -58,7 +94,10 @@ export async function POST(req: Request) {
     });
     return new Response(
       JSON.stringify({ ok: false, reason: "invalid_session" }),
-      { status: 401, headers: { "content-type": "application/json" } }
+      {
+        status: 401,
+        headers: { "content-type": "application/json" },
+      }
     );
   }
 
@@ -99,37 +138,84 @@ export async function POST(req: Request) {
   const subtotal = validation.subtotalYen;
   const shipping = calcShipping(country);
   const amount = subtotal + shipping;
+  const totalYen = amount;
 
   const orderNumber = `OR-${new Date()
     .toISOString()
     .slice(0, 10)
     .replace(/-/g, "")}-${Math.random().toString(36).slice(2, 8)}`;
 
-  const metadata: StripeMetadata = {
+  const metadataInput: PaymentIntentMetadataInput = {
     session_id: sessionId,
     order_number: orderNumber,
     items_json: JSON.stringify(items),
-    lang,
-    shipping_yen: undefined,
-    org_name: undefined,
-    exchange_rate: undefined,
-    exchange_rate_timestamp: undefined,
+    items_subtotal_yen: String(subtotal),
+    shipping_yen: String(shipping),
+    total_yen: String(totalYen),
+    payment_method: "card",
+    exchange_rate_timestamp: new Date().toISOString(),
+    ...(lang ? { lang } : {}),
+    ...(currency !== "JPY" && fxRate
+      ? {
+          fx_rate_usd: String(fxRate.usdRate),
+          fx_rate_eur: String(fxRate.eurRate),
+        }
+      : {}),
   };
+  const stripeMetadata = buildPaymentIntentMetadata(metadataInput);
+
+  if (replacePiId) {
+    try {
+      const existing = await stripe.paymentIntents.retrieve(replacePiId);
+      if (existing.metadata.session_id === sessionId) {
+        if (
+          existing.status !== "canceled" &&
+          existing.status !== "succeeded" &&
+          existing.status !== "requires_capture"
+        ) {
+          await stripe.paymentIntents.cancel(replacePiId, {
+            cancellation_reason: "abandoned",
+          });
+        }
+      } else {
+        console.warn("[PaymentIntent] replacePiId session mismatch", {
+          replacePiId,
+          existingSession: existing.metadata.session_id,
+          requestSessionId: sessionId,
+        });
+      }
+    } catch (error) {
+      console.error("[PaymentIntent] Failed to cancel existing PI", error);
+    }
+  }
+
+  let amountMinor: number;
+  try {
+    amountMinor = convertYenToMinorUnit(amount, currency, fxRate);
+  } catch (error) {
+    console.error("[PaymentIntent] FX conversion failed", error);
+    return new Response(
+      JSON.stringify({ ok: false, reason: "fx_conversion_failed" }),
+      { status: 400, headers: { "content-type": "application/json" } }
+    );
+  }
 
   console.log("[PaymentIntent] Creating Stripe PaymentIntent:", {
-    amount,
+    amountYen: amount,
+    amountMinor,
     subtotal,
     shipping,
+    currency,
     orderNumber,
     itemsCount: items.length,
   });
 
   const pi = await stripe.paymentIntents.create({
-    amount, // JPY の最小単位（円）
-    currency: "jpy",
+    amount: amountMinor,
+    currency: currencyToStripeCode(currency),
     capture_method: "manual", // 後で webhook 側で capture する前提
     automatic_payment_methods: { enabled: true },
-    metadata: metadata,
+    metadata: stripeMetadata,
   }); // 手動キャプチャは PaymentIntent で capture_method: 'manual' を指定。:contentReference[oaicite:1]{index=1}
 
   console.log("[PaymentIntent] PaymentIntent created successfully:", {
@@ -143,9 +229,11 @@ export async function POST(req: Request) {
       ok: true,
       clientSecret: pi.client_secret,
       piId: pi.id,
-      amount,
-      subtotal,
-      shipping,
+      currency,
+      amountMinor: pi.amount,
+      subtotalYen: subtotal,
+      shippingYen: shipping,
+      totalYen,
     }),
     {
       headers: { "content-type": "application/json" },

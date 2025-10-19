@@ -20,7 +20,7 @@ type Options = {
 };
 
 export async function getCheckoutStatus(
-  sessionId: string,
+  paymentIntentId: string,
   opts: Options = {}
 ): Promise<CheckoutStatus> {
   const { maxWaitMs = 800, intervalMs = 1200 } = opts;
@@ -29,7 +29,7 @@ export async function getCheckoutStatus(
   const until = start + maxWaitMs;
 
   do {
-    const status = await computeOnce(sessionId);
+    const status = await computeOnce(paymentIntentId);
     if (status !== "pending") return status;
 
     if (Date.now() >= until || maxWaitMs <= 0) break;
@@ -40,36 +40,41 @@ export async function getCheckoutStatus(
   return "pending";
 }
 
-export async function computeOnce(sessionId: string): Promise<CheckoutStatus> {
-  const session = await stripe.checkout.sessions.retrieve(sessionId);
-  const orderNumber = session.metadata?.order_number ?? null;
-  // 1) Webhookで注文が作られていればOK
-  if (orderNumber) {
-    const { data, error } = await supabase
-      .from("orders")
-      .select("id")
-      .eq("order_number", orderNumber)
-      .maybeSingle();
+export async function computeOnce(piId: string): Promise<CheckoutStatus> {
+  try {
+    const paymentIntent = await stripe.paymentIntents.retrieve(piId);
+    const orderNumber = paymentIntent.metadata?.order_number ?? null;
 
-    if (error) {
-      // ここは運用方針で：ログって "pending" に倒す
-      console.error("orders lookup error", error);
+    if (orderNumber) {
+      const { data, error } = await supabase
+        .from("orders")
+        .select("id")
+        .eq("order_number", orderNumber)
+        .maybeSingle();
+
+      if (error) {
+        console.error("orders lookup error", error);
+      }
+      if (data) return "ok";
     }
-    if (data) return "ok";
+
+    if (paymentIntent.status === "canceled") {
+      return "out_of_stock";
+    }
+
+    if (paymentIntent.status === "succeeded") {
+      return "ok";
+    }
+
+    return "pending";
+  } catch (error: any) {
+    if (error?.statusCode === 404) {
+      console.warn("PaymentIntent not found", { piId });
+      return "pending";
+    }
+    console.error("computeOnce error", error);
+    return "pending";
   }
-
-  // 2) 在庫NGなら PaymentIntent は cancel 済みのはず
-  const piId = session.payment_intent as string | null;
-  if (piId) {
-    const pi = await stripe.paymentIntents.retrieve(piId);
-
-    console.log("----------------------------------------------------");
-    console.log(pi);
-    if (pi.status === "canceled") return "out_of_stock";
-  }
-
-  // 3) まだ未確定
-  return "pending";
 }
 
 function sleep(ms: number) {

@@ -39,6 +39,7 @@
     "inStock": "有库存",
     "releaseDate": "发售日期: {date}",
     "preRelease": "预售中",
+    "outOfStock": "无库存",
     "noDescription": "产品说明即将推出。",
     "backToList": "返回列表",
     "addToCart": "加入购物车",

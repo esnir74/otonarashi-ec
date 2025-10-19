@@ -39,6 +39,7 @@
     "inStock": "In stock",
     "releaseDate": "Release date: {date}",
     "preRelease": "Pre-release",
+    "outOfStock": "Out of stock",
     "noDescription": "Product description coming soon.",
     "backToList": "Back to list",
     "addToCart": "Add to cart",

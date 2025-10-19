@@ -53,6 +53,8 @@ export default async function ProductDetailPage({ params }: Props) {
     ? new Date(product.sale_start_at) > new Date()
     : false;
 
+  const isOutOfStock = product.stock <= 0;
+
   const formattedDate = product.sale_start_at
     ? new Date(product.sale_start_at).toLocaleString("ja-JP", {
         year: "numeric",
@@ -95,13 +97,9 @@ export default async function ProductDetailPage({ params }: Props) {
 
           {/* Coming soon / 発売日 */}
           <div className="mb-4 flex flex-wrap items-center gap-2">
-            {isComingSoon ? (
+            {isComingSoon && (
               <span className="inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-800">
                 {t("comingSoon")}
-              </span>
-            ) : (
-              <span className="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-800">
-                {t("inStock")}
               </span>
             )}
 
@@ -121,8 +119,13 @@ export default async function ProductDetailPage({ params }: Props) {
                 price: product.price_yen,
                 lang,
               }}
-              disabled={isComingSoon}
-              label={isComingSoon ? t("preRelease") : undefined}
+              state={
+                isComingSoon
+                  ? "preRelease"
+                  : isOutOfStock
+                  ? "outOfStock"
+                  : "inStock"
+              }
             />
           </div>
 
