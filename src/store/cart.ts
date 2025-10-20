@@ -7,6 +7,8 @@ export type CartItem = {
   name: string;
   price: number; // 日本円
   lang: string; // 追加時の言語
+  imageUrl: string | null;
+  imageBlur: string | null;
 };
 
 export type CartSnapshot = {
@@ -44,7 +46,16 @@ export const useCartStore = create<CartState>()(
       addItem: (item) => {
         const exists = get().items.some((x) => x.id === item.id);
         if (exists) return false;
-        set((s) => ({ items: [...s.items, item] }));
+        set((s) => ({
+          items: [
+            ...s.items,
+            {
+              ...item,
+              imageUrl: item.imageUrl ?? null,
+              imageBlur: item.imageBlur ?? null,
+            },
+          ],
+        }));
         return true;
       },
 
@@ -56,7 +67,11 @@ export const useCartStore = create<CartState>()(
       clearCart: () => set({ items: [] }),
       replaceItems: (items, options) =>
         set((state) => ({
-          items: [...items],
+          items: items.map((item) => ({
+            ...item,
+            imageUrl: item.imageUrl ?? null,
+            imageBlur: item.imageBlur ?? null,
+          })),
           lastServerSync:
             options?.source === "server"
               ? options.updatedAt ?? state.lastServerSync

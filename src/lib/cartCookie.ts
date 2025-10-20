@@ -5,8 +5,13 @@ export type CartSnapItem = {
   name: string;
   price: number;
   lang: string;
+  imageUrl: string | null;
+  imageBlur: string | null;
 };
-export type CartSnapshot = { items: CartSnapItem[]; updatedAt: number };
+export type CartSnapshot = {
+  items: CartSnapItem[];
+  updatedAt: number;
+};
 
 export const CART_COOKIE_NAME = "cart_snapshot_v1";
 
@@ -14,9 +19,21 @@ export async function readCartSnapshot(): Promise<CartSnapshot> {
   const store = await cookies();
   const c = store.get(CART_COOKIE_NAME)?.value;
   try {
-    return c
-      ? (JSON.parse(c) as CartSnapshot)
-      : { items: [], updatedAt: Date.now() };
+    if (!c) {
+      return { items: [], updatedAt: Date.now() };
+    }
+
+    const parsed = JSON.parse(c) as CartSnapshot;
+    const items = Array.isArray(parsed.items) ? parsed.items : [];
+
+    return {
+      items: items.map((item) => ({
+        ...item,
+        imageUrl: item.imageUrl ?? null,
+        imageBlur: item.imageBlur ?? null,
+      })),
+      updatedAt: parsed.updatedAt ?? Date.now(),
+    };
   } catch {
     return { items: [], updatedAt: Date.now() };
   }
@@ -24,7 +41,14 @@ export async function readCartSnapshot(): Promise<CartSnapshot> {
 
 export async function writeCartSnapshot(snap: CartSnapshot) {
   try {
-    const value = JSON.stringify(snap);
+    const value = JSON.stringify({
+      ...snap,
+      items: snap.items.map((item) => ({
+        ...item,
+        imageUrl: item.imageUrl ?? null,
+        imageBlur: item.imageBlur ?? null,
+      })),
+    });
     const store = await cookies();
     store.set({
       name: CART_COOKIE_NAME,

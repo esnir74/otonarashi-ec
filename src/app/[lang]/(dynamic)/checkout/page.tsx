@@ -102,6 +102,8 @@ export default function CheckoutPage() {
         name: item.name,
         price: item.price,
         quantity: 1,
+        imageUrl: item.imageUrl ?? null,
+        imageBlur: item.imageBlur ?? null,
       })),
     [cartItems]
   );

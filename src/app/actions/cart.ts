@@ -8,6 +8,8 @@ import {
   writeCartSnapshot,
 } from "@/lib/cartCookie";
 import { createClient } from "@/lib/supabaseClient"; // 既存のサーバ側クライアント
+import { getMainImageUrl } from "@/lib/utils/imageUrl";
+import type { ImageVariants } from "@/lib/models/product";
 
 type CartResult = {
   ok: boolean;
@@ -31,7 +33,14 @@ export async function addToCartServer(item: CartSnapItem): Promise<CartResult> {
   const supabase = createClient();
   const { data, error } = await supabase
     .from("products")
-    .select("id, stock, status")
+    .select(
+      `
+      id,
+      stock,
+      status,
+      product_images(variants, blur_data, is_main, sort)
+    `
+    )
     .eq("id", item.id)
     .single();
 
@@ -40,10 +49,62 @@ export async function addToCartServer(item: CartSnapItem): Promise<CartResult> {
     return buildResult(snapshot, { ok: false, reason: "UNAVAILABLE" });
   }
 
+  let normalizedItem: CartSnapItem = {
+    ...item,
+    imageUrl: item.imageUrl ?? null,
+    imageBlur: item.imageBlur ?? null,
+  };
+
+  const rawImages = data.product_images;
+  if (rawImages) {
+    const imagesArray = Array.isArray(rawImages) ? rawImages : [rawImages];
+    const typedImages = imagesArray
+      .filter(Boolean)
+      .map((img) => ({
+        variants: img.variants as ImageVariants,
+        blur_data: img.blur_data as string | null,
+        is_main: Boolean(img.is_main),
+        sort: typeof img.sort === "number" ? img.sort : 0,
+      }));
+
+    if (typedImages.length > 0) {
+      const mainUrl = getMainImageUrl(typedImages, "400");
+      const sorted = [...typedImages].sort((a, b) => a.sort - b.sort);
+      const mainBlur =
+        typedImages.find((img) => img.is_main)?.blur_data ??
+        sorted[0]?.blur_data ??
+        null;
+
+      normalizedItem = {
+        ...normalizedItem,
+        imageUrl: mainUrl ?? normalizedItem.imageUrl ?? null,
+        imageBlur: mainBlur ?? normalizedItem.imageBlur ?? null,
+      };
+    }
+  }
+
   // 2) Cookie のスナップショット更新（重複禁止）
   const snap = await readCartSnapshot();
+  const existing = snap.items.find((x) => x.id === item.id);
+  if (existing) {
+    let mutated = false;
+    if (!existing.imageUrl && normalizedItem.imageUrl) {
+      existing.imageUrl = normalizedItem.imageUrl;
+      mutated = true;
+    }
+    if (!existing.imageBlur && normalizedItem.imageBlur) {
+      existing.imageBlur = normalizedItem.imageBlur;
+      mutated = true;
+    }
+    if (mutated) {
+      snap.updatedAt = Date.now();
+      await writeCartSnapshot(snap);
+    }
+    return buildResult(snap, { ok: false, reason: "DUPLICATE" });
+  }
+
   if (!snap.items.some((x) => x.id === item.id)) {
-    snap.items.push(item);
+    snap.items.push(normalizedItem);
     snap.updatedAt = Date.now();
     await writeCartSnapshot(snap);
     return buildResult(snap);

@@ -118,6 +118,8 @@ export default async function ProductDetailPage({ params }: Props) {
                 name: product.name,
                 price: product.price_yen,
                 lang,
+                imageUrl: product.main_image_url ?? null,
+                imageBlur: product.main_image_blur ?? null,
               }}
               state={
                 isComingSoon
