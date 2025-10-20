@@ -55,8 +55,8 @@ export default function Header({ initialCount }: { initialCount: number }) {
             <Image
               src="/header_logo.png"
               alt="Otonarashi logo"
-              width={160}
-              height={60}
+              width={100}
+              height={0}
               priority
               className="h-auto w-[160px] object-contain"
             />
