@@ -203,7 +203,7 @@ export default async function Page({ params }: Props) {
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center space-y-8 text-white">
             <h2 className="text-5xl md:text-6xl font-serif tracking-wide">
-              Product
+              Online Store
             </h2>
             <Link
               href={`/${lang}/products`}
@@ -265,7 +265,7 @@ export default async function Page({ params }: Props) {
 
             <div className="pt-8">
               <Link
-                href={`/${lang}/artisans`}
+                href={`/${lang}/aboutus`}
                 className="inline-block border-2 border-gray-800 text-gray-800 px-12 py-4 hover:bg-gray-800 hover:text-white transition-colors duration-300 text-sm tracking-widest"
               >
                 More

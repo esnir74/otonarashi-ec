@@ -12,7 +12,7 @@ import LangSwitcher from "./LangSwitcher";
 const NAV_ITEMS = [
   { href: "", label: "Concept" },
   { href: "/products", label: "Products" },
-  { href: "/artisans", label: "Artisans" },
+  { href: "/aboutus", label: "About Us" },
   { href: "/news", label: "News" },
   { href: "/contact", label: "Contact" },
 ];

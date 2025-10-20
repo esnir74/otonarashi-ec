@@ -8,7 +8,7 @@ type Props = { params: Promise<{ lang: Locale }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
-  return createPageMetadata(lang, "artisans", "artisans");
+  return createPageMetadata(lang, "aboutus", "aboutus");
 }
 
 export const revalidate = 60;
