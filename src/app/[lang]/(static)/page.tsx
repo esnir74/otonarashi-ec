@@ -62,7 +62,7 @@ export default async function Page({ params }: Props) {
     <div className="w-full">
       {/* Hero Section */}
       <section className="relative w-full min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-stone-50 to-white">
-        <HeroRing3D images={heroImages} imageSize={280} itemsPerCircle={12}>
+        <HeroRing3D images={heroImages} imageSize={280} itemsPerCircle={6}>
           <></>
         </HeroRing3D>
         <Image
@@ -79,7 +79,7 @@ export default async function Page({ params }: Props) {
         <div className="max-w-4xl mx-auto">
           <div className="text-center space-y-16">
             {/* Introduction */}
-            <div className="space-y-6">
+            <div className="space-y-8">
               <p className="text-[0.85rem] md:text-xl text-gray-800 leading-relaxed">
                 オトナラシは、ハナタバプロジェクトから誕生した
                 <br />
@@ -192,7 +192,7 @@ export default async function Page({ params }: Props) {
       </section>
 
       {/* Product Section */}
-      <section className="relative w-full h-screen">
+      <section className="relative w-full aspect-square md:h-screen">
         <Image
           src="/top/top.png"
           alt="Products"
@@ -342,7 +342,7 @@ export default async function Page({ params }: Props) {
       )}
 
       {/* Contact Section */}
-      <section className="relative w-full h-screen">
+      <section className="relative w-full aspect-square md:h-[70vh]">
         <Image src="/top/top.png" alt="Contact" fill className="object-cover" />
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center space-y-8 text-white">
