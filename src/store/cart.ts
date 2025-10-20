@@ -66,17 +66,34 @@ export const useCartStore = create<CartState>()(
 
       clearCart: () => set({ items: [] }),
       replaceItems: (items, options) =>
-        set((state) => ({
-          items: items.map((item) => ({
+        set((state) => {
+          const isServer = options?.source === "server";
+          const incomingUpdatedAt =
+            isServer && typeof options?.updatedAt === "number"
+              ? options.updatedAt
+              : undefined;
+
+          if (
+            isServer &&
+            typeof incomingUpdatedAt === "number" &&
+            incomingUpdatedAt < state.lastServerSync
+          ) {
+            return state;
+          }
+
+          const normalizedItems = items.map((item) => ({
             ...item,
             imageUrl: item.imageUrl ?? null,
             imageBlur: item.imageBlur ?? null,
-          })),
-          lastServerSync:
-            options?.source === "server"
-              ? options.updatedAt ?? state.lastServerSync
+          }));
+
+          return {
+            items: normalizedItems,
+            lastServerSync: isServer
+              ? incomingUpdatedAt ?? state.lastServerSync
               : state.lastServerSync,
-        })),
+          };
+        }),
       syncFromServer: (snapshot) => {
         get().replaceItems(snapshot.items, {
           source: "server",
