@@ -34,9 +34,9 @@ export default async function SuccessPage({ params: paramsPromise, searchParams 
     return <CheckoutSuccessContent lang={lang} />;
   }
 
-  if (status === "out_of_stock") {
-    console.warn("out_of_stock detected on SuccessPage");
-    redirect(`/${lang}/checkout/failure?reason=out_of_stock`);
+  if (status === "abandoned") {
+    console.warn("abandoned detected on SuccessPage");
+    redirect(`/${lang}/checkout/failure?reason=abandoned`);
   }
 
   // pending → すぐ描画し、最小クライアントでポーリングへ
@@ -45,7 +45,7 @@ export default async function SuccessPage({ params: paramsPromise, searchParams 
       <h1>お支払いを確認中です…</h1>
       <PendingClient
         paymentIntentId={piId}
-        cancelHref={`/${lang}/checkout/failure?reason=out_of_stock`}
+        cancelHref={`/${lang}/checkout/failure?reason=abandoned`}
         lang={lang}
       />
     </section>

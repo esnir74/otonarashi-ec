@@ -173,7 +173,7 @@ export function CheckoutForm({
           }/${normalizedLang}/success?pi_id=${encodeURIComponent(piId)}`,
           payment_method_data: {
             billing_details: {
-              name: fullName,
+              name: undefined,
               email: contact.email,
               phone: contact.phone,
             },

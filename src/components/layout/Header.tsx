@@ -49,11 +49,11 @@ export default function Header({ initialCount }: { initialCount: number }) {
 
   return (
     <>
-      <header className="w-full border-b border-neutral-200 bg-white/80 backdrop-blur-sm">
+      <header className="w-full  border-neutral-200 bg-white/80 backdrop-blur-sm">
         <div className="container flex items-center justify-between py-4">
           <Link href={base} className="flex items-center gap-2">
             <Image
-              src="/logo.png"
+              src="/header_logo.png"
               alt="Otonarashi logo"
               width={160}
               height={60}

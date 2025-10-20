@@ -78,10 +78,17 @@ const configs: Record<string, FailureConfig> = {
     primary: "checkout",
     secondary: "support",
   },
-  checkout_error: {
+  abandoned: {
     title: "決済処理中にエラーが発生しました",
     description:
       "一時的な問題により決済を完了できませんでした。時間を置いて再度お試しください。",
+    primary: "checkout",
+    secondary: "support",
+  },
+  checkout_error: {
+    title: "お支払いを完了できませんでした",
+    description:
+      "決済処理中にエラーが発生しました。時間を置いてから再度お試しください。解決しない場合はサポートまでお問い合わせください。",
     primary: "checkout",
     secondary: "support",
   },
