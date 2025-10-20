@@ -6,6 +6,7 @@ import {
   removeFromCartServer,
   updateCartItemsServer,
 } from "@/app/actions/cart";
+import { Locale } from "@/i18n/locales";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -17,21 +18,17 @@ import {
 } from "@/components/ui/sheet";
 import { useCartStore } from "@/store/cart";
 import { useUIStore } from "@/store/ui";
-import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import type { CartItem } from "@/store/cart";
 
-type TranslatedItem = {
-  id: string;
-  name: string;
-  price: number;
-  lang: string;
-};
+type TranslatedItem = CartItem;
 
 type CartItemUpdate = {
   id: string;
   name: string;
-  lang: string;
+  lang: Locale;
 };
 
 const fmtJPY = (n: number) =>
@@ -42,8 +39,12 @@ const fmtJPY = (n: number) =>
 export default function CartDrawer() {
   const router = useRouter();
   const pathname = usePathname() || "/ja";
-  const [, lang] = pathname.split("/");
-  const base = `/${lang || "ja"}`;
+  const [, rawLang] = pathname.split("/");
+  const normalizedLang: Locale =
+    rawLang === "ja" || rawLang === "en" || rawLang === "zh"
+      ? (rawLang as Locale)
+      : "ja";
+  const base = `/${normalizedLang}`;
 
   const open = useUIStore((s) => s.cartOpen);
   const onOpenChange = (v: boolean) =>
@@ -76,7 +77,7 @@ export default function CartDrawer() {
       open,
       itemsLength: items.length,
       items,
-      lang,
+      lang: normalizedLang,
     });
 
     if (!open || items.length === 0) {
@@ -86,7 +87,9 @@ export default function CartDrawer() {
     }
 
     // 現在の言語と異なる商品のIDを収集
-    const needsTranslation = items.filter((item) => item.lang !== lang);
+    const needsTranslation = items.filter(
+      (item) => item.lang !== normalizedLang
+    );
     console.log("[CartDrawer] Needs translation:", needsTranslation);
 
     if (needsTranslation.length === 0) {
@@ -104,7 +107,7 @@ export default function CartDrawer() {
         console.log("[CartDrawer] Product IDs to translate:", productIds);
         const translations = await getProductTranslationsServer(
           productIds,
-          lang as "ja" | "en" | "zh"
+          normalizedLang
         );
         console.log("[CartDrawer] Received translations:", translations);
 
@@ -117,7 +120,7 @@ export default function CartDrawer() {
             updatesToServer.push({
               id: item.id,
               name: translatedName,
-              lang,
+              lang: normalizedLang,
             });
           }
         });
@@ -141,7 +144,7 @@ export default function CartDrawer() {
 
         // 表示用に更新されたアイテムをセット
         const updated = items.map((item) => {
-          if (item.lang === lang) {
+          if (item.lang === normalizedLang) {
             return item;
           }
           return {
@@ -159,7 +162,7 @@ export default function CartDrawer() {
     };
 
     void fetchTranslations();
-  }, [open, items, lang]);
+  }, [open, items, normalizedLang, syncFromServer]);
 
   // コンテンツの段階的表示：ドロワーが開いたら少し遅延して中身を表示
   useEffect(() => {
@@ -172,7 +175,7 @@ export default function CartDrawer() {
     }
   }, [open]);
 
-  const handleRemove = async (id: string) => {
+  const handleRemove = useCallback(async (id: string) => {
     setRemovingId(id);
     try {
       const res = await removeFromCartServer(id);
@@ -186,7 +189,7 @@ export default function CartDrawer() {
     } finally {
       setRemovingId((current) => (current === id ? null : current));
     }
-  };
+  }, [removeItem, syncFromServer]);
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -240,8 +243,18 @@ export default function CartDrawer() {
                   }}
                 >
                   <div className="flex items-start gap-4">
-                    {/* サムネ（プレースホルダ） */}
-                    <div className="h-20 w-20 shrink-0 rounded bg-neutral-100 border border-neutral-200" />
+                    {/* サムネイル */}
+                    <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded border border-neutral-200 bg-neutral-100">
+                      <Image
+                        src={it.imageUrl || "/placeholder.png"}
+                        alt={it.name}
+                        fill
+                        sizes="80px"
+                        className="object-cover"
+                        placeholder={it.imageBlur ? "blur" : "empty"}
+                        blurDataURL={it.imageBlur ?? undefined}
+                      />
+                    </div>
                     <div className="flex-1 min-w-0 space-y-1">
                       <div className="text-[15px] font-medium leading-tight">
                         {it.name}
