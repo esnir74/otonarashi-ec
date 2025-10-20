@@ -142,7 +142,7 @@ export default async function Page({ params }: Props) {
             </div>
 
             {/* Statistics - Center Aligned */}
-            <div className="relative space-y-16 max-w-3xl mx-auto">
+            <div className="relative space-y-8 max-w-3xl mx-auto">
               {/* 現在〜のぼります */}
               <div className="relative text-center space-y-0">
                 <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose">
