@@ -13,12 +13,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 const heroImages = [
-  { src: "/hero/aa.png", alt: "Look 01" },
-  { src: "/hero/aa.png", alt: "Look 02" },
-  { src: "/hero/aa.png", alt: "Look 03" },
-  { src: "/hero/aa.png", alt: "Look 04" },
-  { src: "/hero/aa.png", alt: "Look 05" },
-  { src: "/hero/aa.png", alt: "Look 06" },
+  { src: "/top/hero/1.png", alt: "Look 01" },
+  { src: "/top/hero/2.png", alt: "Look 02" },
+  { src: "/top/hero/3.png", alt: "Look 03" },
+  { src: "/top/hero/4.png", alt: "Look 04" },
+  { src: "/top/hero/5.png", alt: "Look 05" },
+  { src: "/top/hero/6.png", alt: "Look 06" },
 ];
 
 export default async function Page({ params }: Props) {
@@ -75,7 +75,26 @@ export default async function Page({ params }: Props) {
       </section>
 
       {/* Concept Section */}
-      <section className="w-full py-24 px-3 bg-white">
+      <section className="relative w-full pt-24 pb-48 px-3 bg-white overflow-hidden">
+        <div className="absolute -right-40 top-[43rem] md:right-32 md:top-[36rem] w-72 md:w-[24rem] h-[26rem] md:h-[32rem] opacity-20 pointer-events-none">
+          <Image
+            src="/top/a.png"
+            alt=""
+            width={1000}
+            height={600}
+            className="object-cover"
+          />
+        </div>
+
+        {/* 背景画像 - b.png (左下、反転) */}
+        <div className="absolute -left-10 bottom-0 md:left-64 w-48 md:w-56 h-96 md:h-[28rem] opacity-20 pointer-events-none">
+          <Image
+            src="/top/b.png"
+            alt=""
+            fill
+            className="object-contain object-bottom scale-x-[-1]"
+          />
+        </div>
         <div className="max-w-4xl mx-auto">
           <div className="text-center space-y-16">
             {/* Introduction */}
@@ -123,9 +142,9 @@ export default async function Page({ params }: Props) {
             </div>
 
             {/* Statistics - Center Aligned */}
-            <div className="space-y-16 max-w-3xl mx-auto">
+            <div className="relative space-y-16 max-w-3xl mx-auto">
               {/* 現在〜のぼります */}
-              <div className="text-center space-y-1">
+              <div className="relative text-center space-y-0">
                 <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose">
                   現在、社会課題となっている衣類廃棄量は、
                 </p>
@@ -133,33 +152,32 @@ export default async function Page({ params }: Props) {
                   年間およそ50万トンにものぼります。
                 </p>
               </div>
-              <br />
 
               {/* そのうち〜6日 */}
-              <div className="text-center space-y-8">
+              <div className="relative text-center space-y-3">
                 <div>
-                  <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose mb-1">
+                  <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose mb-0">
                     そのうち家庭から出る衣類の約85%は、
                   </p>
-                  <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose mb-2">
+                  <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose mb-0">
                     まだ着られる「退蔵品」とされています。
                   </p>
-                  <p className="text-[0.425rem] md:text-[0.75rem] text-gray-500 mb-2">
+                  <p className="text-[0.325rem] md:text-[0.75rem] text-gray-500 mb-0">
                     2023年に排出された新品衣類のうち、退蔵由来の割合
                   </p>
-                  <p className="text-[0.425rem] md:text-[0.75rem] text-gray-500">
+                  <p className="text-[0.325rem] md:text-[0.75rem] text-gray-500">
                     環境省「令和６年度消費者アンケート（ストック調査）」に基づく
                   </p>
                 </div>
 
                 <div className="pt-4">
-                  <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose mb-1">
+                  <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose mb-0">
                     なかでも家庭のタンスに眠る着物は、
                   </p>
-                  <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose mb-2">
+                  <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose mb-0">
                     約8兆円分にのぼると報道されています。
                   </p>
-                  <p className="text-[0.425rem] md:text-[0.75rem] text-gray-500">
+                  <p className="text-[0.325rem] md:text-[0.75rem] text-gray-500">
                     日本経済新聞2024年1月5日
                   </p>
                 </div>
@@ -168,7 +186,7 @@ export default async function Page({ params }: Props) {
               <br />
 
               {/* 私たち〜以降 */}
-              <div className="text-center space-y-１">
+              <div className="relative text-center space-y-0 pb-4">
                 <p className="text-sm md:text-base text-gray-800 leading-loose">
                   私たちは、そんな着物を、
                 </p>

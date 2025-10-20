@@ -109,11 +109,7 @@ export default function HeroRing3D({
                   transformStyle: "preserve-3d",
                 }}
               >
-                <div className="relative w-full h-full  overflow-hidden shadow-2xl bg-blue-200">
-                  {/* まずは色付きボックスで確認 */}
-                  <div className="w-full h-full flex items-center justify-center text-4xl font-bold">
-                    {index + 1}
-                  </div>
+                <div className="relative w-full h-full overflow-hidden">
 
                   {/* 画像 */}
                   <Image
