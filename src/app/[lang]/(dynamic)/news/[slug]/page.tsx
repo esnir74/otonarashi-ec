@@ -66,14 +66,14 @@ export default async function NewsDetailPage({ params }: Props) {
                 : "2025.00.00"}
             </time>
             {news.category_name && (
-              <span className="inline-block px-4 py-1 text-sm border border-gray-800 text-gray-800 rounded-sm">
+              <span className="inline-block px-4 py-1 text-sm border border-gray-800 text-gray-800">
                 {news.category_name}
               </span>
             )}
           </div>
 
           {/* タイトル */}
-          <h1 className="text-4xl sm:text-5xl font-serif text-gray-800 leading-tight">
+          <h1 className="text-4xl sm:text-5xl text-gray-800 leading-tight">
             {news.title}
           </h1>
         </header>

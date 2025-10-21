@@ -250,12 +250,12 @@ export default async function Page({ params }: Props) {
               一点ずつ、丁寧に。
             </h2>
 
-            <div className="space-y-8 max-w-3xl mx-auto">
-              <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose">
+            <div className="space-y-8 md:space-y-12 max-w-3xl mx-auto">
+              <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5]">
                 この世界に、二つとして同じものはありません。
               </p>
 
-              <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose">
+              <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5]">
                 オトナラシの製品となる着物は、
                 <br />
                 地域の方々から譲り受けた一着を、
@@ -263,11 +263,11 @@ export default async function Page({ params }: Props) {
                 丁寧にほどき、再び縫い合わせて生まれ変わらせています。
               </p>
 
-              <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose">
+              <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5]">
                 柄も、風合いも、それぞれが唯一無二。
               </p>
 
-              <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose font-medium">
+              <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] font-medium">
                 オトナラシのアイテムは、
                 <br />
                 この世にたったひとつしかない特別なものです。
