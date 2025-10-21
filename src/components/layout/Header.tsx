@@ -105,9 +105,8 @@ export default function Header({ initialCount }: { initialCount: number }) {
             ))}
           </nav>
 
-          {/* Desktop: Language switcher and cart */}
+          {/* Desktop: Cart and language switcher */}
           <div className="hidden md:flex items-center gap-3">
-            <LangSwitcher />
             <button
               onClick={openCart}
               aria-label="Open cart"
@@ -120,6 +119,7 @@ export default function Header({ initialCount }: { initialCount: number }) {
                 {typeof window === "undefined" ? initialCount : count}
               </span>
             </button>
+            <LangSwitcher />
           </div>
 
           {/* Mobile: Cart number and hamburger menu (right aligned) */}
