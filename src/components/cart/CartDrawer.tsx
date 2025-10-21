@@ -168,7 +168,7 @@ export default function CartDrawer() {
   useEffect(() => {
     if (open) {
       // ドロワーのスライドアニメーション後に中身を表示
-      const timer = setTimeout(() => setShowContent(true), 400);
+      const timer = setTimeout(() => setShowContent(true), 500);
       return () => clearTimeout(timer);
     } else {
       setShowContent(false);
@@ -203,7 +203,8 @@ export default function CartDrawer() {
             className="text-2xl font-medium"
             style={{
               opacity: showContent ? 1 : 0,
-              transition: "opacity 200ms cubic-bezier(0.16, 1, 0.3, 1)",
+              transform: showContent ? "translateY(0)" : "translateY(8px)",
+              transition: "opacity 300ms cubic-bezier(0.16, 1, 0.3, 1), transform 300ms cubic-bezier(0.16, 1, 0.3, 1)",
             }}
           >
             Your basket
@@ -220,7 +221,8 @@ export default function CartDrawer() {
                 className="text-sm text-neutral-500"
                 style={{
                   opacity: showContent ? 1 : 0,
-                  transition: "opacity 200ms cubic-bezier(0.16, 1, 0.3, 1)",
+                  transform: showContent ? "translateY(0)" : "translateY(8px)",
+                  transition: "opacity 300ms cubic-bezier(0.16, 1, 0.3, 1), transform 300ms cubic-bezier(0.16, 1, 0.3, 1)",
                 }}
               >
                 カートは空です。
@@ -234,11 +236,11 @@ export default function CartDrawer() {
                     opacity: showContent ? 1 : 0,
                     transform: showContent
                       ? "translateY(0)"
-                      : "translateY(12px)",
-                    transition: `opacity 200ms cubic-bezier(0.16, 1, 0.3, 1) ${
-                      idx * 80
-                    }ms, transform 200ms cubic-bezier(0.16, 1, 0.3, 1) ${
-                      idx * 80
+                      : "translateY(8px)",
+                    transition: `opacity 300ms cubic-bezier(0.16, 1, 0.3, 1) ${
+                      idx * 60
+                    }ms, transform 300ms cubic-bezier(0.16, 1, 0.3, 1) ${
+                      idx * 60
                     }ms`,
                   }}
                 >
@@ -293,8 +295,11 @@ export default function CartDrawer() {
           className="px-6 py-6 space-y-4 shrink-0"
           style={{
             opacity: showContent ? 1 : 0,
+            transform: showContent ? "translateY(0)" : "translateY(8px)",
             transition: `opacity 300ms cubic-bezier(0.16, 1, 0.3, 1) ${
-              translatedItems.length * 80 + 100
+              translatedItems.length * 60 + 100
+            }ms, transform 300ms cubic-bezier(0.16, 1, 0.3, 1) ${
+              translatedItems.length * 60 + 100
             }ms`,
           }}
         >

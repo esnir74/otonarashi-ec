@@ -30,7 +30,9 @@ export default async function LangLayout({
     <NextIntlClientProvider locale={lang} messages={messages}>
       <Header initialCount={snap.items.length} />
       <CartHydrator initialSnapshot={snap} />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 pt-[var(--header-height,64px)]">
+        {children}
+      </main>
       <Footer />
     </NextIntlClientProvider>
   );

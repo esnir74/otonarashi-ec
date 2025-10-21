@@ -17,8 +17,6 @@ const heroImages = [
   { src: "/top/hero/2.png", alt: "Look 02" },
   { src: "/top/hero/3.png", alt: "Look 03" },
   { src: "/top/hero/4.png", alt: "Look 04" },
-  { src: "/top/hero/5.png", alt: "Look 05" },
-  { src: "/top/hero/6.png", alt: "Look 06" },
 ];
 
 export default async function Page({ params }: Props) {
@@ -61,17 +59,12 @@ export default async function Page({ params }: Props) {
   return (
     <div className="w-full">
       {/* Hero Section */}
-      <section className="relative w-full min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-stone-50 to-white">
-        <HeroRing3D images={heroImages} imageSize={280} itemsPerCircle={6}>
-          <></>
-        </HeroRing3D>
-        <Image
-          src="/logo_transparent.png"
-          alt="Otonarashi Large Logo"
-          width={300}
-          height={100}
-          className="mt-8"
-        />
+      <section className="relative w-full min-h-[calc(100vh-var(--header-height,64px))] overflow-hidden bg-gradient-to-b from-stone-50 to-white">
+        <div className="flex h-full w-full items-center justify-center">
+          <HeroRing3D images={heroImages} imageSize={320} itemsPerCircle={4}>
+            <></>
+          </HeroRing3D>
+        </div>
       </section>
 
       {/* Concept Section */}
@@ -311,7 +304,7 @@ export default async function Page({ params }: Props) {
                   }`}
                 >
                   {/* Image */}
-                  <div className="relative aspect-[16/9] bg-gray-100 overflow-hidden">
+                  <div className="relative aspect-square bg-gray-100 overflow-hidden">
                     {item.eyecatch_url ? (
                       <Image
                         src={item.eyecatch_url}
