@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { getProducts } from "@/lib/repositories/products";
 import { isOk } from "@/lib/types/result";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 

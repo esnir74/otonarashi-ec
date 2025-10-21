@@ -7,51 +7,55 @@ export default function ProductCardComponent({
 }: {
   product: ProductCard;
 }) {
+  // 販売前チェック（sale_start_atが未来の場合）
+  const isComingSoon = new Date(product.sale_start_at) > new Date();
+  // 在庫切れチェック
+  const isSoldOut = product.stock === 0;
+
   return (
-    <div
-      key={product.id}
-      className={`border rounded-xl shadow-sm hover:shadow-md transition p-4 flex flex-col ${
-        product.status === "draft"
-          ? "opacity-70"
-          : product.status === "archived"
-          ? "grayscale"
-          : ""
-      }`}
+    <Link
+      href={`products/${product.slug}`}
+      className="group flex flex-col w-[65%] mx-auto"
     >
-      <div className="w-full aspect-square relative mb-3">
-        <Image
-          src={product.main_image_url || "/placeholder.png"}
-          alt={product.name}
-          fill
-          sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-          placeholder={product.main_image_blur ? "blur" : "empty"}
-          blurDataURL={product.main_image_blur || undefined}
-          className="object-cover rounded-md"
-        />
+      {/* 円形画像 */}
+      <div className="relative w-full aspect-square mb-2">
+        <div className="w-full h-full rounded-full overflow-hidden relative">
+          <Image
+            src={product.main_image_url || "/placeholder.png"}
+            alt={product.name}
+            fill
+            sizes="(min-width: 1024px) 28vw, (min-width: 768px) 42vw, 85vw"
+            placeholder={product.main_image_blur ? "blur" : "empty"}
+            blurDataURL={product.main_image_blur || undefined}
+            className="object-cover transition-transform group-hover:scale-105 duration-300"
+          />
+        </div>
+
+        {/* ステータス（画像直下） */}
       </div>
 
-      <div className="flex-1 flex flex-col justify-between">
-        <div>
-          <h2 className="text-lg font-semibold mb-1">{product.name}</h2>
-          <p className="text-gray-700">
-            ¥{(product.price_yen).toLocaleString()}
+      {/* 商品情報 */}
+      <div className="w-full px-1">
+        {isComingSoon && (
+          <p className="text-xs md:text-sm text-amber-600 font-light tracking-wider">
+            COMING SOON
           </p>
-        </div>
+        )}
+        {isSoldOut && (
+          <p className="text-xs md:text-sm text-gray-400 font-light tracking-wider">
+            SOLD OUT
+          </p>
+        )}
+        {/* 商品名 */}
+        <h3 className="text-sm md:text-base font-medium text-gray-800 tracking-wide mb-0.5">
+          {product.name}
+        </h3>
 
-        <div className="mt-2 flex justify-between text-sm text-gray-500">
-          <span>
-            {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
-          </span>
-          <span className="capitalize">{product.status}</span>
-        </div>
+        {/* 価格 */}
+        <p className="text-sm md:text-base text-gray-600 text-right">
+          ¥{product.price_yen.toLocaleString()}
+        </p>
       </div>
-
-      <Link
-        href={`products/${product.slug}`}
-        className="mt-4 inline-block text-center bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
-      >
-        View Details
-      </Link>
-    </div>
+    </Link>
   );
 }

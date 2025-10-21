@@ -81,21 +81,21 @@ export default function Header({ initialCount }: { initialCount: number }) {
 
   return (
     <>
-<header
-  ref={headerRef}
-  className="fixed top-0 left-0 right-0 z-50 w-full border-neutral-200 bg-white/80 backdrop-blur-sm"
->
-  <div className="container flex items-center justify-between px-3 md:px-6 py-2 md:py-4">
-    <Link href={base} className="flex items-center gap-2">
-      <Image
-        src="/header_logo.png"
-        alt="Otonarashi logo"
-        width={100}
-        height={0}
-        priority
-        className="h-auto w-[120px] md:w-[160px] object-contain"
-      />
-    </Link>
+      <header
+        ref={headerRef}
+        className="fixed top-0 left-0 right-0 z-50 w-full border-neutral-200 bg-white/80 backdrop-blur-sm"
+      >
+        <div className="container flex items-center justify-between px-3 md:px-6 py-2 md:py-4">
+          <Link href={base} className="flex items-center gap-2">
+            <Image
+              src="/header_logo.png"
+              alt="Otonarashi logo"
+              width={100}
+              height={0}
+              priority
+              className="h-auto w-[120px] md:w-[160px] object-contain"
+            />
+          </Link>
 
           <nav className="hidden md:flex items-center gap-2">
             {NAV_ITEMS.map(({ href, label }) => (
@@ -113,7 +113,10 @@ export default function Header({ initialCount }: { initialCount: number }) {
               aria-label="Open cart"
               className="relative inline-flex h-8 w-8 items-center justify-center rounded-full border border-neutral-900 bg-white text-neutral-900 hover:bg-neutral-100 transition"
             >
-              <span className="text-[12px] font-medium" suppressHydrationWarning>
+              <span
+                className="text-[12px] font-medium"
+                suppressHydrationWarning
+              >
                 {typeof window === "undefined" ? initialCount : count}
               </span>
             </button>
@@ -126,7 +129,10 @@ export default function Header({ initialCount }: { initialCount: number }) {
               aria-label="Open cart"
               className="relative inline-flex h-8 w-8 items-center justify-center rounded-full border border-neutral-900 bg-white text-neutral-900 hover:bg-neutral-100 transition"
             >
-              <span className="text-[12px] font-medium" suppressHydrationWarning>
+              <span
+                className="text-[12px] font-medium"
+                suppressHydrationWarning
+              >
                 {typeof window === "undefined" ? initialCount : count}
               </span>
             </button>
