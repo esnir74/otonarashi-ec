@@ -96,19 +96,13 @@ export default async function ProductDetailPage({ params }: Props) {
           </div>
 
           {/* Coming soon / 発売日 */}
-          <div className="mb-4 flex flex-wrap items-center gap-2">
-            {isComingSoon && (
-              <span className="inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-800">
-                {t("comingSoon")}
-              </span>
-            )}
-
-            {isComingSoon && formattedDate && (
+          {isComingSoon && formattedDate && (
+            <div className="mb-4">
               <span className="text-sm text-neutral-600">
                 {t("releaseDate", { date: formattedDate })}
               </span>
-            )}
-          </div>
+            </div>
+          )}
 
           {/* CTA */}
           <div className="mb-6">

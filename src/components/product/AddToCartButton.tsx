@@ -46,30 +46,38 @@ export default function AddToCartButton({ item, state }: Props) {
 
   const isDisabled = state !== "inStock" || isPending;
   const text = {
-    preRelease: t("preRelease"),
+    preRelease: "COMING SOON",
     outOfStock: t("outOfStock"),
     inStock: alreadyInCart ? t("viewCart") : t("addToCart"),
   }[state];
   console.log(state);
 
+  const buttonClass = [
+    "w-full px-5 py-3 font-medium tracking-widest transition-colors duration-300 text-sm",
+  ];
+
+  if (state === "preRelease") {
+    buttonClass.push("border-2 border-amber-400 text-amber-400 cursor-not-allowed");
+  } else {
+    buttonClass.push(
+      "border-2 border-black text-black",
+      "hover:bg-black hover:text-white",
+      "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-black"
+    );
+  }
+
   return (
     <div className="space-y-2">
+      {alreadyInCart && state === "inStock" && (
+        <p className="text-sm text-neutral-600">{t("inCartMessage")}</p>
+      )}
       <button
-        className={[
-          "w-full rounded-xl px-5 py-3 font-medium tracking-wide transition",
-          "bg-slate-900 text-white hover:opacity-90",
-          "disabled:opacity-50 disabled:cursor-not-allowed",
-          "shadow-sm hover:shadow",
-        ].join(" ")}
+        className={buttonClass.join(" ")}
         disabled={isDisabled}
         onClick={() => startTransition(() => void addToCart(item))}
       >
         {text}
       </button>
-
-      {alreadyInCart && state === "inStock" && (
-        <p className="text-sm text-neutral-600">{t("inCartMessage")}</p>
-      )}
     </div>
   );
 }
