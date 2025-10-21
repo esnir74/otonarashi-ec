@@ -34,7 +34,7 @@ export default async function ProductsPage({ params }: Props) {
   console.log(products);
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8]">
+    <div className="min-h-screen bg-white">
       {/* ヘッダー部分 - ロゴ */}
       <div className="flex justify-center pt-12 pb-16">
         <img

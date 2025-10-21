@@ -59,7 +59,7 @@ export default async function Page({ params }: Props) {
   return (
     <div className="w-full">
       {/* Hero Section */}
-      <section className="relative w-full min-h-[calc(100vh-var(--header-height,64px))] overflow-hidden bg-gradient-to-b from-stone-50 to-white">
+      <section className="relative w-full min-h-[calc(100vh-var(--header-height,64px))] overflow-hidden bg-white">
         <div className="flex h-full w-full items-center justify-center">
           <HeroRing3D images={heroImages} imageSize={320} itemsPerCircle={4}>
             <></>
