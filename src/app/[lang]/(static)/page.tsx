@@ -13,11 +13,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 const heroImages = [
-  { src: "/top/hero/1.png", alt: "Look 01" },
-  { src: "/top/hero/2.png", alt: "Look 02" },
-  { src: "/top/hero/3.png", alt: "Look 03" },
-  { src: "/top/hero/4.png", alt: "Look 04" },
-  { src: "/top/hero/5.png", alt: "Look 05" },
+  { src: "/top/hero/1.webp", alt: "Look 01" },
+  { src: "/top/hero/2.webp", alt: "Look 02" },
+  { src: "/top/hero/3.webp", alt: "Look 03" },
+  { src: "/top/hero/4.webp", alt: "Look 04" },
+  { src: "/top/hero/5.webp", alt: "Look 05" },
 ];
 
 export default async function Page({ params }: Props) {
@@ -29,7 +29,7 @@ export default async function Page({ params }: Props) {
       id: "1",
       slug: "sample-news-1",
       title: "Sample News Title 1",
-      eyecatch_url: "/top/top.png",
+      eyecatch_url: "/top/top.webp",
       published_at: "2024-06-01T00:00:00Z",
       status: "published",
       category_name: "General",
@@ -38,7 +38,7 @@ export default async function Page({ params }: Props) {
     //   id: "2",
     //   slug: "sample-news-2",
     //   title: "Sample News Title 2",
-    //   eyecatch_url: "/top/top.png",
+    //   eyecatch_url: "/top/top.webp",
     //   published_at: "2024-05-25T00:00:00Z",
     //   status: "published",
     //   category_name: "Updates",
@@ -60,7 +60,7 @@ export default async function Page({ params }: Props) {
       <section className="relative w-full pt-24 pb-48 px-3 bg-white overflow-hidden">
         <div className="absolute -right-40 top-[31rem] md:right-32 md:top-[36rem] w-72 md:w-[24rem] h-[26rem] md:h-[32rem] opacity-20 pointer-events-none">
           <Image
-            src="/top/background/facing_right.png"
+            src="/top/background/facing_right.webp"
             alt=""
             width={1000}
             height={600}
@@ -68,10 +68,10 @@ export default async function Page({ params }: Props) {
           />
         </div>
 
-        {/* 背景画像 - b.png (左下、反転) */}
+        {/* 背景画像 - b.webp (左下、反転) */}
         <div className="absolute -left-10 bottom-0 md:left-64 w-48 md:w-56 h-96 md:h-[28rem] opacity-20 pointer-events-none">
           <Image
-            src="/top/background/leg_raised.png"
+            src="/top/background/leg_raised.webp"
             alt=""
             fill
             className="object-contain object-bottom scale-x-[-1]"
@@ -173,7 +173,7 @@ export default async function Page({ params }: Props) {
       {/* Product Section */}
       <section className="relative w-full aspect-square md:h-screen opacity-80">
         <Image
-          src="/top/online_shop/tower.png"
+          src="/top/online_shop/tower.webp"
           alt="Products"
           fill
           className="object-cover "
@@ -204,7 +204,7 @@ export default async function Page({ params }: Props) {
           <div className="mb-16 w-full">
             <div className="relative aspect-[16/9] md:aspect-[21/9] w-full overflow-hidden bg-gray-100">
               <Image
-                src="/aboutus/group_with_hanataba.jpg"
+                src="/aboutus/group_with_hanataba.webp"
                 alt="Our Team"
                 fill
                 className="object-cover"

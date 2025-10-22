@@ -89,7 +89,7 @@ export default function Header({ initialCount }: { initialCount: number }) {
         <div className="container flex items-center justify-between px-3 md:px-6 py-2 md:py-4">
           <Link href={base} className="flex items-center gap-2">
             <Image
-              src="/header_logo.png"
+              src="/header_logo.webp"
               alt="Otonarashi logo"
               width={100}
               height={0}

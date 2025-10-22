@@ -244,7 +244,7 @@ export default function HeroRing3D({
           }}
         >
           <Image
-            src="/logo.png"
+            src="/logo.webp"
             alt="Otonarashi wordmark"
             width={775}
             height={261}

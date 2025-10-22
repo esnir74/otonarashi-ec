@@ -1,5 +1,5 @@
-import Image from "next/image";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export type SummaryItem = {
   id: string;
@@ -31,9 +31,7 @@ export function CheckoutSummary({
 }: Props) {
   const hasItems = items.length > 0;
   const computedTotalYen =
-    typeof totalYen === "number"
-      ? totalYen
-      : subtotalYen + (shippingYen ?? 0);
+    typeof totalYen === "number" ? totalYen : subtotalYen + (shippingYen ?? 0);
 
   return (
     <aside
@@ -56,7 +54,7 @@ export function CheckoutSummary({
               >
                 <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md border border-neutral-200 bg-neutral-100">
                   <Image
-                    src={item.imageUrl || "/placeholder.png"}
+                    src={item.imageUrl || "/placeholder.webp"}
                     alt={item.name}
                     fill
                     sizes="64px"
@@ -105,14 +103,10 @@ export function CheckoutSummary({
         <div className="flex items-center justify-between text-base font-semibold text-neutral-900">
           <span>合計</span>
           <span>
-            {shippingCalculated
-              ? formatAmount(computedTotalYen)
-              : "—"}
+            {shippingCalculated ? formatAmount(computedTotalYen) : "—"}
           </span>
         </div>
-        <p className="text-xs text-neutral-500">
-          価格はすべて税込み表示です。
-        </p>
+        <p className="text-xs text-neutral-500">価格はすべて税込み表示です。</p>
       </div>
 
       <div className="mt-6 space-y-2">

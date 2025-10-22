@@ -25,7 +25,7 @@ export default async function AboutUsPage({ params }: Props) {
         <div className="mb-16 w-full">
           <div className="relative aspect-[16/9] md:aspect-[21/9] w-full overflow-hidden bg-gray-100">
             <Image
-              src="/aboutus/group_with_hanataba.png"
+              src="/aboutus/group_with_hanataba.webp"
               alt="Our Team"
               fill
               className="object-cover"
@@ -78,7 +78,7 @@ export default async function AboutUsPage({ params }: Props) {
             <div className="flex flex-col items-center">
               <div className="relative w-[85%] aspect-square mb-4 overflow-hidden rounded-full bg-gray-100 mx-auto">
                 <Image
-                  src="/aboutus/members/kanon_shin.png"
+                  src="/aboutus/members/kanon_shin.webp"
                   alt="Kanon Shin"
                   fill
                   className="object-cover"
@@ -93,7 +93,7 @@ export default async function AboutUsPage({ params }: Props) {
             <div className="flex flex-col items-center">
               <div className="relative w-[85%] aspect-square mb-4 overflow-hidden rounded-full bg-gray-100 mx-auto">
                 <Image
-                  src="/aboutus/members/maaru.png"
+                  src="/aboutus/members/maaru.webp"
                   alt="MAARU"
                   fill
                   className="object-cover"
@@ -108,7 +108,7 @@ export default async function AboutUsPage({ params }: Props) {
             <div className="flex flex-col items-center">
               <div className="relative w-[85%] aspect-square mb-4 overflow-hidden rounded-full bg-gray-100 mx-auto">
                 <Image
-                  src="/aboutus/members/kanon_riyon.png"
+                  src="/aboutus/members/kanon_riyon.webp"
                   alt="kanon riyon"
                   fill
                   className="object-cover"
@@ -123,7 +123,7 @@ export default async function AboutUsPage({ params }: Props) {
             <div className="flex flex-col items-center">
               <div className="relative w-[85%] aspect-square mb-4 overflow-hidden rounded-full bg-gray-100 mx-auto">
                 <Image
-                  src="/aboutus/members/atto.png"
+                  src="/aboutus/members/atto.webp"
                   alt="Atto"
                   fill
                   className="object-cover"
@@ -138,7 +138,7 @@ export default async function AboutUsPage({ params }: Props) {
             <div className="flex flex-col items-center">
               <div className="relative w-[85%] aspect-square mb-4 overflow-hidden rounded-full bg-gray-100 mx-auto">
                 <Image
-                  src="/aboutus/members/kanon_take.png"
+                  src="/aboutus/members/kanon_take.webp"
                   alt="kanon take"
                   fill
                   className="object-cover"
@@ -153,7 +153,7 @@ export default async function AboutUsPage({ params }: Props) {
             <div className="flex flex-col items-center">
               <div className="relative w-[85%] aspect-square mb-4 overflow-hidden rounded-full bg-gray-100 mx-auto">
                 <Image
-                  src="/aboutus/members/kanon_fumi.png"
+                  src="/aboutus/members/kanon_fumi.webp"
                   alt="kanon fumi"
                   fill
                   className="object-cover"
@@ -176,7 +176,7 @@ export default async function AboutUsPage({ params }: Props) {
           <div className="mb-16 w-full max-w-md mx-auto">
             <div className="relative w-full overflow-hidden bg-gray-100">
               <Image
-                src="/aboutus/kanon_cheerful.png"
+                src="/aboutus/kanon_cheerful.webp"
                 alt="加音西京極作業所の縫製チーム"
                 width={800}
                 height={800}
@@ -213,7 +213,7 @@ export default async function AboutUsPage({ params }: Props) {
           <div className="mb-16 w-full max-w-md mx-auto">
             <div className="relative w-full overflow-hidden bg-gray-100">
               <Image
-                src="/aboutus/hanataba.png"
+                src="/aboutus/hanataba.webp"
                 alt="ハナタバプロジェクト"
                 width={800}
                 height={800}

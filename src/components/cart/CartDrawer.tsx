@@ -6,7 +6,6 @@ import {
   removeFromCartServer,
   updateCartItemsServer,
 } from "@/app/actions/cart";
-import { Locale } from "@/i18n/locales";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -16,12 +15,13 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { Locale } from "@/i18n/locales";
+import type { CartItem } from "@/store/cart";
 import { useCartStore } from "@/store/cart";
 import { useUIStore } from "@/store/ui";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { CartItem } from "@/store/cart";
 
 type TranslatedItem = CartItem;
 
@@ -81,7 +81,9 @@ export default function CartDrawer() {
     });
 
     if (!open || items.length === 0) {
-      console.log("[CartDrawer] Setting translated items directly (not open or empty)");
+      console.log(
+        "[CartDrawer] Setting translated items directly (not open or empty)"
+      );
       setTranslatedItems(items);
       return;
     }
@@ -127,7 +129,10 @@ export default function CartDrawer() {
 
         // 先にCookie更新（サーバー側）
         if (updatesToServer.length > 0) {
-          console.log("[CartDrawer] Updating cart items on server:", updatesToServer);
+          console.log(
+            "[CartDrawer] Updating cart items on server:",
+            updatesToServer
+          );
           const serverResult = await updateCartItemsServer(updatesToServer);
           console.log("[CartDrawer] Server update result:", serverResult);
 
@@ -175,21 +180,27 @@ export default function CartDrawer() {
     }
   }, [open]);
 
-  const handleRemove = useCallback(async (id: string) => {
-    setRemovingId(id);
-    try {
-      const res = await removeFromCartServer(id);
-      syncFromServer(res.snapshot);
-      if (!res.ok) {
-        console.warn("[CartDrawer] removeFromCartServer returned:", res.reason);
+  const handleRemove = useCallback(
+    async (id: string) => {
+      setRemovingId(id);
+      try {
+        const res = await removeFromCartServer(id);
+        syncFromServer(res.snapshot);
+        if (!res.ok) {
+          console.warn(
+            "[CartDrawer] removeFromCartServer returned:",
+            res.reason
+          );
+        }
+      } catch {
+        // ネットワークエラー時はローカルだけでも更新しておく
+        removeItem(id);
+      } finally {
+        setRemovingId((current) => (current === id ? null : current));
       }
-    } catch {
-      // ネットワークエラー時はローカルだけでも更新しておく
-      removeItem(id);
-    } finally {
-      setRemovingId((current) => (current === id ? null : current));
-    }
-  }, [removeItem, syncFromServer]);
+    },
+    [removeItem, syncFromServer]
+  );
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -204,7 +215,8 @@ export default function CartDrawer() {
             style={{
               opacity: showContent ? 1 : 0,
               transform: showContent ? "translateY(0)" : "translateY(8px)",
-              transition: "opacity 300ms cubic-bezier(0.16, 1, 0.3, 1), transform 300ms cubic-bezier(0.16, 1, 0.3, 1)",
+              transition:
+                "opacity 300ms cubic-bezier(0.16, 1, 0.3, 1), transform 300ms cubic-bezier(0.16, 1, 0.3, 1)",
             }}
           >
             Your basket
@@ -222,7 +234,8 @@ export default function CartDrawer() {
                 style={{
                   opacity: showContent ? 1 : 0,
                   transform: showContent ? "translateY(0)" : "translateY(8px)",
-                  transition: "opacity 300ms cubic-bezier(0.16, 1, 0.3, 1), transform 300ms cubic-bezier(0.16, 1, 0.3, 1)",
+                  transition:
+                    "opacity 300ms cubic-bezier(0.16, 1, 0.3, 1), transform 300ms cubic-bezier(0.16, 1, 0.3, 1)",
                 }}
               >
                 カートは空です。
@@ -248,7 +261,7 @@ export default function CartDrawer() {
                     {/* サムネイル */}
                     <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded border border-neutral-200 bg-neutral-100">
                       <Image
-                        src={it.imageUrl || "/placeholder.png"}
+                        src={it.imageUrl || "/placeholder.webp"}
                         alt={it.name}
                         fill
                         sizes="80px"

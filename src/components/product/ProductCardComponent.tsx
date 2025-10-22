@@ -21,7 +21,7 @@ export default function ProductCardComponent({
       <div className="relative w-full aspect-square mb-2">
         <div className="w-full h-full rounded-full overflow-hidden relative">
           <Image
-            src={product.main_image_url || "/placeholder.png"}
+            src={product.main_image_url || "/placeholder.webp"}
             alt={product.name}
             fill
             sizes="(min-width: 1024px) 28vw, (min-width: 768px) 42vw, 85vw"
