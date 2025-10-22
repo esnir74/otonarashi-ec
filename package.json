@@ -8,7 +8,8 @@
     "start": "next start",
     "audit": "lhci autorun --upload.target=temporary-public-storage",
     "lint": "eslint",
-    "types:gen": "pnpx supabase gen types typescript --local > src/lib/database.types.ts"
+    "types:gen": "pnpx supabase gen types typescript --local > src/lib/database.types.ts",
+    "build:cf": "opennextjs-cloudflare build"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
