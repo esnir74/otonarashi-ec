@@ -1,5 +1,5 @@
 name = "otonarashi-ec"
-main = ".open-next/worker/index.mjs"
+main = ".open-next/index.mjs"
 compatibility_date = "2024-12-05"
 compatibility_flags = ["nodejs_compat"]
 
