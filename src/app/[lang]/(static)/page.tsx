@@ -17,23 +17,12 @@ const heroImages = [
   { src: "/top/hero/2.png", alt: "Look 02" },
   { src: "/top/hero/3.png", alt: "Look 03" },
   { src: "/top/hero/4.png", alt: "Look 04" },
+  { src: "/top/hero/5.png", alt: "Look 05" },
 ];
 
 export default async function Page({ params }: Props) {
   const { lang } = await params;
 
-  // Fetch latest news
-  // const supabase = createClient();
-  // const { data: newsData } = await supabase
-  //   .from("news")
-  //   .select(
-  //     "id, slug, title, eyecatch_url, published_at, status, category_name"
-  //   )
-  //   .eq("status", "published")
-  //   .order("published_at", { ascending: false })
-  //   .limit(2);
-
-  // const news = newsData || [];
   // 仮データ
   const news = [
     {
@@ -45,15 +34,15 @@ export default async function Page({ params }: Props) {
       status: "published",
       category_name: "General",
     },
-    {
-      id: "2",
-      slug: "sample-news-2",
-      title: "Sample News Title 2",
-      eyecatch_url: "/top/top.png",
-      published_at: "2024-05-25T00:00:00Z",
-      status: "published",
-      category_name: "Updates",
-    },
+    // {
+    //   id: "2",
+    //   slug: "sample-news-2",
+    //   title: "Sample News Title 2",
+    //   eyecatch_url: "/top/top.png",
+    //   published_at: "2024-05-25T00:00:00Z",
+    //   status: "published",
+    //   category_name: "Updates",
+    // },
   ];
 
   return (
@@ -61,7 +50,7 @@ export default async function Page({ params }: Props) {
       {/* Hero Section */}
       <section className="relative w-full min-h-[calc(100vh-var(--header-height,64px))] overflow-hidden bg-white">
         <div className="flex h-full w-full items-center justify-center">
-          <HeroRing3D images={heroImages} imageSize={320} itemsPerCircle={4}>
+          <HeroRing3D images={heroImages} imageSize={320} itemsPerCircle={5}>
             <></>
           </HeroRing3D>
         </div>
@@ -69,9 +58,9 @@ export default async function Page({ params }: Props) {
 
       {/* Concept Section */}
       <section className="relative w-full pt-24 pb-48 px-3 bg-white overflow-hidden">
-        <div className="absolute -right-40 top-[43rem] md:right-32 md:top-[36rem] w-72 md:w-[24rem] h-[26rem] md:h-[32rem] opacity-20 pointer-events-none">
+        <div className="absolute -right-40 top-[31rem] md:right-32 md:top-[36rem] w-72 md:w-[24rem] h-[26rem] md:h-[32rem] opacity-20 pointer-events-none">
           <Image
-            src="/top/a.png"
+            src="/top/background/facing_right.png"
             alt=""
             width={1000}
             height={600}
@@ -82,7 +71,7 @@ export default async function Page({ params }: Props) {
         {/* 背景画像 - b.png (左下、反転) */}
         <div className="absolute -left-10 bottom-0 md:left-64 w-48 md:w-56 h-96 md:h-[28rem] opacity-20 pointer-events-none">
           <Image
-            src="/top/b.png"
+            src="/top/background/leg_raised.png"
             alt=""
             fill
             className="object-contain object-bottom scale-x-[-1]"
@@ -91,39 +80,15 @@ export default async function Page({ params }: Props) {
         <div className="max-w-4xl mx-auto">
           <div className="text-center space-y-16">
             {/* Introduction */}
-            <div className="space-y-8">
-              <p className="text-[0.85rem] md:text-xl text-gray-800 leading-relaxed">
-                オトナラシは、ハナタバプロジェクトから誕生した
-                <br />
-                加賀西京極作業所の着物アップサイクルブランドです。
+            <div className="relative text-center pb-20">
+              <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] pb-2">
+                確かな縫製技術で着物文化に新たな音を鳴らし、
               </p>
-            </div>
-
-            {/* 音鳴らし Section */}
-            <div className="py-2 px-12">
-              <h3 className="flex items-center justify-center text-[0.85rem] md:text-lg tracking-widest text-gray-800">
-                <span className="inline-block w-[2em] mr-[0.5em] border-t border-black" />
-                音鳴らし
-                <span className="inline-block ml-[0.2em] w-[2em] border-t border-black" />
-              </h3>
-              <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose">
-                丁寧なほどきと、確かな縫製技術で、
-                <br />
-                着物文化に新たな音を鳴らします。
+              <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] pb-2">
+                大人らしさと品格を纏う、
               </p>
-            </div>
-
-            {/* 大人らし Section */}
-            <div className="px-12 pb-16">
-              <h3 className="flex items-center justify-center text-[0.85rem] md:text-lg tracking-widest text-gray-800">
-                <span className="inline-block w-[2em] mr-[0.5em] border-t border-black" />
-                大人らし
-                <span className="inline-block ml-[0.2em] w-[2em] border-t border-black" />
-              </h3>
-              <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose">
-                上質さと、品格を纏うデザインで、
-                <br />
-                新しい着物スタイルを提案します。
+              <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5]">
+                新しい着物スタイルを京都から世界に提案します。
               </p>
             </div>
 
@@ -135,24 +100,24 @@ export default async function Page({ params }: Props) {
             </div>
 
             {/* Statistics - Center Aligned */}
-            <div className="relative space-y-8 max-w-3xl mx-auto">
+            <div className="relative space-y-8 md:space-y-12 max-w-3xl mx-auto">
               {/* 現在〜のぼります */}
               <div className="relative text-center space-y-0">
-                <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose">
+                <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5]">
                   現在、社会課題となっている衣類廃棄量は、
                 </p>
-                <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose">
-                  年間およそ50万トンにものぼります。
+                <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5]">
+                  年間およそ50万トン。
                 </p>
               </div>
 
               {/* そのうち〜6日 */}
-              <div className="relative text-center space-y-3">
+              <div className="relative text-center space-y-3 md:space-y-5">
                 <div>
-                  <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose mb-0">
+                  <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] mb-0">
                     そのうち家庭から出る衣類の約85%は、
                   </p>
-                  <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose mb-0">
+                  <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] mb-0">
                     まだ着られる「退蔵品」とされています。
                   </p>
                   <p className="text-[0.325rem] md:text-[0.75rem] text-gray-500 mb-0">
@@ -164,14 +129,23 @@ export default async function Page({ params }: Props) {
                 </div>
 
                 <div className="pt-4">
-                  <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose mb-0">
+                  <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] mb-0">
                     なかでも家庭のタンスに眠る着物は、
                   </p>
-                  <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose mb-0">
+                  <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] mb-0">
                     約8兆円分にのぼると報道されています。
                   </p>
                   <p className="text-[0.325rem] md:text-[0.75rem] text-gray-500">
                     日本経済新聞2024年1月5日
+                  </p>
+                </div>
+
+                <div className="pt-4">
+                  <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] mb-0">
+                    このままでは、大切に保管している着物も、{" "}
+                  </p>
+                  <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] mb-0">
+                    いずれは廃棄物となってしまうかもしれません。
                   </p>
                 </div>
               </div>
@@ -180,21 +154,15 @@ export default async function Page({ params }: Props) {
 
               {/* 私たち〜以降 */}
               <div className="relative text-center space-y-0 pb-4">
-                <p className="text-sm md:text-base text-gray-800 leading-loose">
-                  私たちは、そんな着物を、
+                <p className="text-[0.85rem] md:text-lg text-gray-800 leading-loose md:leading-[2.5]">
+                  私たちは、そんな着物をアップサイクルし、
                 </p>
-                <p className="text-sm md:text-base text-gray-800 leading-loose">
-                  日常になじむデザインへとアップサイクルし、
-                </p>
-                <p className="text-sm md:text-base text-gray-800 leading-loose">
-                  "日常で着物を楽しむ文化"をもう一度取り戻します。
+                <p className="text-[0.85rem] md:text-lg text-gray-800 leading-loose md:leading-[2.5]">
+                  もう一度、日常に着物の彩りを取り戻したいと考えています。
                 </p>
 
-                <p className="text-sm md:text-base text-gray-800 leading-loose pt-8">
-                  そして、新しい形の着物スタイルを、
-                </p>
-                <p className="text-sm md:text-base text-gray-800 leading-loose">
-                  この京都から世界へ発信していきます。
+                <p className="text-[0.85rem] md:text-lg text-gray-800 leading-loose md:leading-[2.5] pt-8">
+                  着物をモードに着こなす文化を京都から世界へ。
                 </p>
               </div>
             </div>
@@ -203,12 +171,12 @@ export default async function Page({ params }: Props) {
       </section>
 
       {/* Product Section */}
-      <section className="relative w-full aspect-square md:h-screen">
+      <section className="relative w-full aspect-square md:h-screen opacity-80">
         <Image
-          src="/top/top.png"
+          src="/top/online_shop/tower.png"
           alt="Products"
           fill
-          className="object-cover"
+          className="object-cover "
           priority
         />
         <div className="absolute inset-0 flex items-center justify-center">
@@ -236,7 +204,7 @@ export default async function Page({ params }: Props) {
           <div className="mb-16 w-full">
             <div className="relative aspect-[16/9] md:aspect-[21/9] w-full overflow-hidden bg-gray-100">
               <Image
-                src="/top/about_us.png"
+                src="/top/aboutus/group_with_hanataba.jpg"
                 alt="Our Team"
                 fill
                 className="object-cover"
@@ -246,7 +214,7 @@ export default async function Page({ params }: Props) {
 
           {/* Content */}
           <div className="text-center space-y-12 px-6 pb-24">
-            <h2 className="text-3xl md:text-5xl font-serif text-gray-900 mb-12">
+            <h2 className="text-3xl md:text-5xl font-serif text-gray-900 mb-14 md:mb-18">
               一点ずつ、丁寧に。
             </h2>
 
@@ -274,7 +242,7 @@ export default async function Page({ params }: Props) {
               </p>
             </div>
 
-            <div className="pt-8">
+            <div className="">
               <Link
                 href={`/${lang}/aboutus`}
                 className="inline-block border-2 border-gray-800 text-gray-800 px-12 py-4 hover:bg-gray-800 hover:text-white transition-colors duration-300 text-sm tracking-widest"
@@ -353,18 +321,17 @@ export default async function Page({ params }: Props) {
       )}
 
       {/* Contact Section */}
-      <section className="relative w-full aspect-square md:h-[70vh]">
-        <Image src="/top/top.png" alt="Contact" fill className="object-cover" />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center space-y-8 text-white">
-            <h2 className="text-4xl md:text-5xl font-serif">Contact us</h2>
-            <Link
-              href={`/${lang}/contact`}
-              className="inline-block border-2 border-white text-white px-12 py-4 hover:bg-white hover:text-gray-900 transition-colors duration-300 text-sm tracking-widest"
-            >
-              Contact
-            </Link>
-          </div>
+      <section className="w-full py-32 bg-white">
+        <div className="max-w-4xl mx-auto px-6 text-center space-y-12">
+          <h2 className="text-4xl md:text-5xl font-serif text-gray-900">
+            Contact us
+          </h2>
+          <Link
+            href={`/${lang}/contact`}
+            className="inline-block border-2 border-gray-800 text-gray-800 px-12 py-4 hover:bg-gray-800 hover:text-white transition-colors duration-300 text-sm tracking-widest"
+          >
+            Contact
+          </Link>
         </div>
       </section>
     </div>

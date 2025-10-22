@@ -36,12 +36,8 @@ export default async function ProductsPage({ params }: Props) {
   return (
     <div className="min-h-screen bg-white">
       {/* ヘッダー部分 - ロゴ */}
-      <div className="flex justify-center pt-12 pb-16">
-        <img
-          src="/logo_transparent.png"
-          alt="オトナラシ"
-          className="h-20 md:h-20 object-contain"
-        />
+      <div className="text-center mb-16">
+        <h1 className="text-5xl font-serif text-gray-800 my-7">Online Shop</h1>
       </div>
 
       {/* 商品グリッド */}
