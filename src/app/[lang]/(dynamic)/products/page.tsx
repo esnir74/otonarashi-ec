@@ -15,7 +15,7 @@ export default async function ProductsPage({ params }: Props) {
   await params;
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-4">
+    <div className="min-h-[calc(100vh-var(--header-height,64px))] bg-white flex items-center justify-center px-4">
       <div className="text-center space-y-8">
         <h1 className="text-4xl md:text-6xl font-serif text-gray-900 tracking-wider">
           Online Store

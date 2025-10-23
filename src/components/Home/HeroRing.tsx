@@ -235,12 +235,20 @@ export default function HeroRing3D({
       </div>
 
       {/* Logo reveal after background slides */}
-      <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
+      <div
+        className="pointer-events-none absolute z-10 flex items-center justify-center"
+        style={{
+          top: overlayActive ? 0 : "var(--header-height, 64px)",
+          left: 0,
+          right: 0,
+          bottom: 0,
+        }}
+      >
         <div
           className="relative transition-all ease-out w-[60vw] md:w-[40vw] max-w-[780px] md:max-w-[520px] min-w-[220px]"
           style={{
             opacity: heroLogoOpacity,
-            transform: `translateY(${heroLogoTranslateY}px)`,
+            transform: `translateY(calc(${heroLogoTranslateY}px - 80%))`,
           }}
         >
           <Image
@@ -256,8 +264,12 @@ export default function HeroRing3D({
 
       {/* 3D Container */}
       <div
-        className="absolute inset-0 z-20 flex items-center justify-center"
+        className="absolute z-20 flex items-center justify-center"
         style={{
+          top: overlayActive ? 0 : "var(--header-height, 64px)",
+          left: 0,
+          right: 0,
+          bottom: 0,
           perspective: `${perspective}px`,
           perspectiveOrigin: "center center",
         }}
