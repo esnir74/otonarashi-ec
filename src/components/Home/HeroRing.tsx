@@ -3,6 +3,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { useUIStore } from "@/store/ui";
 
 const SPIN_DURATION = 2;
 const PAUSE_DURATION = 0.4;
@@ -363,7 +364,7 @@ export default function HeroRing3D({
         </div>
       )}
       {scrollIndicatorVisible && (
-        <div className="pointer-events-none absolute bottom-10 left-1/2 z-[250] -translate-x-1/2">
+        <div className="pointer-events-none absolute bottom-10 left-1/2 z-[40] -translate-x-1/2">
           <span className="scroll-indicator inline-flex flex-col items-center gap-2 text-gray-700/85">
             <span className="scroll-indicator__label text-[0.6rem] uppercase tracking-[0.4em] text-gray-500/80">
               scroll
