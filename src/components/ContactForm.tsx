@@ -3,10 +3,11 @@
 import {
   contactFormSchema,
   type ContactFormData,
+  type ContactFormFormValues,
 } from "@/lib/validations/contact";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
 import ContactFormConfirmation from "./ContactFormConfirmation";
 
 export default function ContactForm() {
@@ -22,7 +23,7 @@ export default function ContactForm() {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<ContactFormData>({
+  } = useForm<ContactFormFormValues, undefined, ContactFormData>({
     resolver: zodResolver(contactFormSchema),
   });
 
