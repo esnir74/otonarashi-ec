@@ -42,7 +42,10 @@ export default function CartHydrator({
   useEffect(() => {
     async function refetch() {
       try {
-        const res = await fetch("/api/cart/snapshot", { cache: "no-store" });
+        const res = await fetch("/api/cart/snapshot", {
+          cache: "no-store",
+          signal: AbortSignal.timeout(3000), // 3秒でタイムアウト
+        });
         if (!res.ok) return;
         const snap = (await res.json()) as CartSnapshot;
         const sig = signature(snap);
@@ -50,8 +53,8 @@ export default function CartHydrator({
           syncFromServer({ items: snap.items, updatedAt: snap.updatedAt });
           lastSignatureRef.current = sig;
         }
-      } catch (error) {
-        console.error("[CartHydrator] Failed to refetch snapshot", error);
+      } catch {
+        // フォーカス時の再取得失敗は無視（非致命的）
       }
     }
 
