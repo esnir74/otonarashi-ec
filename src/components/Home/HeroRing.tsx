@@ -8,10 +8,16 @@ const SPIN_DURATION = 2;
 const PAUSE_DURATION = 0.4;
 const REVEAL_DURATION = 0.3;
 const LOGO_FLOAT_DURATION = 1.6;
+const LOGO_REVEAL_DELAY = 0.7;
+const SCROLL_INDICATOR_DELAY = 0.3;
 const SECONDARY_OVERLAY_DELAY = 0.08;
 const INTRO_PHASE_DURATION = SPIN_DURATION + PAUSE_DURATION + REVEAL_DURATION;
 const TOTAL_DURATION =
-  SPIN_DURATION + PAUSE_DURATION + REVEAL_DURATION + LOGO_FLOAT_DURATION;
+  SPIN_DURATION +
+  PAUSE_DURATION +
+  REVEAL_DURATION +
+  LOGO_REVEAL_DELAY +
+  LOGO_FLOAT_DURATION;
 
 const clamp = (value: number, min = 0, max = 1) =>
   Math.min(max, Math.max(min, value));
@@ -42,6 +48,8 @@ export default function HeroRing3D({
   const animationRef = useRef<number>(0);
   const startTimeRef = useRef<number>(0);
   const rotationRef = useRef(0);
+  const scrollIndicatorTimeoutRef = useRef<number | null>(null);
+  const [scrollIndicatorVisible, setScrollIndicatorVisible] = useState(false);
 
   const theta = 360 / itemsPerCircle;
   const effectiveImageSize = isMobile
@@ -149,7 +157,8 @@ export default function HeroRing3D({
   const primaryTranslateX = `${primaryOverlayProgress * 120}%`;
   const secondaryTranslateX = `${secondaryOverlayProgress * 120}%`;
   const heroLogoProgress = clamp(
-    (elapsedSeconds - (revealStart + REVEAL_DURATION + 0.7)) /
+    (elapsedSeconds -
+      (revealStart + REVEAL_DURATION + LOGO_REVEAL_DELAY)) /
       LOGO_FLOAT_DURATION
   );
   const heroLogoEase =
@@ -188,6 +197,30 @@ export default function HeroRing3D({
       body.classList.remove(className);
     };
   }, [overlayActive]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    if (!logoRevealComplete) {
+      setScrollIndicatorVisible(false);
+      if (scrollIndicatorTimeoutRef.current !== null) {
+        window.clearTimeout(scrollIndicatorTimeoutRef.current);
+        scrollIndicatorTimeoutRef.current = null;
+      }
+      return;
+    }
+
+    scrollIndicatorTimeoutRef.current = window.setTimeout(() => {
+      setScrollIndicatorVisible(true);
+    }, SCROLL_INDICATOR_DELAY * 1000);
+
+    return () => {
+      if (scrollIndicatorTimeoutRef.current !== null) {
+        window.clearTimeout(scrollIndicatorTimeoutRef.current);
+        scrollIndicatorTimeoutRef.current = null;
+      }
+    };
+  }, [logoRevealComplete]);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -329,6 +362,67 @@ export default function HeroRing3D({
           </div>
         </div>
       )}
+      {scrollIndicatorVisible && (
+        <div className="pointer-events-none absolute bottom-10 left-1/2 z-[250] -translate-x-1/2">
+          <span className="scroll-indicator inline-flex flex-col items-center gap-2 text-gray-700/85">
+            <span className="scroll-indicator__label text-[0.6rem] uppercase tracking-[0.4em] text-gray-500/80">
+              scroll
+            </span>
+            <span className="scroll-indicator__glyph relative flex h-12 w-12 items-center justify-center">
+              <span className="absolute inset-0 rounded-full border border-gray-400/50" />
+              <svg
+                className="scroll-indicator__arrow h-5 w-5 text-gray-700/85"
+                viewBox="0 0 20 20"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M10 5v7"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M6.5 9.5 10 13l3.5-3.5"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </span>
+          </span>
+        </div>
+      )}
+      <style jsx>{`
+        @keyframes indicatorFade {
+          from {
+            opacity: 0;
+            transform: translateY(-12px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        @keyframes indicatorBounce {
+          0%,
+          100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(6px);
+          }
+        }
+        .scroll-indicator {
+          opacity: 0;
+          animation: indicatorFade 0.5s ease forwards;
+        }
+        .scroll-indicator__glyph,
+        .scroll-indicator__arrow {
+          animation: indicatorBounce 1.8s ease-in-out 0.6s infinite;
+        }
+      `}</style>
     </section>
   );
 }

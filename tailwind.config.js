@@ -79,11 +79,21 @@ module.exports = {
           "0%": { opacity: "0", transform: "translateY(12px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
+        "fade-slide-up": {
+          "0%": { opacity: "0", transform: "translateY(24px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "scale-x": {
+          "0%": { opacity: "0", transform: "scaleX(0)" },
+          "100%": { opacity: "1", transform: "scaleX(1)" },
+        },
       },
       animation: {
         "drawer-slide-in":
           "drawer-slide-in 300ms cubic-bezier(0.16, 1, 0.3, 1)",
         "item-fade-up": "item-fade-up 200ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "fade-slide-up": "fade-slide-up 800ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "scale-x": "scale-x 600ms cubic-bezier(0.16, 1, 0.3, 1)",
       },
     },
   },
