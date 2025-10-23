@@ -57,18 +57,7 @@ function parseItems(metadataValue: unknown): PaymentIntentItem[] | null {
 }
 
 export async function PATCH(req: Request) {
-  console.log("[payment-intent PATCH] Request received");
   const body = (await req.json()) as UpdatePaymentIntentBody;
-  console.log("[payment-intent PATCH] Request body:", {
-    sessionId: body.sessionId,
-    piId: body.piId,
-    action: body.action,
-    country: body.country,
-    currency: body.currency,
-    hasFxRate: !!body.fxRate,
-    hasAddress: !!body.address,
-    hasContact: !!body.contact,
-  });
 
   const {
     sessionId,
@@ -84,10 +73,6 @@ export async function PATCH(req: Request) {
   } = body;
 
   if (!sessionId || !piId) {
-    console.error("[payment-intent PATCH] Missing parameters:", {
-      hasSessionId: !!sessionId,
-      hasPiId: !!piId,
-    });
     return new Response(
       JSON.stringify({ ok: false, reason: "missing_parameters" }),
       { status: 400, headers: { "content-type": "application/json" } }
@@ -95,7 +80,6 @@ export async function PATCH(req: Request) {
   }
 
   if (action !== "recalculate_shipping") {
-    console.error("[payment-intent PATCH] Unsupported action:", action);
     return new Response(
       JSON.stringify({ ok: false, reason: "unsupported_action" }),
       { status: 400, headers: { "content-type": "application/json" } }
@@ -108,10 +92,6 @@ export async function PATCH(req: Request) {
       typeof fxRate.usdRate !== "number" ||
       typeof fxRate.eurRate !== "number"
     ) {
-      console.error("[payment-intent PATCH] Missing or invalid FX rate:", {
-        currency,
-        fxRate,
-      });
       return new Response(
         JSON.stringify({ ok: false, reason: "missing_fx_rate" }),
         { status: 400, headers: { "content-type": "application/json" } }
@@ -130,20 +110,8 @@ export async function PATCH(req: Request) {
   }
 
   const pi = await stripe.paymentIntents.retrieve(piId);
-  console.log("[payment-intent PATCH] Retrieved PaymentIntent:", {
-    piId: pi.id,
-    status: pi.status,
-    currency: pi.currency,
-    amount: pi.amount,
-    metadataSessionId: pi.metadata.session_id,
-  });
 
   if ((pi.metadata.session_id ?? "") !== sessionId) {
-    console.error("[payment-intent PATCH] session mismatch", {
-      piId,
-      metadataSession: pi.metadata.session_id,
-      requestSessionId: sessionId,
-    });
     return new Response(
       JSON.stringify({ ok: false, reason: "session_mismatch" }),
       { status: 403, headers: { "content-type": "application/json" } }
@@ -154,11 +122,6 @@ export async function PATCH(req: Request) {
     pi.status !== "requires_payment_method" &&
     pi.status !== "requires_confirmation"
   ) {
-    console.error("[payment-intent PATCH] Invalid status:", {
-      piId,
-      status: pi.status,
-      expected: ["requires_payment_method", "requires_confirmation"],
-    });
     return new Response(
       JSON.stringify({ ok: false, reason: "already_confirmed" }),
       { status: 400, headers: { "content-type": "application/json" } }
@@ -166,17 +129,8 @@ export async function PATCH(req: Request) {
   }
 
   const storedItems = parseItems(pi.metadata.items_json);
-  console.log("[payment-intent PATCH] Parsed items:", {
-    itemsJson: pi.metadata.items_json,
-    parsedCount: storedItems?.length ?? 0,
-  });
 
   if (!storedItems || storedItems.length === 0) {
-    console.error("[payment-intent PATCH] Empty or invalid items:", {
-      piId,
-      itemsJson: pi.metadata.items_json,
-      storedItems,
-    });
     return new Response(JSON.stringify({ ok: false, reason: "empty_items" }), {
       status: 400,
       headers: { "content-type": "application/json" },
@@ -192,12 +146,6 @@ export async function PATCH(req: Request) {
 
   const expectedCurrencyCode = currencyToStripeCode(currency);
   if (pi.currency !== expectedCurrencyCode) {
-    console.error("[payment-intent PATCH] Currency mismatch:", {
-      piId,
-      piCurrency: pi.currency,
-      requestCurrency: currency,
-      expectedCode: expectedCurrencyCode,
-    });
     return new Response(
       JSON.stringify({ ok: false, reason: "currency_mismatch" }),
       { status: 400, headers: { "content-type": "application/json" } }
@@ -207,8 +155,7 @@ export async function PATCH(req: Request) {
   let amountMinor: number;
   try {
     amountMinor = convertYenToMinorUnit(totalYen, currency, fxRate);
-  } catch (error) {
-    console.error("[payment-intent] FX conversion failed", error);
+  } catch {
     return new Response(
       JSON.stringify({ ok: false, reason: "fx_conversion_failed" }),
       { status: 400, headers: { "content-type": "application/json" } }
@@ -258,26 +205,11 @@ export async function PATCH(req: Request) {
 
   const stripeMetadata = buildPaymentIntentMetadata(metadataInput);
 
-  console.log("[payment-intent PATCH] Updating PaymentIntent:", {
-    piId,
-    amountMinor,
-    subtotalYen,
-    shippingYen,
-    totalYen,
-    email,
-  });
-
   const updated = await stripe.paymentIntents.update(piId, {
     amount: amountMinor,
     receipt_email: email,
     metadata: stripeMetadata,
     shipping: shippingPayload,
-  });
-
-  console.log("[payment-intent PATCH] Update successful:", {
-    piId: updated.id,
-    amount: updated.amount,
-    status: updated.status,
   });
 
   return new Response(

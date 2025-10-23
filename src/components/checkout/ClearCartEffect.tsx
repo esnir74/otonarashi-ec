@@ -15,7 +15,6 @@ export function ClearCartEffect({ trigger = true }: Props) {
     try {
       useCartStore.getState().clearCart();
       clearedRef.current = true;
-      console.log("[ClearCartEffect] Cart cleared");
       void fetch("/api/checkout/session/clear", {
         method: "POST",
         cache: "no-store",

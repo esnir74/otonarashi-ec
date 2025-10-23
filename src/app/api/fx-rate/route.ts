@@ -72,7 +72,6 @@ export async function GET(_req: Request) {
   const cached = await redis.get(key);
 
   if (cached !== null) {
-    console.log("FX rate found in Redis cache:", cached);
     const rate = parseFxRateJSON(cached);
     if (rate) {
       return Response.json({ rate, cached: true, source: "redis" });

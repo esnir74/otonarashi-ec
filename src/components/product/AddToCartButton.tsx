@@ -22,25 +22,13 @@ export default function AddToCartButton({ item, state }: Props) {
   const [isPending, startTransition] = useTransition();
 
   const addToCart = async (it: CartItem) => {
-    console.log("[AddToCart] Start addToCart", { item: it, alreadyInCart });
-
     if (alreadyInCart) {
-      console.log("[AddToCart] Already in cart, opening drawer");
       openCart();
       return;
     }
 
-    console.log("[AddToCart] Calling addToCartServer");
     const res = await addToCartServer(it); // 在庫確認＋Cookie更新（サーバ）
-    console.log("[AddToCart] Server response:", res);
-
     syncFromServer(res.snapshot);
-
-    if (!res.ok) {
-      console.warn("[AddToCart] Server rejected add", res.reason);
-    }
-
-    console.log("[AddToCart] Opening cart drawer after sync");
     openCart();
   };
 
@@ -50,7 +38,6 @@ export default function AddToCartButton({ item, state }: Props) {
     outOfStock: t("outOfStock"),
     inStock: alreadyInCart ? t("viewCart") : t("addToCart"),
   }[state];
-  console.log(state);
 
   const buttonClass = [
     "w-full px-5 py-3 font-medium tracking-widest transition-colors duration-300 text-sm",

@@ -30,12 +30,10 @@ export default async function SuccessPage({ params: paramsPromise, searchParams 
   const status = await getCheckoutStatus(piId, { maxWaitMs: 800 });
 
   if (status === "ok") {
-    console.log("ok detected on SuccessPage");
     return <CheckoutSuccessContent lang={lang} />;
   }
 
   if (status === "abandoned") {
-    console.warn("abandoned detected on SuccessPage");
     redirect(`/${lang}/checkout/failure?reason=abandoned`);
   }
 

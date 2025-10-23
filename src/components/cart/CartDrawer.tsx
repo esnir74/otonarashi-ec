@@ -55,10 +55,6 @@ export default function CartDrawer() {
   const syncFromServer = useCartStore((s) => s.syncFromServer);
   const total = useCartStore((s) => s.total());
 
-  // デバッグ: itemsが更新された時にログ
-  useEffect(() => {
-    console.log("[CartDrawer] Items updated:", items);
-  }, [items]);
 
   const [agreed, setAgreed] = useState(true); // MGG 風チェック。必要なら必須にしてもOK
   const [removingId, setRemovingId] = useState<string | null>(null);
@@ -73,17 +69,7 @@ export default function CartDrawer() {
 
   // 言語が異なる商品の翻訳を取得
   useEffect(() => {
-    console.log("[CartDrawer] Translation effect triggered", {
-      open,
-      itemsLength: items.length,
-      items,
-      lang: normalizedLang,
-    });
-
     if (!open || items.length === 0) {
-      console.log(
-        "[CartDrawer] Setting translated items directly (not open or empty)"
-      );
       setTranslatedItems(items);
       return;
     }
@@ -92,26 +78,21 @@ export default function CartDrawer() {
     const needsTranslation = items.filter(
       (item) => item.lang !== normalizedLang
     );
-    console.log("[CartDrawer] Needs translation:", needsTranslation);
 
     if (needsTranslation.length === 0) {
       // 全て同じ言語ならそのまま
-      console.log("[CartDrawer] No translation needed, setting items directly");
       setTranslatedItems(items);
       return;
     }
 
     // Server Action経由で翻訳を取得
     const fetchTranslations = async () => {
-      console.log("[CartDrawer] Fetching translations...");
       try {
         const productIds = needsTranslation.map((item) => item.id);
-        console.log("[CartDrawer] Product IDs to translate:", productIds);
         const translations = await getProductTranslationsServer(
           productIds,
           normalizedLang
         );
-        console.log("[CartDrawer] Received translations:", translations);
 
         // 翻訳情報を収集
         const updatesToServer: CartItemUpdate[] = [];
@@ -129,21 +110,11 @@ export default function CartDrawer() {
 
         // 先にCookie更新（サーバー側）
         if (updatesToServer.length > 0) {
-          console.log(
-            "[CartDrawer] Updating cart items on server:",
-            updatesToServer
-          );
           const serverResult = await updateCartItemsServer(updatesToServer);
-          console.log("[CartDrawer] Server update result:", serverResult);
 
           // サーバー更新成功後、ローカルストアも更新
           if (serverResult.ok) {
             syncFromServer(serverResult.snapshot);
-          } else {
-            console.warn(
-              "[CartDrawer] Failed to update items on server, reason:",
-              serverResult.reason
-            );
           }
         }
 
@@ -158,7 +129,6 @@ export default function CartDrawer() {
           };
         });
 
-        console.log("[CartDrawer] Setting translated items:", updated);
         setTranslatedItems(updated);
       } catch (error) {
         console.error("Translation fetch error:", error);
@@ -186,12 +156,6 @@ export default function CartDrawer() {
       try {
         const res = await removeFromCartServer(id);
         syncFromServer(res.snapshot);
-        if (!res.ok) {
-          console.warn(
-            "[CartDrawer] removeFromCartServer returned:",
-            res.reason
-          );
-        }
       } catch {
         // ネットワークエラー時はローカルだけでも更新しておく
         removeItem(id);
@@ -344,12 +308,6 @@ export default function CartDrawer() {
                 className="w-full px-5 py-3 font-medium tracking-widest transition-colors duration-300 text-sm border-2 border-black text-black hover:bg-black hover:text-white disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-black"
                 disabled={!agreed}
                 onClick={() => {
-                  console.log("[CartDrawer] Checkout button clicked", {
-                    base,
-                    path: `${base}/checkout`,
-                    isEmpty,
-                    agreed,
-                  });
                   useUIStore.getState().closeCart();
                   router.push(`${base}/checkout`);
                 }}

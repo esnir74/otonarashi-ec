@@ -26,14 +26,13 @@ export async function POST(request: NextRequest) {
       : `${data.name}様より`;
 
     // Send email using Resend
-    const { data: emailData, error: emailError } = await resend.emails.send({
+    const { error: emailError } = await resend.emails.send({
       from: "オトナラシ <noreply@otonarashi.com>", // TODO: Update with actual domain
       to: [process.env.CONTACT_EMAIL || "8_carpboy_74@au.com"],
       replyTo: data.email,
       subject: `お問い合わせ: ${subjectDetail}`,
       html: generateContactEmailHtml(data),
     });
-    console.log("Email sent successfully:", process.env.CONTACT_EMAIL);
 
     if (emailError) {
       console.error("Email sending error:", emailError);
@@ -42,8 +41,6 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
-
-    console.log("Contact form email sent successfully:", emailData);
 
     return NextResponse.json(
       { message: "Contact form submitted successfully" },

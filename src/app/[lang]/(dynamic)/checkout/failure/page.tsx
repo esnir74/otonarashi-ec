@@ -3,6 +3,8 @@ import { ClearCartEffect } from "@/components/checkout/ClearCartEffect";
 import { ResetCheckoutSessionEffect } from "@/components/checkout/ResetCheckoutSessionEffect";
 import { RevalidateProductsEffect } from "@/components/checkout/RevalidateProductsEffect";
 import type { Locale } from "@/i18n/locales";
+import { createPageMetadata } from "@/lib/metadata";
+import { Metadata } from "next";
 
 type ActionKey = "checkout" | "products" | "reload" | "support";
 
@@ -100,6 +102,11 @@ const configs: Record<string, FailureConfig> = {
     secondary: "support",
   },
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { lang } = await params;
+  return createPageMetadata(lang, "checkout_failure", "checkout/failure");
+}
 
 export default async function CheckoutFailurePage({
   params,
