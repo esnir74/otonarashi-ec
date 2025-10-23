@@ -15,23 +15,20 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { Locale } from "@/i18n/locales";
+import type { CartItem } from "@/store/cart";
 import { useCartStore } from "@/store/cart";
 import { useUIStore } from "@/store/ui";
-import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-type TranslatedItem = {
-  id: string;
-  name: string;
-  price: number;
-  lang: string;
-};
+type TranslatedItem = CartItem;
 
 type CartItemUpdate = {
   id: string;
   name: string;
-  lang: string;
+  lang: Locale;
 };
 
 const fmtJPY = (n: number) =>
@@ -42,8 +39,12 @@ const fmtJPY = (n: number) =>
 export default function CartDrawer() {
   const router = useRouter();
   const pathname = usePathname() || "/ja";
-  const [, lang] = pathname.split("/");
-  const base = `/${lang || "ja"}`;
+  const [, rawLang] = pathname.split("/");
+  const normalizedLang: Locale =
+    rawLang === "ja" || rawLang === "en" || rawLang === "zh"
+      ? (rawLang as Locale)
+      : "ja";
+  const base = `/${normalizedLang}`;
 
   const open = useUIStore((s) => s.cartOpen);
   const onOpenChange = (v: boolean) =>
@@ -76,17 +77,21 @@ export default function CartDrawer() {
       open,
       itemsLength: items.length,
       items,
-      lang,
+      lang: normalizedLang,
     });
 
     if (!open || items.length === 0) {
-      console.log("[CartDrawer] Setting translated items directly (not open or empty)");
+      console.log(
+        "[CartDrawer] Setting translated items directly (not open or empty)"
+      );
       setTranslatedItems(items);
       return;
     }
 
     // 現在の言語と異なる商品のIDを収集
-    const needsTranslation = items.filter((item) => item.lang !== lang);
+    const needsTranslation = items.filter(
+      (item) => item.lang !== normalizedLang
+    );
     console.log("[CartDrawer] Needs translation:", needsTranslation);
 
     if (needsTranslation.length === 0) {
@@ -104,7 +109,7 @@ export default function CartDrawer() {
         console.log("[CartDrawer] Product IDs to translate:", productIds);
         const translations = await getProductTranslationsServer(
           productIds,
-          lang as "ja" | "en" | "zh"
+          normalizedLang
         );
         console.log("[CartDrawer] Received translations:", translations);
 
@@ -117,14 +122,17 @@ export default function CartDrawer() {
             updatesToServer.push({
               id: item.id,
               name: translatedName,
-              lang,
+              lang: normalizedLang,
             });
           }
         });
 
         // 先にCookie更新（サーバー側）
         if (updatesToServer.length > 0) {
-          console.log("[CartDrawer] Updating cart items on server:", updatesToServer);
+          console.log(
+            "[CartDrawer] Updating cart items on server:",
+            updatesToServer
+          );
           const serverResult = await updateCartItemsServer(updatesToServer);
           console.log("[CartDrawer] Server update result:", serverResult);
 
@@ -141,7 +149,7 @@ export default function CartDrawer() {
 
         // 表示用に更新されたアイテムをセット
         const updated = items.map((item) => {
-          if (item.lang === lang) {
+          if (item.lang === normalizedLang) {
             return item;
           }
           return {
@@ -159,34 +167,40 @@ export default function CartDrawer() {
     };
 
     void fetchTranslations();
-  }, [open, items, lang]);
+  }, [open, items, normalizedLang, syncFromServer]);
 
   // コンテンツの段階的表示：ドロワーが開いたら少し遅延して中身を表示
   useEffect(() => {
     if (open) {
       // ドロワーのスライドアニメーション後に中身を表示
-      const timer = setTimeout(() => setShowContent(true), 400);
+      const timer = setTimeout(() => setShowContent(true), 500);
       return () => clearTimeout(timer);
     } else {
       setShowContent(false);
     }
   }, [open]);
 
-  const handleRemove = async (id: string) => {
-    setRemovingId(id);
-    try {
-      const res = await removeFromCartServer(id);
-      syncFromServer(res.snapshot);
-      if (!res.ok) {
-        console.warn("[CartDrawer] removeFromCartServer returned:", res.reason);
+  const handleRemove = useCallback(
+    async (id: string) => {
+      setRemovingId(id);
+      try {
+        const res = await removeFromCartServer(id);
+        syncFromServer(res.snapshot);
+        if (!res.ok) {
+          console.warn(
+            "[CartDrawer] removeFromCartServer returned:",
+            res.reason
+          );
+        }
+      } catch {
+        // ネットワークエラー時はローカルだけでも更新しておく
+        removeItem(id);
+      } finally {
+        setRemovingId((current) => (current === id ? null : current));
       }
-    } catch {
-      // ネットワークエラー時はローカルだけでも更新しておく
-      removeItem(id);
-    } finally {
-      setRemovingId((current) => (current === id ? null : current));
-    }
-  };
+    },
+    [removeItem, syncFromServer]
+  );
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -200,7 +214,9 @@ export default function CartDrawer() {
             className="text-2xl font-medium"
             style={{
               opacity: showContent ? 1 : 0,
-              transition: "opacity 200ms cubic-bezier(0.16, 1, 0.3, 1)",
+              transform: showContent ? "translateY(0)" : "translateY(8px)",
+              transition:
+                "opacity 300ms cubic-bezier(0.16, 1, 0.3, 1), transform 300ms cubic-bezier(0.16, 1, 0.3, 1)",
             }}
           >
             Your basket
@@ -217,7 +233,9 @@ export default function CartDrawer() {
                 className="text-sm text-neutral-500"
                 style={{
                   opacity: showContent ? 1 : 0,
-                  transition: "opacity 200ms cubic-bezier(0.16, 1, 0.3, 1)",
+                  transform: showContent ? "translateY(0)" : "translateY(8px)",
+                  transition:
+                    "opacity 300ms cubic-bezier(0.16, 1, 0.3, 1), transform 300ms cubic-bezier(0.16, 1, 0.3, 1)",
                 }}
               >
                 カートは空です。
@@ -231,17 +249,27 @@ export default function CartDrawer() {
                     opacity: showContent ? 1 : 0,
                     transform: showContent
                       ? "translateY(0)"
-                      : "translateY(12px)",
-                    transition: `opacity 200ms cubic-bezier(0.16, 1, 0.3, 1) ${
-                      idx * 80
-                    }ms, transform 200ms cubic-bezier(0.16, 1, 0.3, 1) ${
-                      idx * 80
+                      : "translateY(8px)",
+                    transition: `opacity 300ms cubic-bezier(0.16, 1, 0.3, 1) ${
+                      idx * 60
+                    }ms, transform 300ms cubic-bezier(0.16, 1, 0.3, 1) ${
+                      idx * 60
                     }ms`,
                   }}
                 >
                   <div className="flex items-start gap-4">
-                    {/* サムネ（プレースホルダ） */}
-                    <div className="h-20 w-20 shrink-0 rounded bg-neutral-100 border border-neutral-200" />
+                    {/* サムネイル */}
+                    <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded border border-neutral-200 bg-neutral-100">
+                      <Image
+                        src={it.imageUrl || "/placeholder.webp"}
+                        alt={it.name}
+                        fill
+                        sizes="80px"
+                        className="object-cover"
+                        placeholder={it.imageBlur ? "blur" : "empty"}
+                        blurDataURL={it.imageBlur ?? undefined}
+                      />
+                    </div>
                     <div className="flex-1 min-w-0 space-y-1">
                       <div className="text-[15px] font-medium leading-tight">
                         {it.name}
@@ -280,8 +308,11 @@ export default function CartDrawer() {
           className="px-6 py-6 space-y-4 shrink-0"
           style={{
             opacity: showContent ? 1 : 0,
+            transform: showContent ? "translateY(0)" : "translateY(8px)",
             transition: `opacity 300ms cubic-bezier(0.16, 1, 0.3, 1) ${
-              translatedItems.length * 80 + 100
+              translatedItems.length * 60 + 100
+            }ms, transform 300ms cubic-bezier(0.16, 1, 0.3, 1) ${
+              translatedItems.length * 60 + 100
             }ms`,
           }}
         >

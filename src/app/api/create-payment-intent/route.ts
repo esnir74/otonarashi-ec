@@ -144,15 +144,23 @@ export async function POST(req: Request) {
     .toISOString()
     .slice(0, 10)
     .replace(/-/g, "")}-${Math.random().toString(36).slice(2, 8)}`;
-
+  const rateMap = {
+    JPY: 1,
+    USD: fxRate?.usdRate,
+    EUR: fxRate?.eurRate,
+  } as const;
   const metadataInput: PaymentIntentMetadataInput = {
     session_id: sessionId,
     order_number: orderNumber,
-    items_json: JSON.stringify(items),
-    items_subtotal_yen: String(subtotal),
-    shipping_yen: String(shipping),
-    total_yen: String(totalYen),
+    items_subtotal_amount: subtotal,
+    shipping_amount: shipping,
+    items: items,
+    items_subtotal_yen: subtotal,
+    shipping_yen: shipping,
+    total_yen: totalYen,
     payment_method: "card",
+    lang: lang ?? "ja",
+    fx_rate: currency !== "JPY" && fxRate ? rateMap[currency] ?? 1 : 1,
     exchange_rate_timestamp: new Date().toISOString(),
     ...(lang ? { lang } : {}),
     ...(currency !== "JPY" && fxRate

@@ -1,10 +1,13 @@
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export type SummaryItem = {
   id: string;
   name: string;
   price: number;
   quantity?: number;
+  imageUrl?: string | null;
+  imageBlur?: string | null;
 };
 
 type Props = {
@@ -28,9 +31,7 @@ export function CheckoutSummary({
 }: Props) {
   const hasItems = items.length > 0;
   const computedTotalYen =
-    typeof totalYen === "number"
-      ? totalYen
-      : subtotalYen + (shippingYen ?? 0);
+    typeof totalYen === "number" ? totalYen : subtotalYen + (shippingYen ?? 0);
 
   return (
     <aside
@@ -51,8 +52,16 @@ export function CheckoutSummary({
                 key={item.id}
                 className="flex items-start gap-4 rounded-lg border border-neutral-200 bg-white px-4 py-3"
               >
-                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-md bg-neutral-100 text-xs text-neutral-500">
-                  item
+                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md border border-neutral-200 bg-neutral-100">
+                  <Image
+                    src={item.imageUrl || "/placeholder.webp"}
+                    alt={item.name}
+                    fill
+                    sizes="64px"
+                    className="object-cover"
+                    placeholder={item.imageBlur ? "blur" : "empty"}
+                    blurDataURL={item.imageBlur ?? undefined}
+                  />
                 </div>
                 <div className="flex flex-1 items-start justify-between gap-4">
                   <div>
@@ -94,14 +103,10 @@ export function CheckoutSummary({
         <div className="flex items-center justify-between text-base font-semibold text-neutral-900">
           <span>合計</span>
           <span>
-            {shippingCalculated
-              ? formatAmount(computedTotalYen)
-              : "—"}
+            {shippingCalculated ? formatAmount(computedTotalYen) : "—"}
           </span>
         </div>
-        <p className="text-xs text-neutral-500">
-          価格はすべて税込み表示です。
-        </p>
+        <p className="text-xs text-neutral-500">価格はすべて税込み表示です。</p>
       </div>
 
       <div className="mt-6 space-y-2">

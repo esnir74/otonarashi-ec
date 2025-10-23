@@ -28,7 +28,7 @@ export function NewsListItem({ item, lang }: Props) {
               : "2025.00.00"}
           </time>
           {item.category_name && (
-            <span className="inline-block px-4 py-1 text-sm border border-gray-800 text-gray-800 rounded-sm">
+            <span className="inline-block px-4 py-1 text-sm border border-gray-800 text-gray-800">
               {item.category_name}
             </span>
           )}

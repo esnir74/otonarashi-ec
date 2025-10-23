@@ -1,17 +1,21 @@
 // app/success/PendingClient.tsx
 "use client";
 
+import { CheckoutSuccessContent } from "@/components/checkout/CheckoutSuccessContent";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ClearCartEffect } from "@/components/checkout/ClearCartEffect";
-import { RevalidateProductsEffect } from "@/components/checkout/RevalidateProductsEffect";
+import Stripe from "stripe";
 
-type Status = "pending" | "ok" | "out_of_stock";
+export type CheckoutStatus =
+  | "ok"
+  | Stripe.PaymentIntent.CancellationReason
+  | "pending";
 type Props = {
   paymentIntentId: string;
   softTimeoutMs?: number; // 既定 15000
   hardTimeoutMs?: number; // 既定 180000
   pollIntervalMs?: number; // 既定 2000
   cancelHref?: string;
+  lang: string;
 };
 
 export default function PendingClient({
@@ -19,9 +23,10 @@ export default function PendingClient({
   softTimeoutMs = 15_000,
   hardTimeoutMs = 180_000,
   pollIntervalMs = 2_000,
-  cancelHref = "/?canceled=true",
+  cancelHref = "/checkout/failure?reason=abandoned",
+  lang,
 }: Props) {
-  const [status, setStatus] = useState<Status>("pending");
+  const [status, setStatus] = useState<CheckoutStatus>("pending");
   const [softTimedOut, setSoftTimedOut] = useState(false);
   const t0 = useRef<number>(Date.now());
 
@@ -38,7 +43,7 @@ export default function PendingClient({
             cache: "no-store",
           }
         );
-        const data = (await res.json()) as { status?: Status };
+        const data = (await res.json()) as { status?: CheckoutStatus };
         if (!alive) return;
 
         if (data.status === "ok") {
@@ -46,7 +51,7 @@ export default function PendingClient({
           setStatus("ok");
           return;
         }
-        if (data.status === "out_of_stock") {
+        if (data.status === "abandoned") {
           // すぐリダイレクト
           window.location.href = cancelHref;
           return;
@@ -86,13 +91,7 @@ export default function PendingClient({
 
   // 表示
   if (status === "ok") {
-    return (
-      <div>
-        <ClearCartEffect />
-        <RevalidateProductsEffect />
-        <p>ご購入ありがとうございました。</p>
-      </div>
-    );
+    return <CheckoutSuccessContent lang={lang} />;
   }
 
   // pending 中のUI（段階的に案内を追加）
@@ -112,9 +111,7 @@ export default function PendingClient({
               メールが届かない場合は、支払いが完了していない可能性があります。お手数ですが、下記のメールアドレスまでお問い合わせください。
             </p>
             <a href="mailto:orders@example.com">orders@example.com</a>
-            <p>
-              二重購入防止のため、再購入はしないでください。
-            </p>
+            <p>二重購入防止のため、再購入はしないでください。</p>
           </div>
         </div>
       )}

@@ -1,5 +1,6 @@
 // lib/checkout-status.ts
 import { createClient } from "@supabase/supabase-js";
+import Stripe from "stripe";
 import { stripe } from "./stripe";
 
 // ★ サーバ専用キーを使う（RLS設計に合わせて）
@@ -10,7 +11,10 @@ const supabase = createClient(
   { auth: { persistSession: false } }
 );
 
-export type CheckoutStatus = "ok" | "out_of_stock" | "pending";
+export type CheckoutStatus =
+  | "ok"
+  | Stripe.PaymentIntent.CancellationReason
+  | "pending";
 
 type Options = {
   /** サーバ側の初期判定で待つ最大時間（ms）。0なら即時判定のみ。既定 800ms */
@@ -59,7 +63,10 @@ export async function computeOnce(piId: string): Promise<CheckoutStatus> {
     }
 
     if (paymentIntent.status === "canceled") {
-      return "out_of_stock";
+      //キャンセルをabandonedに統一
+      const cancellation_reason =
+        paymentIntent.cancellation_reason ?? "abandoned";
+      return cancellation_reason;
     }
 
     if (paymentIntent.status === "succeeded") {
@@ -67,8 +74,11 @@ export async function computeOnce(piId: string): Promise<CheckoutStatus> {
     }
 
     return "pending";
-  } catch (error: any) {
-    if (error?.statusCode === 404) {
+  } catch (error) {
+    if (
+      error instanceof Stripe.errors.StripeError &&
+      error.statusCode === 404
+    ) {
       console.warn("PaymentIntent not found", { piId });
       return "pending";
     }

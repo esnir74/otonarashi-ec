@@ -34,14 +34,19 @@ export default async function ProductsPage({ params }: Props) {
   console.log(products);
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-semibold mb-4">Products List</h1>
-      <p className="text-gray-600 mb-6">Total: {products.length} items</p>
+    <div className="min-h-screen bg-white">
+      {/* ヘッダー部分 - ロゴ */}
+      <div className="text-center mb-16">
+        <h1 className="text-5xl font-serif text-gray-800 my-7">Online Shop</h1>
+      </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {products.map((product) => (
-          <ProductCardComponent key={product.id} product={product} />
-        ))}
+      {/* 商品グリッド */}
+      <div className="px-6 md:px-12 pb-16">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-x-0 gap-y-12 max-w-5xl mx-auto">
+          {products.map((product) => (
+            <ProductCardComponent key={product.id} product={product} />
+          ))}
+        </div>
       </div>
     </div>
   );
