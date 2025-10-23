@@ -156,6 +156,17 @@ body.hero-intro-active [data-scroll-indicator] {
     }
   }
 
+  @keyframes cart-drawer-fade-out {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(0);
+    }
+  }
+
   .animate-drawer-slide-in {
     animation: drawer-slide-in 800ms cubic-bezier(0.16, 1, 0.3, 1);
   }

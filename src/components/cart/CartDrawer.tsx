@@ -206,7 +206,7 @@ export default function CartDrawer() {
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="w-full sm:max-w-md p-0 bg-white shadow-[0_24px_64px_rgba(15,23,42,0.24)] flex flex-col animate-drawer-slide-in right-0 sm:right-6 top-0 sm:top-8 bottom-auto h-auto max-h-[calc(100vh-32px)] sm:max-h-[calc(100vh-96px)]"
+        className="w-full sm:max-w-md p-0 bg-white shadow-[0_24px_64px_rgba(15,23,42,0.24)] flex flex-col right-0 sm:right-6 top-0 sm:top-8 bottom-auto h-auto max-h-[calc(100vh-32px)] sm:max-h-[calc(100vh-96px)] data-[state=open]:!animate-drawer-slide-in data-[state=closed]:!animate-[cart-drawer-fade-out_800ms_cubic-bezier(0.16,1,0.3,1)_forwards] data-[state=closed]:translate-x-0"
       >
         {/* Header - Fixed */}
         <SheetHeader className="relative px-6 pt-6 pb-4 shrink-0">

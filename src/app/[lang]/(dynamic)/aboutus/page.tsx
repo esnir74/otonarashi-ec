@@ -89,21 +89,6 @@ export default async function AboutUsPage({ params }: Props) {
               </h3>
             </div>
 
-            {/* MAARU */}
-            <div className="flex flex-col items-center">
-              <div className="relative w-[85%] aspect-square mb-4 overflow-hidden rounded-full bg-gray-100 mx-auto">
-                <Image
-                  src="/aboutus/members/maaru.webp"
-                  alt="MAARU"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <h3 className="text-lg md:text-xl font-serif text-gray-900 text-center">
-                MAARU
-              </h3>
-            </div>
-
             {/* kanon riyon */}
             <div className="flex flex-col items-center">
               <div className="relative w-[85%] aspect-square mb-4 overflow-hidden rounded-full bg-gray-100 mx-auto">
@@ -116,21 +101,6 @@ export default async function AboutUsPage({ params }: Props) {
               </div>
               <h3 className="text-lg md:text-xl font-serif text-gray-900 text-center">
                 kanon riyon
-              </h3>
-            </div>
-
-            {/* Atto */}
-            <div className="flex flex-col items-center">
-              <div className="relative w-[85%] aspect-square mb-4 overflow-hidden rounded-full bg-gray-100 mx-auto">
-                <Image
-                  src="/aboutus/members/atto.webp"
-                  alt="Atto"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <h3 className="text-lg md:text-xl font-serif text-gray-900 text-center">
-                Atto
               </h3>
             </div>
 
@@ -161,6 +131,36 @@ export default async function AboutUsPage({ params }: Props) {
               </div>
               <h3 className="text-lg md:text-xl font-serif text-gray-900 text-center">
                 kanon fumi
+              </h3>
+            </div>
+
+            {/* Atto */}
+            <div className="flex flex-col items-center">
+              <div className="relative w-[85%] aspect-square mb-4 overflow-hidden rounded-full bg-gray-100 mx-auto">
+                <Image
+                  src="/aboutus/members/atto.webp"
+                  alt="Atto"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <h3 className="text-lg md:text-xl font-serif text-gray-900 text-center">
+                Atto
+              </h3>
+            </div>
+
+            {/* MAARU */}
+            <div className="flex flex-col items-center">
+              <div className="relative w-[85%] aspect-square mb-4 overflow-hidden rounded-full bg-gray-100 mx-auto">
+                <Image
+                  src="/aboutus/members/maaru.webp"
+                  alt="MAARU"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <h3 className="text-lg md:text-xl font-serif text-gray-900 text-center">
+                MAARU
               </h3>
             </div>
           </div>
