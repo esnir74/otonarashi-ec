@@ -12,7 +12,6 @@ export default function ActionButton({
   };
   intent: "primary" | "secondary";
 }) {
-  console.log("ActionButton action:", action);
   if (!action) return null;
 
   if (action.reload) {

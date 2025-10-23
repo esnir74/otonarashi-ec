@@ -38,8 +38,6 @@ function calcShipping(country?: string) {
 }
 
 export async function POST(req: Request) {
-  console.log("[PaymentIntent] POST request received");
-
   const body = (await req.json()) as CreatePaymentIntentBody;
   const {
     country,
@@ -49,7 +47,6 @@ export async function POST(req: Request) {
     fxRate,
     replacePiId,
   } = body;
-  console.log("[PaymentIntent] Request body:", body);
 
   if (!sessionId) {
     return new Response(
@@ -73,25 +70,10 @@ export async function POST(req: Request) {
 
   const store = await cookies();
   const signed = store.get(COOKIE_NAME)?.value ?? null;
-  console.log("[PaymentIntent] Cookie check:", {
-    cookieName: COOKIE_NAME,
-    hasCookie: !!signed,
-    cookieLength: signed?.length,
-  });
 
   const verifiedToken = verifySessionCookie(signed);
-  console.log("[PaymentIntent] Session verification:", {
-    verifiedToken,
-    requestSessionId: sessionId,
-    matches: verifiedToken === sessionId,
-  });
 
   if (!sessionId || !verifiedToken || verifiedToken !== sessionId) {
-    console.error("[PaymentIntent] Session validation FAILED:", {
-      hasSessionId: sessionId,
-      hasVerifiedToken: verifiedToken,
-      matches: verifiedToken === sessionId,
-    });
     return new Response(
       JSON.stringify({ ok: false, reason: "invalid_session" }),
       {
@@ -101,13 +83,9 @@ export async function POST(req: Request) {
     );
   }
 
-  console.log("[PaymentIntent] Session validated successfully");
-
   const validation = await validateCartSnapshot();
-  console.log("[PaymentIntent] Cart validation result:", validation);
 
   if (!validation.ok) {
-    console.error("[PaymentIntent] Cart validation FAILED:", validation.reason);
     const statusMap = {
       empty_cart: 400,
       product_not_found: 409,
@@ -122,11 +100,6 @@ export async function POST(req: Request) {
       }
     );
   }
-
-  console.log(
-    "[PaymentIntent] Cart validated, items:",
-    validation.items.length
-  );
 
   const items: StripeItems = validation.items.map((item) => ({
     id: item.id,
@@ -185,38 +158,21 @@ export async function POST(req: Request) {
             cancellation_reason: "abandoned",
           });
         }
-      } else {
-        console.warn("[PaymentIntent] replacePiId session mismatch", {
-          replacePiId,
-          existingSession: existing.metadata.session_id,
-          requestSessionId: sessionId,
-        });
       }
-    } catch (error) {
-      console.error("[PaymentIntent] Failed to cancel existing PI", error);
+    } catch {
+      // Failed to cancel existing PI
     }
   }
 
   let amountMinor: number;
   try {
     amountMinor = convertYenToMinorUnit(amount, currency, fxRate);
-  } catch (error) {
-    console.error("[PaymentIntent] FX conversion failed", error);
+  } catch {
     return new Response(
       JSON.stringify({ ok: false, reason: "fx_conversion_failed" }),
       { status: 400, headers: { "content-type": "application/json" } }
     );
   }
-
-  console.log("[PaymentIntent] Creating Stripe PaymentIntent:", {
-    amountYen: amount,
-    amountMinor,
-    subtotal,
-    shipping,
-    currency,
-    orderNumber,
-    itemsCount: items.length,
-  });
 
   const pi = await stripe.paymentIntents.create({
     amount: amountMinor,
@@ -225,12 +181,6 @@ export async function POST(req: Request) {
     automatic_payment_methods: { enabled: true },
     metadata: stripeMetadata,
   }); // 手動キャプチャは PaymentIntent で capture_method: 'manual' を指定。:contentReference[oaicite:1]{index=1}
-
-  console.log("[PaymentIntent] PaymentIntent created successfully:", {
-    piId: pi.id,
-    amount: pi.amount,
-    status: pi.status,
-  });
 
   return new Response(
     JSON.stringify({

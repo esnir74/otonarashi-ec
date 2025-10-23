@@ -197,11 +197,6 @@ export function CheckoutForm({
     } else {
       try {
         await new Promise((resolve) => setTimeout(resolve, 600));
-        console.log("[checkout] bank transfer request", {
-          contact,
-          address,
-          amountLabel,
-        });
         setMessage(
           "郵便振込でのご注文を受け付けました。担当者より振込先情報をメールでご案内いたします。"
         );

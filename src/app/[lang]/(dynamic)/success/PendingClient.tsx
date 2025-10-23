@@ -47,7 +47,6 @@ export default function PendingClient({
         if (!alive) return;
 
         if (data.status === "ok") {
-          console.log("Payment confirmed on client after", elapsed, "ms");
           setStatus("ok");
           return;
         }

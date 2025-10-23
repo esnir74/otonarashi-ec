@@ -14,7 +14,6 @@ async function getSignedUpload(path: string) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ path }),
   });
-  console.log("getSignedUpload", res);
   if (!res.ok) throw new Error(await res.text());
   return res.json() as Promise<{ path: string; token: string }>;
 }
