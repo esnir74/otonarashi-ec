@@ -1,5 +1,10 @@
+import ProductCardComponent from "@/components/product/ProductCardComponent";
 import { type Locale } from "@/i18n/locales";
+import { getProducts } from "@/lib/repositories/products";
+import { isOk } from "@/lib/types/result";
 import { Metadata } from "next";
+
+export const revalidate = 60;
 
 type Props = { params: Promise<{ lang: Locale }> };
 
@@ -23,21 +28,40 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export const revalidate = 60;
 
 export default async function ProductsPage({ params }: Props) {
-  await params;
+  const { lang } = await params;
+
+  // Repository経由でデータ取得
+  const result = await getProducts(lang);
+
+  if (!isOk(result)) {
+    console.error("Failed to fetch products:", result.error);
+    return (
+      <div>
+        <h1>Products</h1>
+        <p>Failed to load products.</p>
+      </div>
+    );
+  }
+
+  const products = result.value;
+  console.log(products);
 
   return (
-    <div className="min-h-[calc(100vh-var(--header-height,64px))] bg-white flex items-center justify-center px-4 overflow-hidden">
-      <div className="text-center space-y-8">
-        <h1 className="text-4xl md:text-6xl font-serif text-gray-900 tracking-wider animate-fade-slide-up opacity-0 [animation-delay:200ms] [animation-fill-mode:forwards]">
-          Online Store
-        </h1>
-        <div className="w-24 h-px bg-gray-300 mx-auto animate-scale-x opacity-0 [animation-delay:600ms] [animation-fill-mode:forwards]"></div>
-        <p className="text-lg md:text-xl text-gray-500 font-light tracking-wide animate-fade-slide-up opacity-0 [animation-delay:1000ms] [animation-fill-mode:forwards]">
-          Coming Soon
-        </p>
+    <div className="min-h-screen bg-white">
+      {/* ヘッダー部分 - ロゴ */}
+      <div className="text-center mb-16">
+        <h1 className="text-5xl font-serif text-gray-800 my-7">Online Shop</h1>
+      </div>
+
+      {/* 商品グリッド */}
+      <div className="px-6 md:px-12 pb-16">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-x-0 gap-y-12 max-w-5xl mx-auto">
+          {products.map((product) => (
+            <ProductCardComponent key={product.id} product={product} />
+          ))}
+        </div>
       </div>
     </div>
   );
