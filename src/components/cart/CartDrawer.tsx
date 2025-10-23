@@ -6,11 +6,11 @@ import {
   removeFromCartServer,
   updateCartItemsServer,
 } from "@/app/actions/cart";
-import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetHeader,
   SheetTitle,
@@ -206,20 +206,24 @@ export default function CartDrawer() {
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="w-full sm:max-w-sm p-0 bg-white/95 backdrop-blur-md border-l border-neutral-200 shadow-xl flex flex-col animate-drawer-slide-in"
+        className="w-full sm:max-w-md p-0 bg-white shadow-[0_24px_64px_rgba(15,23,42,0.24)] flex flex-col animate-drawer-slide-in right-0 sm:right-6 top-0 sm:top-8 bottom-auto h-auto max-h-[calc(100vh-32px)] sm:max-h-[calc(100vh-96px)]"
       >
         {/* Header - Fixed */}
-        <SheetHeader className="px-6 pt-6 pb-4 shrink-0">
+        <SheetHeader className="relative px-6 pt-6 pb-4 shrink-0">
+          <SheetClose
+            className="absolute right-6 top-6 h-8 w-8 bg-transparent text-neutral-500 transition-colors hover:text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-0 focus-visible:ring-neutral-500"
+            aria-label="Close cart"
+          >
+            <span className="i-lucide-x h-[22px] w-[22px]" />
+          </SheetClose>
           <SheetTitle
-            className="text-2xl font-medium"
+            className="text-xl font-normal tracking-wide"
             style={{
               opacity: showContent ? 1 : 0,
-              transform: showContent ? "translateY(0)" : "translateY(8px)",
-              transition:
-                "opacity 300ms cubic-bezier(0.16, 1, 0.3, 1), transform 300ms cubic-bezier(0.16, 1, 0.3, 1)",
+              transition: "opacity 400ms cubic-bezier(0.22, 1, 0.36, 1)",
             }}
           >
-            Your basket
+            カート
           </SheetTitle>
         </SheetHeader>
 
@@ -229,17 +233,17 @@ export default function CartDrawer() {
         <ScrollArea className="flex-1 min-h-0">
           <div className="px-6 py-6 space-y-6">
             {isEmpty ? (
-              <p
-                className="text-sm text-neutral-500"
+              <div
+                className="py-8"
                 style={{
                   opacity: showContent ? 1 : 0,
-                  transform: showContent ? "translateY(0)" : "translateY(8px)",
-                  transition:
-                    "opacity 300ms cubic-bezier(0.16, 1, 0.3, 1), transform 300ms cubic-bezier(0.16, 1, 0.3, 1)",
+                  transition: "opacity 400ms cubic-bezier(0.22, 1, 0.36, 1)",
                 }}
               >
-                カートは空です。
-              </p>
+                <p className="text-sm text-neutral-500 font-light">
+                  カートは空です
+                </p>
+              </div>
             ) : (
               translatedItems.map((it, idx) => (
                 <div
@@ -247,13 +251,8 @@ export default function CartDrawer() {
                   className="space-y-4"
                   style={{
                     opacity: showContent ? 1 : 0,
-                    transform: showContent
-                      ? "translateY(0)"
-                      : "translateY(8px)",
-                    transition: `opacity 300ms cubic-bezier(0.16, 1, 0.3, 1) ${
-                      idx * 60
-                    }ms, transform 300ms cubic-bezier(0.16, 1, 0.3, 1) ${
-                      idx * 60
+                    transition: `opacity 400ms cubic-bezier(0.22, 1, 0.36, 1) ${
+                      idx * 80
                     }ms`,
                   }}
                 >
@@ -301,62 +300,65 @@ export default function CartDrawer() {
           </div>
         </ScrollArea>
 
-        <Separator className="shrink-0" />
+        {!isEmpty && (
+          <>
+            {/* <Separator className="shrink-0" /> */}
 
-        {/* Footer - Fixed */}
-        <div
-          className="px-6 py-6 space-y-4 shrink-0"
-          style={{
-            opacity: showContent ? 1 : 0,
-            transform: showContent ? "translateY(0)" : "translateY(8px)",
-            transition: `opacity 300ms cubic-bezier(0.16, 1, 0.3, 1) ${
-              translatedItems.length * 60 + 100
-            }ms, transform 300ms cubic-bezier(0.16, 1, 0.3, 1) ${
-              translatedItems.length * 60 + 100
-            }ms`,
-          }}
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-lg font-semibold">Total</span>
-            <span className="text-lg font-semibold">{totalText}</span>
-          </div>
+            {/* Footer - Fixed */}
+            <div
+              className="px-6 py-6 space-y-4 shrink-0"
+              style={{
+                opacity: showContent ? 1 : 0,
+                transition: `opacity 400ms cubic-bezier(0.22, 1, 0.36, 1) ${
+                  translatedItems.length * 80 + 120
+                }ms`,
+              }}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-lg font-semibold">Total</span>
+                <span className="text-lg font-semibold">{totalText}</span>
+              </div>
 
-          <p className="text-[13px] text-neutral-500">
-            Shipping is calculated at checkout.
-          </p>
+              <p className="text-[13px] text-neutral-500">
+                Shipping is calculated at checkout.
+              </p>
 
-          <label className="flex items-start gap-2.5 text-[13px] text-neutral-700 leading-relaxed">
-            <input
-              type="checkbox"
-              className="mt-0.5 h-4 w-4 rounded border-neutral-300"
-              checked={agreed}
-              onChange={(e) => setAgreed(e.target.checked)}
-            />
-            <span>
-              I agree to the <a className="underline">Shipping</a> and{" "}
-              <a className="underline">Returns &amp; Refunds</a> policies, the{" "}
-              <a className="underline">Terms &amp; Conditions of Sale</a>, and
-              the <a className="underline">Privacy &amp; Cookies Policy</a>.
-            </span>
-          </label>
+              <label className="flex items-start gap-2.5 text-[13px] text-neutral-700 leading-relaxed">
+                <input
+                  type="checkbox"
+                  className="mt-0.5 h-4 w-4 rounded border-neutral-300"
+                  checked={agreed}
+                  onChange={(e) => setAgreed(e.target.checked)}
+                />
+                <span>
+                  I agree to the <a className="underline">Shipping</a> and{" "}
+                  <a className="underline">Returns &amp; Refunds</a> policies,
+                  the{" "}
+                  <a className="underline">Terms &amp; Conditions of Sale</a>,
+                  and the{" "}
+                  <a className="underline">Privacy &amp; Cookies Policy</a>.
+                </span>
+              </label>
 
-          <Button
-            className="w-full h-12 text-base bg-[#23303B] hover:bg-[#1B2630] text-white"
-            disabled={isEmpty || !agreed}
-            onClick={() => {
-              console.log("[CartDrawer] Checkout button clicked", {
-                base,
-                path: `${base}/checkout`,
-                isEmpty,
-                agreed,
-              });
-              useUIStore.getState().closeCart();
-              router.push(`${base}/checkout`);
-            }}
-          >
-            Checkout
-          </Button>
-        </div>
+              <button
+                className="w-full px-5 py-3 font-medium tracking-widest transition-colors duration-300 text-sm border-2 border-black text-black hover:bg-black hover:text-white disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-black"
+                disabled={!agreed}
+                onClick={() => {
+                  console.log("[CartDrawer] Checkout button clicked", {
+                    base,
+                    path: `${base}/checkout`,
+                    isEmpty,
+                    agreed,
+                  });
+                  useUIStore.getState().closeCart();
+                  router.push(`${base}/checkout`);
+                }}
+              >
+                CHECKOUT
+              </button>
+            </div>
+          </>
+        )}
       </SheetContent>
     </Sheet>
   );

@@ -1,16 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useUIStore } from "@/store/ui";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const NAV_ITEMS = [
   { href: "", label: "Home" },
-  { href: "/aboutus", label: "About us" },
-  { href: "/products", label: "Product" },
+  { href: "/products", label: "Online Store" },
+  { href: "/aboutus", label: "About Us" },
   { href: "/news", label: "News" },
   { href: "/contact", label: "Contact" },
 ];

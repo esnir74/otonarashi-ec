@@ -12,8 +12,8 @@ import LangSwitcher from "./LangSwitcher";
 import MobileMenu from "./MobileMenu";
 
 const NAV_ITEMS = [
-  { href: "", label: "Concept" },
-  { href: "/products", label: "Products" },
+  { href: "", label: "Home" },
+  { href: "/products", label: "Online Store" },
   { href: "/aboutus", label: "About Us" },
   { href: "/news", label: "News" },
   { href: "/contact", label: "Contact" },
