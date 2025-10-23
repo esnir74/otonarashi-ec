@@ -1,4 +1,5 @@
 import HeroRing3D from "@/components/Home/HeroRing";
+import HomeNewsSection from "@/components/Home/HomeNewsSection";
 import { type Locale } from "@/i18n/locales";
 import { createPageMetadata } from "@/lib/metadata";
 import { Metadata } from "next";
@@ -22,28 +23,6 @@ const heroImages = [
 
 export default async function Page({ params }: Props) {
   const { lang } = await params;
-
-  // 仮データ
-  const news = [
-    {
-      id: "1",
-      slug: "sample-news-1",
-      title: "Sample News Title 1",
-      eyecatch_url: "/top/top.webp",
-      published_at: "2024-06-01T00:00:00Z",
-      status: "published",
-      category_name: "General",
-    },
-    // {
-    //   id: "2",
-    //   slug: "sample-news-2",
-    //   title: "Sample News Title 2",
-    //   eyecatch_url: "/top/top.webp",
-    //   published_at: "2024-05-25T00:00:00Z",
-    //   status: "published",
-    //   category_name: "Updates",
-    // },
-  ];
 
   return (
     <div className="w-full">
@@ -171,7 +150,7 @@ export default async function Page({ params }: Props) {
       </section>
 
       {/* Product Section */}
-      <section className="relative w-full aspect-square md:h-screen opacity-80">
+      <section className="relative w-full aspect-square md:h-screen opacity-100">
         <Image
           src="/top/online_shop/tower.webp"
           alt="Products"
@@ -255,70 +234,7 @@ export default async function Page({ params }: Props) {
       </section>
 
       {/* News Section */}
-      {news.length > 0 && (
-        <section className="w-full py-24 bg-stone-50">
-          <div className="max-w-6xl mx-auto px-6">
-            <h2 className="text-4xl md:text-5xl font-serif text-gray-900 text-center mb-16">
-              News
-            </h2>
-
-            <div className="grid md:grid-cols-2 gap-8 mb-12">
-              {news.map((item, index) => (
-                <Link
-                  key={item.id}
-                  href={`/${lang}/news/${item.slug}`}
-                  className={`group block bg-white overflow-hidden hover:shadow-lg transition-shadow duration-300 ${
-                    index === 1 ? "hidden md:block" : ""
-                  }`}
-                >
-                  {/* Image */}
-                  <div className="relative aspect-square bg-gray-100 overflow-hidden">
-                    {item.eyecatch_url ? (
-                      <Image
-                        src={item.eyecatch_url}
-                        alt={item.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-400">
-                        No Image
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-6 space-y-3">
-                    <time className="text-sm text-gray-600">
-                      {item.published_at
-                        ? new Date(item.published_at)
-                            .toLocaleDateString("ja-JP", {
-                              year: "numeric",
-                              month: "2-digit",
-                              day: "2-digit",
-                            })
-                            .replace(/\//g, ".")
-                        : "2025.00.00"}
-                    </time>
-                    <h3 className="text-lg text-gray-900 font-medium leading-relaxed group-hover:text-gray-600 transition-colors">
-                      {item.title}
-                    </h3>
-                  </div>
-                </Link>
-              ))}
-            </div>
-
-            <div className="text-center">
-              <Link
-                href={`/${lang}/news`}
-                className="inline-block border-2 border-gray-800 text-gray-800 px-12 py-4 hover:bg-gray-800 hover:text-white transition-colors duration-300 text-sm tracking-widest"
-              >
-                More News
-              </Link>
-            </div>
-          </div>
-        </section>
-      )}
+      <HomeNewsSection lang={lang} />
 
       {/* Contact Section */}
       <section className="w-full py-32 bg-white">
