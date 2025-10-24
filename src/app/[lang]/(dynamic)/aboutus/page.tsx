@@ -1,5 +1,4 @@
 import { type Locale } from "@/i18n/locales";
-import { createPageMetadata } from "@/lib/metadata";
 import { Metadata } from "next";
 import Image from "next/image";
 
@@ -7,7 +6,21 @@ type Props = { params: Promise<{ lang: Locale }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
-  return createPageMetadata(lang, "aboutus", "aboutus");
+
+  const messages = (await import(`@/messages/${lang}.json`)).default;
+  const seo = messages.seo.aboutus;
+
+  return {
+    title: seo.title,
+    description: seo.description,
+    alternates: {
+      languages: {
+        ja: "https://otonarashi.jp/ja/aboutus",
+        en: "https://otonarashi.jp/en/aboutus",
+        zh: "https://otonarashi.jp/zh/aboutus",
+      },
+    },
+  };
 }
 
 export const revalidate = 60;

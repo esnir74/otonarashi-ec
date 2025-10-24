@@ -1,5 +1,4 @@
 import { type Locale } from "@/i18n/locales";
-import { createPageMetadata } from "@/lib/metadata";
 import { getNewsById } from "@/lib/repositories/news";
 import { isOk } from "@/lib/types/result";
 import { Metadata } from "next";
@@ -12,13 +11,33 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const result = await getNewsById(slug, lang);
 
   if (!isOk(result) || !result.value) {
-    return createPageMetadata(lang, "news", "news");
+    const messages = (await import(`@/messages/${lang}.json`)).default;
+    const seo = messages.seo.news;
+
+    return {
+      title: seo.title,
+      description: seo.description,
+      alternates: {
+        languages: {
+          ja: "https://otonarashi.jp/ja/news",
+          en: "https://otonarashi.jp/en/news",
+          zh: "https://otonarashi.jp/zh/news",
+        },
+      },
+    };
   }
 
   const news = result.value;
   return {
-    title: news.title,
+    title: `${news.title} – Otonarashi`,
     description: news.body.substring(0, 160),
+    alternates: {
+      languages: {
+        ja: `https://otonarashi.jp/ja/news/${slug}`,
+        en: `https://otonarashi.jp/en/news/${slug}`,
+        zh: `https://otonarashi.jp/zh/news/${slug}`,
+      },
+    },
     openGraph: {
       title: news.title,
       description: news.body.substring(0, 160),

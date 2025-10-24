@@ -167,7 +167,7 @@ export default async function Page({ params }: Props) {
               href={`/${lang}/products`}
               className="inline-block border-2 border-white text-white px-12 py-4 hover:bg-white hover:text-gray-900 transition-colors duration-300 text-sm tracking-widest"
             >
-              More
+              Enter Store
             </Link>
           </div>
         </div>
@@ -226,7 +226,7 @@ export default async function Page({ params }: Props) {
                 href={`/${lang}/aboutus`}
                 className="inline-block border-2 border-gray-800 text-gray-800 px-12 py-4 hover:bg-gray-800 hover:text-white transition-colors duration-300 text-sm tracking-widest"
               >
-                More
+                About us
               </Link>
             </div>
           </div>

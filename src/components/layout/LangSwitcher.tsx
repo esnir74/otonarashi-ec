@@ -15,6 +15,7 @@ export default function LangSwitcher() {
           <button
             onClick={() => router.replace(pathname, { locale })}
             className="px-2 py-1 text-xs md:text-sm text-neutral-500 hover:text-sumi transition-colors"
+            aria-label={`Switch to ${locale === "ja" ? "Japanese" : "English"}`}
           >
             {locale.toUpperCase()}
           </button>
