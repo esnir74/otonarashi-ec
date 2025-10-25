@@ -92,7 +92,7 @@ export default async function NewsDetailPage({ params }: Props) {
           </div>
 
           {/* タイトル */}
-          <h1 className="text-3xl md:text-4xl lg:text-5xl text-gray-800 leading-tight">
+          <h1 className="text-xl md:text-2xl lg:text-3xl text-gray-800 leading-tight">
             {news.title}
           </h1>
         </header>
