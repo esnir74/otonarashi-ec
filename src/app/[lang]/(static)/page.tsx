@@ -133,11 +133,14 @@ export default async function Page({ params }: Props) {
 
               {/* 私たち〜以降 */}
               <div className="relative text-center space-y-0 pb-4">
-                <p className="text-[0.85rem] md:text-lg text-gray-800 leading-loose md:leading-[2.5]">
+                <p className="text-[0.85rem] md:text-lg text-gray-800 leading-loose md:leading-[2.5] mb-0">
                   私たちは、そんな着物をアップサイクルし、
                 </p>
+                <p className="text-[0.85rem] md:text-lg text-gray-800 leading-loose md:leading-[2.5] mb-0">
+                  もう一度、日常に着物の彩りを
+                </p>
                 <p className="text-[0.85rem] md:text-lg text-gray-800 leading-loose md:leading-[2.5]">
-                  もう一度、日常に着物の彩りを取り戻したいと考えています。
+                  取り戻したいと考えています。
                 </p>
 
                 <p className="text-[0.85rem] md:text-lg text-gray-800 leading-loose md:leading-[2.5] pt-8">
@@ -207,7 +210,9 @@ export default async function Page({ params }: Props) {
                 <br />
                 地域の方々から譲り受けた一着を、
                 <br />
-                丁寧にほどき、再び縫い合わせて生まれ変わらせています。
+                丁寧にほどき、再び縫い合わせて
+                <br />
+                生まれ変わらせています。
               </p>
 
               <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5]">

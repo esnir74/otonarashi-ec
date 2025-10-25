@@ -71,7 +71,9 @@ export default async function AboutUsPage({ params }: Props) {
               <br />
               地域の方々から譲り受けた一着を、
               <br />
-              丁寧にほどき、再び縫い合わせて生まれ変わらせています。
+              丁寧にほどき、再び縫い合わせて
+              <br />
+              生まれ変わらせています。
             </p>
 
             <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5]">
