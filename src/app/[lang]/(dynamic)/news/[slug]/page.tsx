@@ -92,20 +92,20 @@ export default async function NewsDetailPage({ params }: Props) {
           </div>
 
           {/* タイトル */}
-          <h1 className="text-4xl sm:text-5xl text-gray-800 leading-tight">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl text-gray-800 leading-tight">
             {news.title}
           </h1>
         </header>
 
         {/* アイキャッチ画像 */}
         {news.eyecatch_url && (
-          <div className="mb-12 relative w-full aspect-video">
+          <div className="mb-12 relative w-full aspect-video overflow-hidden rounded-lg bg-white">
             <Image
               src={news.eyecatch_url}
               alt={news.title}
               fill
               sizes="(min-width: 1024px) 768px, 100vw"
-              className="rounded-lg object-cover"
+              className="object-contain"
             />
           </div>
         )}
