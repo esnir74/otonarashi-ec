@@ -1,12 +1,26 @@
 import { type Locale } from "@/i18n/locales";
-import { createPageMetadata } from "@/lib/metadata";
 import { Metadata } from "next";
 
 type Props = { params: Promise<{ lang: Locale }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
-  return createPageMetadata(lang, "products", "products");
+
+  // メッセージを直接読み込んでメタデータを生成
+  const messages = (await import(`@/messages/${lang}.json`)).default;
+  const seo = messages.seo.products;
+
+  return {
+    title: seo.title,
+    description: seo.description,
+    alternates: {
+      languages: {
+        ja: "https://otonarashi.jp/ja/products",
+        en: "https://otonarashi.jp/en/products",
+        zh: "https://otonarashi.jp/zh/products",
+      },
+    },
+  };
 }
 
 export const revalidate = 60;

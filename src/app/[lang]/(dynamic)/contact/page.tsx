@@ -1,13 +1,26 @@
 import ContactForm from "@/components/ContactForm";
 import { type Locale } from "@/i18n/locales";
-import { createPageMetadata } from "@/lib/metadata";
 import { Metadata } from "next";
 
 type Props = { params: Promise<{ lang: Locale }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
-  return createPageMetadata(lang, "contact", "contact");
+
+  const messages = (await import(`@/messages/${lang}.json`)).default;
+  const seo = messages.seo.contact;
+
+  return {
+    title: seo.title,
+    description: seo.description,
+    alternates: {
+      languages: {
+        ja: "https://otonarashi.jp/ja/contact",
+        en: "https://otonarashi.jp/en/contact",
+        zh: "https://otonarashi.jp/zh/contact",
+      },
+    },
+  };
 }
 
 export default function ContactPage() {

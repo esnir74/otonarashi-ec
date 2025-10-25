@@ -3,7 +3,6 @@ import { ClearCartEffect } from "@/components/checkout/ClearCartEffect";
 import { ResetCheckoutSessionEffect } from "@/components/checkout/ResetCheckoutSessionEffect";
 import { RevalidateProductsEffect } from "@/components/checkout/RevalidateProductsEffect";
 import type { Locale } from "@/i18n/locales";
-import { createPageMetadata } from "@/lib/metadata";
 import { Metadata } from "next";
 
 type ActionKey = "checkout" | "products" | "reload" | "support";
@@ -105,7 +104,21 @@ const configs: Record<string, FailureConfig> = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
-  return createPageMetadata(lang, "checkout_failure", "checkout/failure");
+
+  const messages = (await import(`@/messages/${lang}.json`)).default;
+  const seo = messages.seo.checkout;
+
+  return {
+    title: seo.title,
+    description: seo.description,
+    alternates: {
+      languages: {
+        ja: "https://otonarashi.jp/ja/checkout/failure",
+        en: "https://otonarashi.jp/en/checkout/failure",
+        zh: "https://otonarashi.jp/zh/checkout/failure",
+      },
+    },
+  };
 }
 
 export default async function CheckoutFailurePage({

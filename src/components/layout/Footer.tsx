@@ -7,14 +7,19 @@ export default function Footer() {
         <div className="grid md:grid-cols-3 gap-12 mb-12">
           {/* Brand Section */}
           <div className="space-y-4">
-            <Image
-              src="/logo_with_bgcolor.webp"
-              alt="オトナラシ"
-              width={180}
-              height={60}
-              className="h-12 w-auto"
-              priority
-            />
+            {/* 固定枠 + fill で寸法予約（CLS対策） */}
+            <div className="relative w-[180px] h-[60px] md:w-[220px] md:h-[72px]">
+              <Image
+                src="/logo_with_bgcolor.webp"
+                alt="オトナラシ"
+                fill
+                sizes="(max-width: 768px) 180px, 220px"
+                className="object-contain block"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+
             <p className="text-sm text-gray-600 leading-relaxed">
               『日常に、着物の彩りを』
             </p>
@@ -63,18 +68,16 @@ export default function Footer() {
         </div>
 
         {/* Divider */}
-        <div className="w-full h-px bg-gray-200 mb-12"></div>
+        <div className="w-full h-px bg-gray-200 mb-12" />
 
         {/* Bottom Section */}
         <div className="space-y-6">
-          {/* Copyright Notice */}
           <div className="text-center">
             <p className="text-xs text-gray-500 leading-relaxed max-w-3xl mx-auto">
               本サイトが提供する情報、画像等を、権利者の許可なく複製、転用、販売などの二次利用することは固く禁じます。
             </p>
           </div>
 
-          {/* Copyright */}
           <div className="text-center">
             <p className="text-xs text-gray-500">
               &copy; {new Date().getFullYear()} オトナラシ

@@ -171,3 +171,13 @@ body.hero-intro-active [data-scroll-indicator] {
     animation: drawer-slide-in 800ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 }
+
+@layer components {
+  .skeleton-block {
+    @apply bg-gray-200 rounded-md;
+  }
+
+  .skeleton-circle {
+    @apply bg-gray-200 rounded-full;
+  }
+}

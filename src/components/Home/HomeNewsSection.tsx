@@ -13,7 +13,7 @@ export default async function HomeNewsSection({
   lang,
   maxItems = 2,
 }: HomeNewsSectionProps) {
-  const result = await getLatestNews("ja", maxItems);
+  const result = await getLatestNews(lang, maxItems);
 
   if (!isOk(result)) {
     console.error("[HomeNewsSection] Failed to fetch latest news:", result.error);

@@ -1,7 +1,6 @@
 import AddToCartButton from "@/components/product/AddToCartButton";
 import ProductGallery from "@/components/product/ProductGallery";
 import { type Locale } from "@/i18n/locales";
-import { createPageMetadata } from "@/lib/metadata";
 import { getProductBySlug } from "@/lib/repositories/products";
 import { isOk } from "@/lib/types/result";
 import { Metadata } from "next";
@@ -14,17 +13,37 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const result = await getProductBySlug(slug, lang);
 
   if (!isOk(result)) {
-    return createPageMetadata(lang, "products", "products");
+    const messages = (await import(`@/messages/${lang}.json`)).default;
+    const seo = messages.seo.products;
+
+    return {
+      title: seo.title,
+      description: seo.description,
+      alternates: {
+        languages: {
+          ja: "https://otonarashi.jp/ja/products",
+          en: "https://otonarashi.jp/en/products",
+          zh: "https://otonarashi.jp/zh/products",
+        },
+      },
+    };
   }
 
   const product = result.value;
   return {
-    title: `${product.name} – オトナラシ`,
+    title: `${product.name} – Otonarashi`,
     description:
       product.description.substring(0, 160) ||
       `${
         product.name
       }｜¥${product.price_yen.toLocaleString()}｜一点ものの着物アップサイクル。`,
+    alternates: {
+      languages: {
+        ja: `https://otonarashi.jp/ja/products/${slug}`,
+        en: `https://otonarashi.jp/en/products/${slug}`,
+        zh: `https://otonarashi.jp/zh/products/${slug}`,
+      },
+    },
     openGraph: {
       title: product.name,
       description: `¥${product.price_yen.toLocaleString()} - ${product.name}`,

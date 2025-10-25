@@ -9,7 +9,8 @@
     "audit": "lhci autorun --upload.target=temporary-public-storage",
     "lint": "eslint",
     "types:gen": "pnpx supabase gen types typescript --local > src/lib/database.types.ts",
-    "build:cf": "opennextjs-cloudflare build"
+    "build:cf": "opennextjs-cloudflare build",
+    "rs": "next build && next start"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -22,6 +23,7 @@
     "@supabase/supabase-js": "^2.75.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "critters": "^0.0.25",
     "lucide-react": "^0.546.0",
     "next": "15.5.4",
     "next-intl": "^4.3.12",

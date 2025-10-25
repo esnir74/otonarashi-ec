@@ -3,6 +3,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { useUIStore } from "@/store/ui";
 
 const SPIN_DURATION = 2;
 const PAUSE_DURATION = 0.4;
@@ -238,191 +239,197 @@ export default function HeroRing3D({
       body.classList.remove(className);
     };
   }, [logoRevealComplete]);
+  const heroMinHeight = "calc(100vh - var(--header-height, 64px))";
   const containerClassName = overlayActive
-    ? "fixed inset-0 z-[999] flex h-full min-h-screen w-full items-center justify-center overflow-hidden bg-transparent transition-[transform,opacity] duration-500"
-    : "relative flex h-full w-full items-center justify-center overflow-hidden bg-transparent transition-[transform,opacity] duration-500";
+    ? "hero-frame fixed inset-0 z-[999] flex w-full items-center justify-center overflow-hidden bg-transparent transition-[transform,opacity] duration-500"
+    : "hero-frame relative flex w-full items-center justify-center overflow-hidden bg-transparent transition-[transform,opacity] duration-500";
   const containerStyle = overlayActive
-    ? undefined
-    : { minHeight: "calc(100vh - var(--header-height, 64px))" };
+    ? { minHeight: "100vh" }
+    : { minHeight: heroMinHeight };
 
   return (
     <section
       data-hero-overlay={overlayActive ? "active" : "inactive"}
-      className={containerClassName}
-      style={containerStyle}
+      className="relative w-full"
+      style={{ minHeight: heroMinHeight }}
     >
-      {/* Background reveal */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        <div
-          className="absolute inset-0 bg-neutral-200"
-          style={{
-            transform: `translateX(${primaryTranslateX})`,
-          }}
-        />
-        <div
-          className="absolute inset-0 bg-neutral-200/70"
-          style={{
-            transform: `translateX(${secondaryTranslateX})`,
-          }}
-        />
-      </div>
-
-      {/* Logo reveal after background slides */}
-      <div
-        className="pointer-events-none absolute z-10 flex items-center justify-center"
-        style={{
-          top: overlayActive ? 0 : "var(--header-height, 64px)",
-          left: 0,
-          right: 0,
-          bottom: 0,
-        }}
-      >
-        <div
-          className="relative transition-all ease-out w-[60vw] md:w-[40vw] max-w-[780px] md:max-w-[520px] min-w-[220px]"
-          style={{
-            opacity: heroLogoOpacity,
-            transform: `translateY(calc(${heroLogoTranslateY}px - 80%))`,
-          }}
-        >
-          <Image
-            src="/logo.webp"
-            alt="Otonarashi wordmark"
-            width={775}
-            height={261}
-            className="w-full h-auto object-contain"
-            priority
+      <div className={containerClassName} style={containerStyle}>
+        {/* Background reveal */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <div
+            className="absolute inset-0 bg-neutral-200"
+            style={{
+              transform: `translateX(${primaryTranslateX})`,
+            }}
+          />
+          <div
+            className="absolute inset-0 bg-neutral-200/70"
+            style={{
+              transform: `translateX(${secondaryTranslateX})`,
+            }}
           />
         </div>
-      </div>
 
-      {/* 3D Container */}
-      <div
-        className="absolute z-20 flex items-center justify-center"
-        style={{
-          top: overlayActive ? 0 : "var(--header-height, 64px)",
-          left: 0,
-          right: 0,
-          bottom: 0,
-          perspective: `${perspective}px`,
-          perspectiveOrigin: "center center",
-        }}
-      >
-        {/* Carousel Container */}
+        {/* Logo reveal after background slides */}
         <div
-          className="relative"
+          className="pointer-events-none absolute z-10 flex items-center justify-center"
           style={{
-            width: `${effectiveImageSize}px`,
-            height: `${effectiveImageSize}px`,
-            transformStyle: "preserve-3d",
-            transform: `rotateY(${rotation % 360}deg)`,
+            top: overlayActive ? 0 : "var(--header-height, 64px)",
+            left: 0,
+            right: 0,
+            bottom: 0,
           }}
         >
-          {circleImages.map((image, index) => {
-            const angle = index * theta;
-            const opacity = fadeOpacity;
+          <div
+            className="relative transition-all ease-out w-[60vw] md:w-[40vw] max-w-[780px] md:max-w-[520px] min-w-[220px]"
+            style={{
+              opacity: heroLogoOpacity,
+              transform: `translateY(calc(${heroLogoTranslateY}px - 80%))`,
+            }}
+          >
+            <Image
+              src="/logo.webp"
+              alt="Otonarashi wordmark"
+              width={775}
+              height={261}
+              className="w-full h-auto object-contain"
+              priority
+            />
+          </div>
+        </div>
 
-            return (
-              <div
-                key={image.uniqueKey}
-                className="absolute top-0 left-0 transition-opacity duration-300"
-                style={{
-                  width: `${effectiveImageSize}px`,
-                  height: `${effectiveImageSize}px`,
-                  transform: `
+        {/* 3D Container */}
+        <div
+          className="absolute z-20 flex items-center justify-center"
+          style={{
+            top: overlayActive ? 0 : "var(--header-height, 64px)",
+            left: 0,
+            right: 0,
+            bottom: 0,
+            perspective: `${perspective}px`,
+            perspectiveOrigin: "center center",
+          }}
+        >
+          {/* Carousel Container */}
+          <div
+            className="relative"
+            style={{
+              width: `${effectiveImageSize}px`,
+              height: `${effectiveImageSize}px`,
+              transformStyle: "preserve-3d",
+              transform: `rotateY(${rotation % 360}deg)`,
+            }}
+          >
+            {circleImages.map((image, index) => {
+              const angle = index * theta;
+              const opacity = fadeOpacity;
+              const shouldPriorityLoad = index < images.length;
+
+              return (
+                <div
+                  key={image.uniqueKey}
+                  className="absolute top-0 left-0 transition-opacity duration-300"
+                  style={{
+                    width: `${effectiveImageSize}px`,
+                    height: `${effectiveImageSize}px`,
+                    transform: `
                     rotateY(${angle}deg)
                     translateZ(${baseRadius}px)
                   `,
-                  transformStyle: "preserve-3d",
-                  opacity: opacity <= 0.001 ? 0 : opacity,
-                }}
-              >
-                <div className="relative w-full h-full overflow-hidden">
-                  {/* 画像 */}
-                  <Image
-                    src={image.src}
-                    alt={image.alt}
-                    width={effectiveImageSize}
-                    height={effectiveImageSize}
-                    className="object-cover w-full h-full absolute inset-0 opacity-80 brightness-[0.78] saturate-[0.92]"
-                    priority={index < 4}
-                    sizes={`${effectiveImageSize}px`}
-                  />
+                    transformStyle: "preserve-3d",
+                    opacity: opacity <= 0.001 ? 0 : opacity,
+                  }}
+                >
+                  <div className="relative w-full h-full overflow-hidden">
+                    {/* 画像 */}
+                    <Image
+                      src={image.src}
+                      alt={image.alt}
+                      width={effectiveImageSize}
+                      height={effectiveImageSize}
+                      className="object-cover w-full h-full absolute inset-0 opacity-80 brightness-[0.78] saturate-[0.92]"
+                      priority={shouldPriorityLoad}
+                      loading={shouldPriorityLoad ? "eager" : undefined}
+                      fetchPriority={shouldPriorityLoad ? "high" : undefined}
+                      sizes={`${effectiveImageSize}px`}
+                    />
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Content Overlay */}
-      {children && (
-        <div className="pointer-events-none absolute inset-0 z-[200] flex flex-col items-center justify-center px-4 text-center">
-          <div className="pointer-events-auto rounded-2xl bg-white/80 px-8 py-6 shadow-xl backdrop-blur-sm">
-            {children}
+              );
+            })}
           </div>
         </div>
-      )}
-      {scrollIndicatorVisible && (
-        <div className="pointer-events-none absolute bottom-10 left-1/2 z-[250] -translate-x-1/2">
-          <span className="scroll-indicator inline-flex flex-col items-center gap-2 text-gray-700/85">
-            <span className="scroll-indicator__label text-[0.6rem] uppercase tracking-[0.4em] text-gray-500/80">
-              scroll
+
+        {/* Content Overlay */}
+        {children && (
+          <div className="pointer-events-none absolute inset-0 z-[200] flex flex-col items-center justify-center px-4 text-center">
+            <div className="pointer-events-auto rounded-2xl bg-white/80 px-8 py-6 shadow-xl backdrop-blur-sm">
+              {children}
+            </div>
+          </div>
+        )}
+        {scrollIndicatorVisible && (
+          <div className="pointer-events-none absolute bottom-10 left-1/2 z-[40] -translate-x-1/2">
+            <span className="scroll-indicator inline-flex flex-col items-center gap-2 text-gray-700/85">
+              <span className="scroll-indicator__label text-[0.6rem] uppercase tracking-[0.4em] text-gray-500/80">
+                scroll
+              </span>
+              <span className="scroll-indicator__glyph relative flex h-12 w-12 items-center justify-center">
+                <span className="absolute inset-0 rounded-full border border-gray-400/50" />
+                <svg
+                  className="scroll-indicator__arrow h-5 w-5 text-gray-700/85"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M10 5v7"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M6.5 9.5 10 13l3.5-3.5"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
             </span>
-            <span className="scroll-indicator__glyph relative flex h-12 w-12 items-center justify-center">
-              <span className="absolute inset-0 rounded-full border border-gray-400/50" />
-              <svg
-                className="scroll-indicator__arrow h-5 w-5 text-gray-700/85"
-                viewBox="0 0 20 20"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M10 5v7"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M6.5 9.5 10 13l3.5-3.5"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
-          </span>
-        </div>
-      )}
-      <style jsx>{`
-        @keyframes indicatorFade {
-          from {
+          </div>
+        )}
+        <style jsx>{`
+          @keyframes indicatorFade {
+            from {
+              opacity: 0;
+              transform: translateY(-12px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          @keyframes indicatorBounce {
+            0%,
+            100% {
+              transform: translateY(0);
+            }
+            50% {
+              transform: translateY(6px);
+            }
+          }
+          .scroll-indicator {
             opacity: 0;
-            transform: translateY(-12px);
+            animation: indicatorFade 0.5s ease forwards;
           }
-          to {
-            opacity: 1;
-            transform: translateY(0);
+          .scroll-indicator__glyph,
+          .scroll-indicator__arrow {
+            animation: indicatorBounce 1.8s ease-in-out 0.6s infinite;
           }
-        }
-        @keyframes indicatorBounce {
-          0%,
-          100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(6px);
-          }
-        }
-        .scroll-indicator {
-          opacity: 0;
-          animation: indicatorFade 0.5s ease forwards;
-        }
-        .scroll-indicator__glyph,
-        .scroll-indicator__arrow {
-          animation: indicatorBounce 1.8s ease-in-out 0.6s infinite;
-        }
-      `}</style>
+        `}</style>
+      </div>
     </section>
   );
 }

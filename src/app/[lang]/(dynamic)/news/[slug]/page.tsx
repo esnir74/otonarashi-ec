@@ -1,5 +1,4 @@
 import { type Locale } from "@/i18n/locales";
-import { createPageMetadata } from "@/lib/metadata";
 import { getNewsById } from "@/lib/repositories/news";
 import { isOk } from "@/lib/types/result";
 import { Metadata } from "next";
@@ -12,13 +11,33 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const result = await getNewsById(slug, lang);
 
   if (!isOk(result) || !result.value) {
-    return createPageMetadata(lang, "news", "news");
+    const messages = (await import(`@/messages/${lang}.json`)).default;
+    const seo = messages.seo.news;
+
+    return {
+      title: seo.title,
+      description: seo.description,
+      alternates: {
+        languages: {
+          ja: "https://otonarashi.jp/ja/news",
+          en: "https://otonarashi.jp/en/news",
+          zh: "https://otonarashi.jp/zh/news",
+        },
+      },
+    };
   }
 
   const news = result.value;
   return {
-    title: news.title,
+    title: `${news.title} – Otonarashi`,
     description: news.body.substring(0, 160),
+    alternates: {
+      languages: {
+        ja: `https://otonarashi.jp/ja/news/${slug}`,
+        en: `https://otonarashi.jp/en/news/${slug}`,
+        zh: `https://otonarashi.jp/zh/news/${slug}`,
+      },
+    },
     openGraph: {
       title: news.title,
       description: news.body.substring(0, 160),
@@ -73,20 +92,20 @@ export default async function NewsDetailPage({ params }: Props) {
           </div>
 
           {/* タイトル */}
-          <h1 className="text-4xl sm:text-5xl text-gray-800 leading-tight">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl text-gray-800 leading-tight">
             {news.title}
           </h1>
         </header>
 
         {/* アイキャッチ画像 */}
         {news.eyecatch_url && (
-          <div className="mb-12 relative w-full aspect-video">
+          <div className="mb-12 relative w-full aspect-video overflow-hidden rounded-lg bg-white">
             <Image
               src={news.eyecatch_url}
               alt={news.title}
               fill
               sizes="(min-width: 1024px) 768px, 100vw"
-              className="rounded-lg object-cover"
+              className="object-contain"
             />
           </div>
         )}

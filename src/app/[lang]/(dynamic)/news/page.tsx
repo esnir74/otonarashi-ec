@@ -1,5 +1,4 @@
 import { type Locale } from "@/i18n/locales";
-import { createPageMetadata } from "@/lib/metadata";
 import { getNews } from "@/lib/repositories/news";
 import { isOk } from "@/lib/types/result";
 import { Metadata } from "next";
@@ -9,7 +8,21 @@ type Props = { params: Promise<{ lang: Locale }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
-  return createPageMetadata(lang, "news", "news");
+
+  const messages = (await import(`@/messages/${lang}.json`)).default;
+  const seo = messages.seo.news;
+
+  return {
+    title: seo.title,
+    description: seo.description,
+    alternates: {
+      languages: {
+        ja: "https://otonarashi.jp/ja/news",
+        en: "https://otonarashi.jp/en/news",
+        zh: "https://otonarashi.jp/zh/news",
+      },
+    },
+  };
 }
 
 export const revalidate = 60;
