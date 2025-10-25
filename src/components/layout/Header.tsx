@@ -8,7 +8,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
-import LangSwitcher from "./LangSwitcher";
 import MobileMenu from "./MobileMenu";
 
 const NAV_ITEMS = [
@@ -124,7 +123,7 @@ export default function Header({ initialCount }: { initialCount: number }) {
                 {typeof window === "undefined" ? initialCount : count}
               </span>
             </button>
-            <LangSwitcher />
+            {/* <LangSwitcher /> */}
           </div>
 
           {/* Mobile: Cart + Hamburger */}

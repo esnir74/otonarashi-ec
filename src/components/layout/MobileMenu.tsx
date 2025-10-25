@@ -49,10 +49,10 @@ export default function MobileMenu() {
     router.push(href);
   };
 
-  const handleLanguageSwitch = (locale: string) => {
-    const newPath = pathname.replace(/^\/[^\/]+/, `/${locale}`);
-    router.push(newPath);
-  };
+  // const handleLanguageSwitch = (locale: string) => {
+  //   const newPath = pathname.replace(/^\/[^\/]+/, `/${locale}`);
+  //   router.push(newPath);
+  // };
 
   return (
     <div
@@ -65,9 +65,8 @@ export default function MobileMenu() {
           menuOpen ? "translate-y-0" : "translate-y-8"
         }`}
       >
-        {/* Top section: Language switcher and close button */}
-        <div className="flex items-start justify-between mb-12">
-          {/* Language toggle buttons */}
+        <div className="flex items-start justify-end mb-12">
+          {/*
           <div className="flex gap-0">
             <button
               onClick={() => handleLanguageSwitch("ja")}
@@ -90,6 +89,7 @@ export default function MobileMenu() {
               EN
             </button>
           </div>
+          */}
 
           {/* Close button (X) */}
           <button
