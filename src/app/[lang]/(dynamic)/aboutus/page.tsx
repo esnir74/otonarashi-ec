@@ -126,7 +126,7 @@ export default async function AboutUsPage({ params }: Props) {
 
           {/* Additional Members Text */}
           <div className="text-center mb-24">
-            <p className="text-[0.85rem] md:text-base text-gray-700">
+            <p className="text-[0.76rem] md:text-base text-gray-700">
               他にもたくさんのメンバーが製品づくりに携わっています。
             </p>
           </div>
@@ -189,10 +189,10 @@ export default async function AboutUsPage({ params }: Props) {
               私たちがプロデュースしています
             </h3>
             <div className="space-y-8 md:space-y-12">
-              <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose md:leading-relaxed">
+              <p className="text-[0.76rem] md:text-base text-gray-700 leading-loose md:leading-relaxed">
                 ハナタバプロジェクトの企画・デザインを担当しています。
               </p>
-              <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose md:leading-relaxed">
+              <p className="text-[0.76rem] md:text-base text-gray-700 leading-loose md:leading-relaxed">
                 縫製チームの高い技術と、
                 <br />
                 着物の個性を生かしたデザインを生み出しています。
