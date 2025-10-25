@@ -1,4 +1,5 @@
 import { type Locale } from "@/i18n/locales";
+import { readHeroBlur } from "@/lib/utils/readHeroBlur";
 import { Metadata } from "next";
 import Image from "next/image";
 
@@ -27,6 +28,7 @@ export const revalidate = 60;
 
 export default async function AboutUsPage({ params }: Props) {
   await params;
+  const blurHero = readHeroBlur("public/aboutus/hero_blur_base64.txt");
 
   return (
     <section className="w-full bg-white">
@@ -34,16 +36,23 @@ export default async function AboutUsPage({ params }: Props) {
         <h2 className="text-4xl md:text-5xl font-serif text-gray-900 text-center mb-16 pt-24 px-6">
           About Us
         </h2>
+
         {/* Team Photo */}
-        <div className="mb-16 w-full">
-          <div className="relative aspect-[16/9] md:aspect-[21/9] w-full overflow-hidden bg-gray-100">
-            <Image
-              src="/aboutus/group_with_hanataba.webp"
-              alt="Our Team"
-              fill
-              className="object-cover"
-            />
-          </div>
+        <div
+          className="relative w-full overflow-hidden mb-16"
+          style={{ aspectRatio: "16 / 9" }}
+        >
+          <Image
+            src="/aboutus/group_with_hanataba.webp"
+            alt="Our Team"
+            fill
+            className="object-cover"
+            sizes="100vw"
+            priority
+            fetchPriority="high"
+            placeholder={blurHero ? "blur" : "empty"}
+            blurDataURL={blurHero}
+          />
         </div>
 
         {/* Content */}
@@ -84,98 +93,33 @@ export default async function AboutUsPage({ params }: Props) {
           <h2 className="text-4xl md:text-5xl font-serif text-gray-900 text-center mb-24">
             Member
           </h2>
-
           {/* Members Grid */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-16 md:gap-x-12 md:gap-y-20 mb-16">
-            {/* kano shin */}
-            <div className="flex flex-col items-center">
-              <div className="relative w-[85%] aspect-square mb-4 overflow-hidden rounded-full bg-gray-100 mx-auto">
-                <Image
-                  src="/aboutus/members/kanon_shin.webp"
-                  alt="Kanon Shin"
-                  fill
-                  className="object-cover"
-                />
+            {[
+              { src: "/aboutus/members/kanon_shin.webp", name: "kanon shin" },
+              { src: "/aboutus/members/kanon_riyon.webp", name: "kanon riyon" },
+              { src: "/aboutus/members/kanon_take.webp", name: "kanon take" },
+              { src: "/aboutus/members/kanon_fumi.webp", name: "kanon fumi" },
+              { src: "/aboutus/members/atto.webp", name: "Atto" },
+              { src: "/aboutus/members/maaru.webp", name: "MAARU" },
+            ].map((member) => (
+              <div key={member.name} className="flex flex-col items-center">
+                <div className="relative w-[85%] aspect-square mb-4 overflow-hidden rounded-full bg-gray-100 mx-auto">
+                  <Image
+                    src={member.src}
+                    alt={member.name}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 640px) 45vw, (max-width: 1024px) 25vw, 18vw"
+                    placeholder="blur"
+                    blurDataURL="/aboutus/members/blur_placeholder.webp" // 省略可
+                  />
+                </div>
+                <h3 className="text-lg md:text-xl font-serif text-gray-900 text-center">
+                  {member.name}
+                </h3>
               </div>
-              <h3 className="text-lg md:text-xl font-serif text-gray-900 text-center">
-                kanon shin
-              </h3>
-            </div>
-
-            {/* kanon riyon */}
-            <div className="flex flex-col items-center">
-              <div className="relative w-[85%] aspect-square mb-4 overflow-hidden rounded-full bg-gray-100 mx-auto">
-                <Image
-                  src="/aboutus/members/kanon_riyon.webp"
-                  alt="kanon riyon"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <h3 className="text-lg md:text-xl font-serif text-gray-900 text-center">
-                kanon riyon
-              </h3>
-            </div>
-
-            {/* kanon take */}
-            <div className="flex flex-col items-center">
-              <div className="relative w-[85%] aspect-square mb-4 overflow-hidden rounded-full bg-gray-100 mx-auto">
-                <Image
-                  src="/aboutus/members/kanon_take.webp"
-                  alt="kanon take"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <h3 className="text-lg md:text-xl font-serif text-gray-900 text-center">
-                kanon take
-              </h3>
-            </div>
-
-            {/* kanon fumi */}
-            <div className="flex flex-col items-center">
-              <div className="relative w-[85%] aspect-square mb-4 overflow-hidden rounded-full bg-gray-100 mx-auto">
-                <Image
-                  src="/aboutus/members/kanon_fumi.webp"
-                  alt="kanon fumi"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <h3 className="text-lg md:text-xl font-serif text-gray-900 text-center">
-                kanon fumi
-              </h3>
-            </div>
-
-            {/* Atto */}
-            <div className="flex flex-col items-center">
-              <div className="relative w-[85%] aspect-square mb-4 overflow-hidden rounded-full bg-gray-100 mx-auto">
-                <Image
-                  src="/aboutus/members/atto.webp"
-                  alt="Atto"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <h3 className="text-lg md:text-xl font-serif text-gray-900 text-center">
-                Atto
-              </h3>
-            </div>
-
-            {/* MAARU */}
-            <div className="flex flex-col items-center">
-              <div className="relative w-[85%] aspect-square mb-4 overflow-hidden rounded-full bg-gray-100 mx-auto">
-                <Image
-                  src="/aboutus/members/maaru.webp"
-                  alt="MAARU"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <h3 className="text-lg md:text-xl font-serif text-gray-900 text-center">
-                MAARU
-              </h3>
-            </div>
+            ))}
           </div>
 
           {/* Additional Members Text */}
@@ -194,6 +138,7 @@ export default async function AboutUsPage({ params }: Props) {
                 width={800}
                 height={800}
                 className="w-full h-auto object-contain"
+                sizes="(max-width: 768px) 90vw, 448px"
               />
             </div>
           </div>
@@ -231,6 +176,7 @@ export default async function AboutUsPage({ params }: Props) {
                 width={800}
                 height={800}
                 className="w-full h-auto object-contain"
+                sizes="(max-width: 768px) 90vw, 448px"
               />
             </div>
           </div>

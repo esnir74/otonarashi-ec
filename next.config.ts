@@ -11,6 +11,9 @@ const nextConfig: NextConfig = {
     ],
     deviceSizes: [400, 640, 828, 1200, 1600, 2400],
   },
+  experimental: {
+    optimizeCss: true,
+  },
 };
 
 const withNextIntl = createNextIntlPlugin();

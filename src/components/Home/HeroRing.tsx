@@ -323,6 +323,7 @@ export default function HeroRing3D({
             {circleImages.map((image, index) => {
               const angle = index * theta;
               const opacity = fadeOpacity;
+              const shouldPriorityLoad = index < images.length;
 
               return (
                 <div
@@ -347,7 +348,9 @@ export default function HeroRing3D({
                       width={effectiveImageSize}
                       height={effectiveImageSize}
                       className="object-cover w-full h-full absolute inset-0 opacity-80 brightness-[0.78] saturate-[0.92]"
-                      priority={index < 4}
+                      priority={shouldPriorityLoad}
+                      loading={shouldPriorityLoad ? "eager" : undefined}
+                      fetchPriority={shouldPriorityLoad ? "high" : undefined}
                       sizes={`${effectiveImageSize}px`}
                     />
                   </div>

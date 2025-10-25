@@ -1,5 +1,3 @@
-// src/app/[lang]/layout.tsx
-import "@/app/globals.css";
 import CartHydrator from "@/components/cart/CartHydrator";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";

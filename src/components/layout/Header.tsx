@@ -29,6 +29,7 @@ export default function Header({ initialCount }: { initialCount: number }) {
   const openMenu = useUIStore((s) => s.openMenu);
   const headerRef = useRef<HTMLElement | null>(null);
 
+  // ヘッダー高さをCSS変数へ（ページ側でオフセットに使う想定）
   useEffect(() => {
     const el = headerRef.current;
     if (!el || typeof window === "undefined") return;
@@ -44,13 +45,12 @@ export default function Header({ initialCount }: { initialCount: number }) {
 
     updateHeight();
 
-    if (typeof window !== "undefined" && "ResizeObserver" in window) {
+    if ("ResizeObserver" in window) {
       observer = new ResizeObserver(updateHeight);
       observer.observe(el);
     }
 
     window.addEventListener("resize", updateHeight);
-
     return () => {
       observer?.disconnect();
       window.removeEventListener("resize", updateHeight);
@@ -84,20 +84,24 @@ export default function Header({ initialCount }: { initialCount: number }) {
       <header
         ref={headerRef}
         data-site-header
-        className="fixed top-0 left-0 right-0 z-50 w-full border-neutral-200 bg-white/80 backdrop-blur-sm transition-all duration-500 ease-out"
+        // 高さを固定してCLSを防ぐ
+        className="fixed top-0 left-0 right-0 z-50 w-full h-14 md:h-16 border-neutral-200 bg-white/80 backdrop-blur-sm transition-all duration-500 ease-out"
       >
-        <div className="container flex items-center justify-between px-3 md:px-6 py-2 md:py-4">
+        <div className="container flex h-full items-center justify-between px-3 md:px-6">
           <Link href={base} className="flex items-center gap-2">
-            <Image
-              src="/header_logo.webp"
-              alt="Otonarashi logo"
-              width={100}
-              height={0}
-              priority
-              className="h-auto w-[120px] md:w-[160px] object-contain"
-            />
+            <div className="relative h-9 md:h-10 w-[120px] md:w-[160px]">
+              <Image
+                src="/header_logo.webp"
+                alt="Otonarashi logo"
+                fill
+                sizes="(max-width: 768px) 120px, 160px"
+                className="object-contain"
+                priority={false}
+              />
+            </div>
           </Link>
 
+          {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-2">
             {NAV_ITEMS.map(({ href, label }) => (
               <NavLink key={href || "home"} href={`${base}${href}`}>
@@ -106,7 +110,7 @@ export default function Header({ initialCount }: { initialCount: number }) {
             ))}
           </nav>
 
-          {/* Desktop: Cart and language switcher */}
+          {/* Desktop: Cart + Lang */}
           <div className="hidden md:flex items-center gap-3">
             <button
               onClick={openCart}
@@ -123,7 +127,7 @@ export default function Header({ initialCount }: { initialCount: number }) {
             <LangSwitcher />
           </div>
 
-          {/* Mobile: Cart number and hamburger menu (right aligned) */}
+          {/* Mobile: Cart + Hamburger */}
           <div className="flex md:hidden items-center gap-3 ml-auto">
             <button
               onClick={openCart}
