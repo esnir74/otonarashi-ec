@@ -1,12 +1,18 @@
-import createMiddleware from "next-intl/middleware";
-import { defaultLocale, locales } from "./i18n/locales";
+import { NextRequest, NextResponse } from "next/server";
 
-export default createMiddleware({
-  locales,
-  defaultLocale,
-  localePrefix: "always", // 常に /ja /en /zh を付ける
-});
+export default async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+
+  if (
+    pathname === "/maintenance" ||
+    pathname.startsWith("/maintenance/")
+  ) {
+    return NextResponse.next();
+  }
+
+  return NextResponse.rewrite(new URL("/maintenance", req.url));
+}
 
 export const config = {
-  matcher: ["/((?!api|_next|admin|.*\\..*).*)"], // api, 静的ファイル, _next は除外
+  matcher: ["/((?!_next|.*\\..*).*)"], // 静的ファイル, _next は除外
 };
