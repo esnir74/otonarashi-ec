@@ -1,18 +1,24 @@
+import createMiddleware from "next-intl/middleware";
+import { defaultLocale, locales } from "./i18n/locales";
 import { NextRequest, NextResponse } from "next/server";
 
-export default async function middleware(req: NextRequest) {
+const intlMiddleware = createMiddleware({
+  locales,
+  defaultLocale,
+  localePrefix: "always",
+});
+
+export default function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  if (
-    pathname === "/maintenance" ||
-    pathname.startsWith("/maintenance/")
-  ) {
-    return NextResponse.next();
+  // adminパスへのアクセスをホームにリダイレクト
+  if (pathname.startsWith("/admin")) {
+    return NextResponse.redirect(new URL(`/${defaultLocale}`, req.url));
   }
 
-  return NextResponse.rewrite(new URL("/maintenance", req.url));
+  return intlMiddleware(req);
 }
 
 export const config = {
-  matcher: ["/((?!_next|.*\\..*).*)"], // 静的ファイル, _next は除外
+  matcher: ["/((?!api|_next|.*\\..*).*)"],
 };
