@@ -61,13 +61,13 @@ export default async function Page({ params }: Props) {
             {/* Introduction */}
             <div className="relative text-center pb-20">
               <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] pb-2">
-                確かな縫製技術で着物文化に新たな音を鳴らし、
+                着物文化に新たな音を鳴らし、
               </p>
               <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] pb-2">
                 大人らしさと品格を纏う、
               </p>
               <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5]">
-                新しい着物スタイルを京都から世界に提案します。
+                着物スタイルを加音から提案します。
               </p>
             </div>
 
@@ -121,10 +121,13 @@ export default async function Page({ params }: Props) {
 
                 <div className="pt-4">
                   <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] mb-0">
-                    このままでは、大切に保管している着物も、{" "}
+                    思い出のつまったもの、
                   </p>
                   <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] mb-0">
-                    いずれは廃棄物となってしまうかもしれません。
+                    なつかしいあの人を思い出すものなど、
+                  </p>
+                  <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] mb-0">
+                    １着１着にかけがえのないストーリーがあります。
                   </p>
                 </div>
               </div>
@@ -134,17 +137,13 @@ export default async function Page({ params }: Props) {
               {/* 私たち〜以降 */}
               <div className="relative text-center space-y-0 pb-4">
                 <p className="text-[0.85rem] md:text-lg text-gray-800 leading-loose md:leading-[2.5] mb-0">
-                  私たちは、そんな着物をアップサイクルし、
+                  加音はそんな着物をアップサイクルし、
                 </p>
                 <p className="text-[0.85rem] md:text-lg text-gray-800 leading-loose md:leading-[2.5] mb-0">
-                  もう一度、日常に着物の彩りを
+                  「もう一度、日常に着物の彩りを！」を
                 </p>
                 <p className="text-[0.85rem] md:text-lg text-gray-800 leading-loose md:leading-[2.5]">
-                  取り戻したいと考えています。
-                </p>
-
-                <p className="text-[0.85rem] md:text-lg text-gray-800 leading-loose md:leading-[2.5] pt-8">
-                  着物をモードに着こなす文化を京都から世界へ。
+                  コンセプトに製品作りをしています。
                 </p>
               </div>
             </div>
@@ -208,11 +207,16 @@ export default async function Page({ params }: Props) {
               <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5]">
                 オトナラシの製品となる着物は、
                 <br />
-                地域の方々から譲り受けた一着を、
+                地域の方々などから寄贈していただいたものです。
                 <br />
-                丁寧にほどき、再び縫い合わせて
                 <br />
-                生まれ変わらせています。
+                思い出のつまったもの、
+                <br />
+                なつかしいあの人を思い出すものなど、
+                <br />
+                1 着 1 着にかけがえのないストーリーがあります。
+                <br />
+                その着物に新たな息吹をふきこんでいます。
               </p>
 
               <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5]">
