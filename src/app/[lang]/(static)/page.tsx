@@ -3,6 +3,7 @@ import HomeNewsSection from "@/components/Home/HomeNewsSection";
 import { type Locale } from "@/i18n/locales";
 import { createPageMetadata } from "@/lib/metadata";
 import { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -23,6 +24,7 @@ const heroImages = [
 
 export default async function Page({ params }: Props) {
   const { lang } = await params;
+  const t = await getTranslations({ locale: lang, namespace: "home" });
 
   return (
     <div className="w-full">
@@ -60,21 +62,21 @@ export default async function Page({ params }: Props) {
           <div className="text-center space-y-16">
             {/* Introduction */}
             <div className="relative text-center pb-20">
-              <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] pb-2">
-                着物文化に新たな音を鳴らし、
+              <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] pb-2 whitespace-pre-line">
+                {t("concept.introduction.line1")}
               </p>
-              <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] pb-2">
-                大人らしさと品格を纏う、
+              <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] pb-2 whitespace-pre-line">
+                {t("concept.introduction.line2")}
               </p>
-              <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5]">
-                着物スタイルを加音から提案します。
+              <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] whitespace-pre-line">
+                {t("concept.introduction.line3")}
               </p>
             </div>
 
             {/* Main Message */}
             <div className="pt-12">
-              <h2 className="text-[1.46rem] md:text-4xl font-serif text-gray-900 leading-relaxed mb-16">
-                もう一度、日常に着物の彩りを。
+              <h2 className="text-[1.46rem] md:text-4xl font-serif text-gray-900 leading-relaxed mb-16 whitespace-pre-line">
+                {t("concept.mainMessage")}
               </h2>
             </div>
 
@@ -82,68 +84,66 @@ export default async function Page({ params }: Props) {
             <div className="relative space-y-8 md:space-y-12 max-w-3xl mx-auto">
               {/* 現在〜のぼります */}
               <div className="relative text-center space-y-0">
-                <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5]">
-                  現在、社会課題となっている衣類廃棄量は、
+                <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] whitespace-pre-line">
+                  {t("concept.statistics.waste.line1")}
                 </p>
-                <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5]">
-                  年間およそ50万トン。
+                <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] whitespace-pre-line">
+                  {t("concept.statistics.waste.line2")}
                 </p>
               </div>
 
               {/* そのうち〜6日 */}
               <div className="relative text-center space-y-3 md:space-y-5">
                 <div>
-                  <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] mb-0">
-                    そのうち家庭から出る衣類の約85%は、
+                  <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] mb-0 whitespace-pre-line">
+                    {t("concept.statistics.retirement.main1")}
                   </p>
-                  <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] mb-0">
-                    まだ着られる「退蔵品」とされています。
+                  <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] mb-0 whitespace-pre-line">
+                    {t("concept.statistics.retirement.main2")}
                   </p>
                   <p className="text-[0.325rem] md:text-[0.75rem] text-gray-500 mb-0">
-                    2023年に排出された新品衣類のうち、退蔵由来の割合
+                    {t("concept.statistics.retirement.source1")}
                   </p>
                   <p className="text-[0.325rem] md:text-[0.75rem] text-gray-500">
-                    環境省「令和６年度消費者アンケート（ストック調査）」に基づく
+                    {t("concept.statistics.retirement.source2")}
                   </p>
                 </div>
 
                 <div className="pt-4">
-                  <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] mb-0">
-                    なかでも家庭のタンスに眠る着物は、
+                  <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] mb-0 whitespace-pre-line">
+                    {t("concept.statistics.kimono.main1")}
                   </p>
-                  <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] mb-0">
-                    約8兆円分にのぼると報道されています。
+                  <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] mb-0 whitespace-pre-line">
+                    {t("concept.statistics.kimono.main2")}
                   </p>
                   <p className="text-[0.325rem] md:text-[0.75rem] text-gray-500">
-                    日本経済新聞2024年1月5日
+                    {t("concept.statistics.kimono.source")}
                   </p>
                 </div>
 
                 <div className="pt-4">
-                  <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] mb-0">
-                    思い出のつまったもの、
+                  <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] mb-0 whitespace-pre-line">
+                    {t("concept.statistics.story.line1")}
                   </p>
-                  <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] mb-0">
-                    なつかしいあの人を思い出すものなど、
+                  <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] mb-0 whitespace-pre-line">
+                    {t("concept.statistics.story.line2")}
                   </p>
-                  <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] mb-0">
-                    １着１着にかけがえのないストーリーがあります。
+                  <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] mb-0 whitespace-pre-line">
+                    {t("concept.statistics.story.line3")}
                   </p>
                 </div>
               </div>
 
-              <br />
-
               {/* 私たち〜以降 */}
               <div className="relative text-center space-y-0 pb-4">
-                <p className="text-[0.85rem] md:text-lg text-gray-800 leading-loose md:leading-[2.5] mb-0">
-                  加音はそんな着物をアップサイクルし、
+                <p className="text-[0.85rem] md:text-lg text-gray-800 leading-loose md:leading-[2.5] mb-0 whitespace-pre-line">
+                  {t("concept.mission.line1")}
                 </p>
-                <p className="text-[0.85rem] md:text-lg text-gray-800 leading-loose md:leading-[2.5] mb-0">
-                  「もう一度、日常に着物の彩りを！」を
+                <p className="text-[0.85rem] md:text-lg text-gray-800 leading-loose md:leading-[2.5] mb-0 whitespace-pre-line">
+                  {t("concept.mission.line2")}
                 </p>
-                <p className="text-[0.85rem] md:text-lg text-gray-800 leading-loose md:leading-[2.5]">
-                  コンセプトに製品作りをしています。
+                <p className="text-[0.85rem] md:text-lg text-gray-800 leading-loose md:leading-[2.5] whitespace-pre-line">
+                  {t("concept.mission.line3")}
                 </p>
               </div>
             </div>
@@ -195,38 +195,25 @@ export default async function Page({ params }: Props) {
 
           {/* Content */}
           <div className="text-center space-y-12 px-6 pb-24">
-            <h2 className="text-3xl md:text-5xl font-serif text-gray-900 mb-14 md:mb-18">
-              一点ずつ、丁寧に。
+            <h2 className="text-3xl md:text-5xl font-serif text-gray-900 mb-14 md:mb-18 whitespace-pre-line">
+              {t("aboutUs.sectionTitle")}
             </h2>
 
             <div className="space-y-8 md:space-y-12 max-w-3xl mx-auto">
-              <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5]">
-                この世界に、二つとして同じものはありません。
+              <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] whitespace-pre-line">
+                {t("aboutUs.paragraph1")}
               </p>
 
-              <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5]">
-                オトナラシの製品となる着物は、
-                <br />
-                地域の方々などから寄贈していただいたものです。
-                <br />
-                <br />
-                思い出のつまったもの、
-                <br />
-                なつかしいあの人を思い出すものなど、
-                <br />
-                1 着 1 着にかけがえのないストーリーがあります。
-                <br />
-                その着物に新たな息吹をふきこんでいます。
+              <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] whitespace-pre-line">
+                {t("aboutUs.paragraph2")}
               </p>
 
-              <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5]">
-                柄も、風合いも、それぞれが唯一無二。
+              <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] whitespace-pre-line">
+                {t("aboutUs.paragraph3")}
               </p>
 
-              <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] font-medium">
-                オトナラシのアイテムは、
-                <br />
-                この世にたったひとつしかない特別なものです。
+              <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] font-medium whitespace-pre-line">
+                {t("aboutUs.paragraph4")}
               </p>
             </div>
 

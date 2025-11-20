@@ -45,5 +45,125 @@
     "addToCart": "Add to cart",
     "viewCart": "View cart",
     "inCartMessage": "This item is already in your cart"
+  },
+  "home": {
+    "concept": {
+      "introduction": {
+        "line1": "With reliable craftsmanship,\nwe bring a new note to kimono culture.\n",
+        "line2": "\nFrom Kanon, we present a new kimono style \nthat embodies maturity and refined elegance.",
+        "line3": ""
+      },
+      "mainMessage": "Bringing the beauty of kimono \nback into everyday life",
+      "statistics": {
+        "waste": {
+          "line1": "The annual clothing waste problem currently ",
+          "line2": "amounts to approximately 500,000 tons."
+        },
+        "retirement": {
+          "main1": "Of this, about 85% of clothing discarded\nfrom households is considered \"unused stock\" \nthat is still wearable. ",
+          "main2": "",
+          "source1": "Based on the Ministry of the Environment's \"FY2024 Consumer Survey [Stock Survey]\"",
+          "source2": "regarding unused items among new garments disposed of in 2023."
+        },
+        "kimono": {
+          "main1": "Furthermore, it is reported that\n kimonos lying unused in household wardrobes ",
+          "main2": "amount to approximately 8 trillion yen.",
+          "source": "Nikkei Newspaper, January 6, 2024"
+        },
+        "story": {
+          "line1": "Filled with cherished memories,",
+          "line2": "or recalling someone dear,",
+          "line3": "each kimono holds an irreplaceable story."
+        }
+      },
+      "mission": {
+        "line1": "Kanon upcycles these kimonos,",
+        "line2": "creating products under the concept:",
+        "line3": "\"Bringing the color of kimono\n back into everyday life!\""
+      }
+    },
+    "aboutUs": {
+      "sectionTitle": "Each piece,\n carefully crafted",
+      "paragraph1": "No two things in this world are exactly alike.",
+      "paragraph2": "The kimonos that become Otonarashi products\nare donated by people from the local community.\n\nEach kimono holds irreplaceable stories—\nfilled with memories or recalling someone dear.\nWe breathe new life into these kimonos.",
+      "paragraph3": "Each pattern and texture is truly one-of-a-kind.",
+      "paragraph4": "Otonarashi items are special,\nexisting only once in this world."
+    }
+  },
+  "aboutus": {
+    "sectionTitle": "Each piece,\n carefully crafted",
+    "paragraph1": "No two things in this world are exactly alike.",
+    "paragraph2": "The kimonos that become Otonarashi products\nare donated by people from the local community.\n\nEach kimono holds irreplaceable stories—\nfilled with memories or recalling someone dear.\nWe breathe new life into these kimonos.",
+    "paragraph3": "Each pattern and texture is truly one-of-a-kind.",
+    "paragraph4": "Otonarashi items are special,\nexisting only once in this world.",
+    "kanonSection": {
+      "title": "Hand-sewn by Kanon",
+      "paragraph1": "Otonarashi products are made at\nKanon Nishikyogoku Workshop.",
+      "paragraph2": "The workshop is attended by\nindividuals with developmental disabilities.",
+      "paragraph3": "Each piece is finished with careful,\nhand-sewn stitches.",
+      "paragraph4": "Sewing is joyful work that makes \nthe most of each member's unique strengths.",
+      "paragraph5": "Otonarashi was born from its exhibition at\nEXPO 2025 Osaka Kansai.",
+      "paragraph6": "Its product planning and production \nwere developed in collaboration with \nthe Hanataba Project.",
+      "paragraph7": "This initiative is supported by a grant from\nthe Toshiba International Foundation."
+    }
+  },
+  "contact": {
+    "formTitle": "Contact Form",
+    "kanon": {
+      "name": "Kanon Nishikyogoku Sagyosho",
+      "address": "24 Tsutsumi-cho, Nishikyogoku, Ukyo-ku, Kyoto 615-0863",
+      "representative": "Representative: Masako Kitamura",
+      "inquiry": "Please use the form below to contact us."
+    },
+    "hanataba": {
+      "name": "Hanataba Project",
+      "from": "From: Office@",
+      "representative": "Hanataba Project Representative",
+      "university": "Kyoto Koka Women's University",
+      "department": "Faculty of Career Development, Department of Career Development, 4th Year",
+      "person": "Haruka Sakamoto | Sakamoto Haruka"
+    },
+    "form": {
+      "labels": {
+        "name": "Name",
+        "companyName": "Company/Organization Name",
+        "phone": "Phone Number",
+        "email": "Email Address",
+        "emailConfirmation": "Please enter your email address again for confirmation",
+        "message": "Message",
+        "required": "*",
+        "optional": "(Optional)"
+      },
+      "buttons": {
+        "confirm": "Proceed to confirmation"
+      },
+      "success": {
+        "title": "Your inquiry has been received",
+        "message": "Thank you.\nWe will get back to you shortly."
+      },
+      "errors": {
+        "submitFailed": "Failed to send"
+      },
+      "confirmation": {
+        "title": "Please confirm your information",
+        "notEntered": "(Not entered)",
+        "submitError": "An error occurred during submission. Please try again.",
+        "buttons": {
+          "edit": "Edit information",
+          "submit": "Submit with this information",
+          "submitting": "Submitting..."
+        }
+      },
+      "validation": {
+        "nameRequired": "Please enter your name",
+        "phoneRequired": "Please enter your phone number",
+        "phoneInvalid": "Phone number can only contain numbers, hyphens, parentheses, and plus signs",
+        "emailRequired": "Please enter your email address",
+        "emailInvalid": "Please enter a valid email address",
+        "emailConfirmationRequired": "Please enter your email address for confirmation",
+        "emailMismatch": "Email addresses do not match",
+        "messageRequired": "Please enter your message"
+      }
+    }
   }
 }

@@ -1,6 +1,7 @@
 import { type Locale } from "@/i18n/locales";
 import { readHeroBlur } from "@/lib/utils/readHeroBlur";
 import { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import Image from "next/image";
 
 type Props = { params: Promise<{ lang: Locale }> };
@@ -27,7 +28,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export const revalidate = 60;
 
 export default async function AboutUsPage({ params }: Props) {
-  await params;
+  const { lang } = await params;
+  const t = await getTranslations({ locale: lang, namespace: "aboutus" });
   const blurHero = readHeroBlur("public/aboutus/hero_blur_base64.txt");
 
   return (
@@ -57,37 +59,25 @@ export default async function AboutUsPage({ params }: Props) {
 
         {/* Content */}
         <div className="text-center space-y-12 px-6 pb-24">
-          <h2 className="text-3xl md:text-5xl font-serif text-gray-900 mb-12">
-            一点ずつ、丁寧に。
+          <h2 className="text-3xl md:text-5xl font-serif text-gray-900 mb-12 whitespace-pre-line">
+            {t("sectionTitle")}
           </h2>
 
           <div className="space-y-8 md:space-y-12 max-w-3xl mx-auto">
             <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5]">
-              この世界に、二つとして同じものはありません。
+              {t("paragraph1")}
+            </p>
+
+            <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] whitespace-pre-line">
+              {t("paragraph2")}
             </p>
 
             <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5]">
-              オトナラシの製品となる着物は、
-              <br />
-              地域の方々などから寄贈していただいたものです。
-              <br />
-              思い出のつまったもの、
-              <br />
-              なつかしいあの人を思い出すものなど、
-              <br />
-              1 着 1 着にかけがえのないストーリーがあります。
-              <br />
-              その着物に新たな息吹をふきこんでいます。
+              {t("paragraph3")}
             </p>
 
-            <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5]">
-              柄も、風合いも、それぞれが唯一無二。
-            </p>
-
-            <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] font-medium">
-              オトナラシのアイテムは、
-              <br />
-              この世にたったひとつしかない特別なものです。
+            <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] font-medium whitespace-pre-line">
+              {t("paragraph4")}
             </p>
           </div>
         </div>
@@ -145,43 +135,29 @@ export default async function AboutUsPage({ params }: Props) {
           {/* Team Description */}
           <div className="text-center space-y-12 max-w-3xl mx-auto mb-24">
             <h3 className="text-[1.02rem] md:text-[1.2rem] font-bold text-gray-900">
-              加音が縫製しています
+              {t("kanonSection.title")}
             </h3>
             <div className="space-y-8 md:space-y-12">
-              <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose md:leading-relaxed">
-                加音西京極作業所で
-                <br />
-                オトナラシの製品をつくっています。
+              <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose md:leading-relaxed whitespace-pre-line">
+                {t("kanonSection.paragraph1")}
               </p>
-              <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose md:leading-relaxed">
-                加音西京極作業所は、
-                <br />
-                発達障害のある方が通われている作業所です。
+              <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose md:leading-relaxed whitespace-pre-line">
+                {t("kanonSection.paragraph2")}
               </p>
-              <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose md:leading-relaxed">
-                一針一針、
-                <br />
-                丁寧な手作業で仕上げています。
+              <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose md:leading-relaxed whitespace-pre-line">
+                {t("kanonSection.paragraph3")}
               </p>
-              <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose md:leading-relaxed">
-                縫製はメンバーの特性を活かした楽しい仕事です。
+              <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose md:leading-relaxed whitespace-pre-line">
+                {t("kanonSection.paragraph4")}
               </p>
-              <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose md:leading-relaxed">
-                オトナラシの製品づくりは
-                <br />
-                EXPO2025 大阪関西万博での
-                <br />
-                展示を足がかりに誕生しました。
+              <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose md:leading-relaxed whitespace-pre-line">
+                {t("kanonSection.paragraph5")}
               </p>
-              <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose md:leading-relaxed">
-                この誕生にはハナタバプロジェクトによる
-                <br />
-                プロデュース支援を受けました。
+              <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose md:leading-relaxed whitespace-pre-line">
+                {t("kanonSection.paragraph6")}
               </p>
-              <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose md:leading-relaxed">
-                この活動は公益財団法人東芝国際交流財団様からの
-                <br />
-                助成金で運営しています。
+              <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose md:leading-relaxed whitespace-pre-line">
+                {t("kanonSection.paragraph7")}
               </p>
             </div>
           </div>

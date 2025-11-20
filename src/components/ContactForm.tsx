@@ -1,22 +1,26 @@
 "use client";
 
 import {
-  contactFormSchema,
+  createContactFormSchema,
   type ContactFormData,
   type ContactFormFormValues,
 } from "@/lib/validations/contact";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
+import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
 import ContactFormConfirmation from "./ContactFormConfirmation";
 
 export default function ContactForm() {
+  const t = useTranslations("contact.form");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<
     "idle" | "success" | "error"
   >("idle");
   const [isConfirming, setIsConfirming] = useState(false);
   const [formData, setFormData] = useState<ContactFormData | null>(null);
+
+  const contactFormSchema = useMemo(() => createContactFormSchema(t), [t]);
 
   const {
     register,
@@ -53,7 +57,7 @@ export default function ContactForm() {
       });
 
       if (!response.ok) {
-        throw new Error("送信に失敗しました");
+        throw new Error(t("errors.submitFailed"));
       }
 
       setSubmitStatus("success");
@@ -74,11 +78,9 @@ export default function ContactForm() {
     return (
       <div className="text-center space-y-8">
         <div className="p-8 bg-stone-100 border border-gray-200 text-gray-800">
-          <h3 className="text-xl mb-4">お問い合わせを受け付けました</h3>
-          <p className="text-base">
-            ありがとうございます。
-            <br />
-            担当者より折り返しご連絡させていただきます。
+          <h3 className="text-xl mb-4">{t("success.title")}</h3>
+          <p className="text-base whitespace-pre-line">
+            {t("success.message")}
           </p>
         </div>
       </div>
@@ -107,7 +109,8 @@ export default function ContactForm() {
           htmlFor="name"
           className="block text-sm md:text-base text-gray-700 mb-2"
         >
-          お名前 <span className="text-red-500">*</span>
+          {t("labels.name")}{" "}
+          <span className="text-red-500">{t("labels.required")}</span>
         </label>
         <input
           id="name"
@@ -126,8 +129,10 @@ export default function ContactForm() {
           htmlFor="companyName"
           className="block text-sm md:text-base text-gray-700 mb-2"
         >
-          法人名・団体名{" "}
-          <span className="ml-1 text-xs text-gray-400">（任意）</span>
+          {t("labels.companyName")}{" "}
+          <span className="ml-1 text-xs text-gray-400">
+            {t("labels.optional")}
+          </span>
         </label>
         <input
           id="companyName"
@@ -148,7 +153,8 @@ export default function ContactForm() {
           htmlFor="phone"
           className="block text-sm md:text-base text-gray-700 mb-2"
         >
-          電話番号 <span className="text-red-500">*</span>
+          {t("labels.phone")}{" "}
+          <span className="text-red-500">{t("labels.required")}</span>
         </label>
         <input
           id="phone"
@@ -167,7 +173,8 @@ export default function ContactForm() {
           htmlFor="email"
           className="block text-sm md:text-base text-gray-700 mb-2"
         >
-          メールアドレス <span className="text-red-500">*</span>
+          {t("labels.email")}{" "}
+          <span className="text-red-500">{t("labels.required")}</span>
         </label>
         <input
           id="email"
@@ -186,8 +193,8 @@ export default function ContactForm() {
           htmlFor="emailConfirmation"
           className="block text-sm md:text-base text-gray-700 mb-2"
         >
-          確認のためもう一度メールアドレスをご入力ください{" "}
-          <span className="text-red-500">*</span>
+          {t("labels.emailConfirmation")}{" "}
+          <span className="text-red-500">{t("labels.required")}</span>
         </label>
         <input
           id="emailConfirmation"
@@ -208,7 +215,8 @@ export default function ContactForm() {
           htmlFor="message"
           className="block text-sm md:text-base text-gray-700 mb-2"
         >
-          お問い合わせ内容 <span className="text-red-500">*</span>
+          {t("labels.message")}{" "}
+          <span className="text-red-500">{t("labels.required")}</span>
         </label>
         <textarea
           id="message"
@@ -227,7 +235,7 @@ export default function ContactForm() {
           type="submit"
           className="inline-block border-2 border-gray-800 text-gray-800 px-12 py-4 hover:bg-gray-800 hover:text-white transition-colors duration-300 text-sm tracking-widest"
         >
-          確認画面へ進む
+          {t("buttons.confirm")}
         </button>
       </div>
     </form>

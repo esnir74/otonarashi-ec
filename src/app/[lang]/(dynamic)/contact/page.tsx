@@ -1,6 +1,7 @@
 import ContactForm from "@/components/ContactForm";
 import { type Locale } from "@/i18n/locales";
 import { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 type Props = { params: Promise<{ lang: Locale }> };
 
@@ -23,7 +24,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default function ContactPage() {
+export default async function ContactPage({ params }: Props) {
+  const { lang } = await params;
+  const t = await getTranslations({ locale: lang, namespace: "contact" });
   return (
     <div className="w-full bg-white">
       <div className="max-w-4xl mx-auto px-6 py-24">
@@ -40,19 +43,19 @@ export default function ContactPage() {
           <div className="space-y-6 text-left">
             <div className="mb-2">
               <p className="text-lg md:text-xl font-medium text-gray-900">
-                加音西京極作業所
+                {t("kanon.name")}
               </p>
               <p className="text-xs md:text-sm text-gray-500">
-                〒615-0863 京都市右京区西京極堤町24
+                {t("kanon.address")}
               </p>
             </div>
 
             <div className="space-y-1">
               <p className="text-sm md:text-base text-gray-700">
-                代表者：北村雅子
+                {t("kanon.representative")}
               </p>
               <p className="text-sm md:text-base text-gray-700">
-                お問い合わせは以下のフォームよりお寄せください。
+                {t("kanon.inquiry")}
               </p>
             </div>
           </div>
@@ -64,7 +67,7 @@ export default function ContactPage() {
         {/* Contact Form */}
         <div className="max-w-2xl mx-auto mb-24">
           <h2 className="text-2xl md:text-3xl text-gray-900 text-center mb-12">
-            お問い合わせフォーム
+            {t("formTitle")}
           </h2>
           <ContactForm />
         </div>
@@ -77,25 +80,25 @@ export default function ContactPage() {
           <div className="space-y-6 text-left">
             <div className="mb-2">
               <p className="text-lg md:text-xl font-medium text-gray-900">
-                ハナタバプロジェクト
+                {t("hanataba.name")}
               </p>
               <p className="text-xs md:text-sm text-gray-500">
-                From：Office＠
+                {t("hanataba.from")}
               </p>
             </div>
 
             <div>
               <p className="text-sm md:text-base text-gray-700 mb-4">
-                ハナタバプロジェクト 代表
+                {t("hanataba.representative")}
               </p>
             </div>
 
             <div className="space-y-1">
               <p className="text-sm md:text-base text-gray-700">
-                京都光華女子大学
+                {t("hanataba.university")}
               </p>
               <p className="text-sm md:text-base text-gray-700">
-                キャリア形成学部 キャリア形成学科４年
+                {t("hanataba.department")}
               </p>
               <p className="text-base md:text-lg text-gray-900 font-medium">
                 坂本 遼香 | Sakamoto Haruka

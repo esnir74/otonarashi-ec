@@ -1,4 +1,7 @@
+"use client";
+
 import { ContactFormData } from "@/lib/validations/contact";
+import { useTranslations } from "next-intl";
 
 interface ContactFormConfirmationProps {
   data: ContactFormData;
@@ -15,36 +18,37 @@ export default function ContactFormConfirmation({
   isSubmitting,
   submitError,
 }: ContactFormConfirmationProps) {
+  const t = useTranslations("contact.form");
   const trimmedCompanyName = (data.companyName ?? "").trim();
   const hasCompanyName = trimmedCompanyName.length > 0;
-  const companyNameDisplay = hasCompanyName ? trimmedCompanyName : "（未入力）";
+  const companyNameDisplay = hasCompanyName ? trimmedCompanyName : t("confirmation.notEntered");
 
   return (
     <div className="space-y-8">
       <div className="text-center mb-12">
         <h3 className="text-xl md:text-2xl text-gray-900">
-          入力内容をご確認ください
+          {t("confirmation.title")}
         </h3>
       </div>
 
       {/* Error Message */}
       {submitError && (
         <div className="p-4 bg-red-50 border border-red-200 text-red-800 text-sm text-center">
-          送信中にエラーが発生しました。もう一度お試しください。
+          {t("confirmation.submitError")}
         </div>
       )}
 
       <div className="bg-gray-50 p-8 space-y-6">
         {/* Name */}
         <div className="border-b border-gray-200 pb-4">
-          <dt className="text-sm md:text-base text-gray-600 mb-2">お名前</dt>
+          <dt className="text-sm md:text-base text-gray-600 mb-2">{t("labels.name")}</dt>
           <dd className="text-base md:text-lg text-gray-900">{data.name}</dd>
         </div>
 
         {/* Company Name */}
         <div className="border-b border-gray-200 pb-4">
           <dt className="text-sm md:text-base text-gray-600 mb-2">
-            法人名・団体名
+            {t("labels.companyName")}
           </dt>
           <dd
             className={`text-base md:text-lg ${
@@ -58,7 +62,7 @@ export default function ContactFormConfirmation({
         {/* Phone */}
         <div className="border-b border-gray-200 pb-4">
           <dt className="text-sm md:text-base text-gray-600 mb-2">
-            電話番号
+            {t("labels.phone")}
           </dt>
           <dd className="text-base md:text-lg text-gray-900">{data.phone}</dd>
         </div>
@@ -66,7 +70,7 @@ export default function ContactFormConfirmation({
         {/* Email */}
         <div className="border-b border-gray-200 pb-4">
           <dt className="text-sm md:text-base text-gray-600 mb-2">
-            メールアドレス
+            {t("labels.email")}
           </dt>
           <dd className="text-base md:text-lg text-gray-900">{data.email}</dd>
         </div>
@@ -74,7 +78,7 @@ export default function ContactFormConfirmation({
         {/* Message */}
         <div>
           <dt className="text-sm md:text-base text-gray-600 mb-2">
-            お問い合わせ内容
+            {t("labels.message")}
           </dt>
           <dd className="text-base md:text-lg text-gray-900 whitespace-pre-wrap">
             {data.message}
@@ -90,7 +94,7 @@ export default function ContactFormConfirmation({
           disabled={isSubmitting}
           className="inline-block border-2 border-gray-400 text-gray-700 px-12 py-4 hover:bg-gray-100 transition-colors duration-300 text-sm tracking-widest disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          内容を修正する
+          {t("confirmation.buttons.edit")}
         </button>
         <button
           type="button"
@@ -98,7 +102,7 @@ export default function ContactFormConfirmation({
           disabled={isSubmitting}
           className="inline-block border-2 border-gray-800 text-gray-800 px-12 py-4 hover:bg-gray-800 hover:text-white transition-colors duration-300 text-sm tracking-widest disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isSubmitting ? "送信中..." : "この内容で送信する"}
+          {isSubmitting ? t("confirmation.buttons.submitting") : t("confirmation.buttons.submit")}
         </button>
       </div>
     </div>
