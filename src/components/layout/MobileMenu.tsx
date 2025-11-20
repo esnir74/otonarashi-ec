@@ -68,7 +68,7 @@ export default function MobileMenu() {
       >
         <div className="flex items-start justify-between mb-12">
           {/* Language switch - Left top */}
-          <div className="flex gap-0">
+          {/* <div className="flex gap-0">
             <button
               onClick={() => handleLanguageSwitch("ja")}
               className={`px-4 py-2 text-sm border border-neutral-900 transition-colors ${
@@ -89,7 +89,7 @@ export default function MobileMenu() {
             >
               EN
             </button>
-          </div>
+          </div> */}
 
           {/* Close button (X) - Right top */}
           <button

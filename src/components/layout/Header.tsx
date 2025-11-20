@@ -124,7 +124,7 @@ export default function Header({ initialCount }: { initialCount: number }) {
                 {typeof window === "undefined" ? initialCount : count}
               </span>
             </button>
-            <LangSwitcher />
+            {/* <LangSwitcher /> */}
           </div>
 
           {/* Mobile: Cart + Hamburger */}
