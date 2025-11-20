@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
+import LangSwitcher from "./LangSwitcher";
 import MobileMenu from "./MobileMenu";
 
 const NAV_ITEMS = [

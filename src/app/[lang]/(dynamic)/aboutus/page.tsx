@@ -1,6 +1,7 @@
 import { type Locale } from "@/i18n/locales";
 import { readHeroBlur } from "@/lib/utils/readHeroBlur";
 import { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import Image from "next/image";
 
 type Props = { params: Promise<{ lang: Locale }> };
@@ -27,7 +28,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export const revalidate = 60;
 
 export default async function AboutUsPage({ params }: Props) {
-  await params;
+  const { lang } = await params;
+  const t = await getTranslations({ locale: lang, namespace: "aboutus" });
   const blurHero = readHeroBlur("public/aboutus/hero_blur_base64.txt");
 
   return (
@@ -43,7 +45,7 @@ export default async function AboutUsPage({ params }: Props) {
           style={{ aspectRatio: "16 / 9" }}
         >
           <Image
-            src="/aboutus/group_with_hanataba.webp"
+            src="/aboutus/kanon_cheerful_top.webp"
             alt="Our Team"
             fill
             className="object-cover"
@@ -57,33 +59,25 @@ export default async function AboutUsPage({ params }: Props) {
 
         {/* Content */}
         <div className="text-center space-y-12 px-6 pb-24">
-          <h2 className="text-3xl md:text-5xl font-serif text-gray-900 mb-12">
-            一点ずつ、丁寧に。
+          <h2 className="text-3xl md:text-5xl font-serif text-gray-900 mb-12 whitespace-pre-line">
+            {t("sectionTitle")}
           </h2>
 
           <div className="space-y-8 md:space-y-12 max-w-3xl mx-auto">
             <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5]">
-              この世界に、二つとして同じものはありません。
+              {t("paragraph1")}
+            </p>
+
+            <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] whitespace-pre-line">
+              {t("paragraph2")}
             </p>
 
             <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5]">
-              オトナラシの製品となる着物は、
-              <br />
-              地域の方々から譲り受けた一着を、
-              <br />
-              丁寧にほどき、再び縫い合わせて
-              <br />
-              生まれ変わらせています。
+              {t("paragraph3")}
             </p>
 
-            <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5]">
-              柄も、風合いも、それぞれが唯一無二。
-            </p>
-
-            <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] font-medium">
-              オトナラシのアイテムは、
-              <br />
-              この世にたったひとつしかない特別なものです。
+            <p className="text-[0.85rem] md:text-lg text-gray-700 leading-loose md:leading-[2.5] font-medium whitespace-pre-line">
+              {t("paragraph4")}
             </p>
           </div>
         </div>
@@ -92,11 +86,11 @@ export default async function AboutUsPage({ params }: Props) {
       {/* Member Section */}
       <div className="w-full bg-white py-24">
         <div className="max-w-6xl mx-auto px-6 text-center">
-          <h2 className="text-4xl md:text-5xl font-serif text-gray-900 text-center mb-24">
+          {/* <h2 className="text-4xl md:text-5xl font-serif text-gray-900 text-center mb-24">
             Member
-          </h2>
+          </h2> */}
           {/* Members Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-16 md:gap-x-12 md:gap-y-20 mb-16">
+          {/* <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-16 md:gap-x-12 md:gap-y-20 mb-16">
             {[
               { src: "/aboutus/members/kanon_shin.webp", name: "kanon shin" },
               { src: "/aboutus/members/kanon_riyon.webp", name: "kanon riyon" },
@@ -122,14 +116,7 @@ export default async function AboutUsPage({ params }: Props) {
                 </h3>
               </div>
             ))}
-          </div>
-
-          {/* Additional Members Text */}
-          <div className="text-center mb-24">
-            <p className="text-[0.76rem] md:text-base text-gray-700">
-              他にもたくさんのメンバーが製品づくりに携わっています。
-            </p>
-          </div>
+          </div> */}
 
           {/* Team Photo - Kanon Cheerful */}
           <div className="mb-16 w-full max-w-md mx-auto">
@@ -148,29 +135,35 @@ export default async function AboutUsPage({ params }: Props) {
           {/* Team Description */}
           <div className="text-center space-y-12 max-w-3xl mx-auto mb-24">
             <h3 className="text-[1.02rem] md:text-[1.2rem] font-bold text-gray-900">
-              私たちが縫製しています
+              {t("kanonSection.title")}
             </h3>
             <div className="space-y-8 md:space-y-12">
-              <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose md:leading-relaxed">
-                オトナラシの製品の品質を支えているのは、
-                <br />
-                加音西京極作業所の縫製チームです。
+              <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose md:leading-relaxed whitespace-pre-line">
+                {t("kanonSection.paragraph1")}
               </p>
-              <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose md:leading-relaxed">
-                一針一針、
-                <br />
-                丁寧な手仕事で仕上げています。
+              <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose md:leading-relaxed whitespace-pre-line">
+                {t("kanonSection.paragraph2")}
               </p>
-              <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose md:leading-relaxed">
-                メンバーは、高い技術と集中力を持つ
-                <br />
-                縫製のプロフェッショナルたちです。
+              <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose md:leading-relaxed whitespace-pre-line">
+                {t("kanonSection.paragraph3")}
+              </p>
+              <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose md:leading-relaxed whitespace-pre-line">
+                {t("kanonSection.paragraph4")}
+              </p>
+              <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose md:leading-relaxed whitespace-pre-line">
+                {t("kanonSection.paragraph5")}
+              </p>
+              <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose md:leading-relaxed whitespace-pre-line">
+                {t("kanonSection.paragraph6")}
+              </p>
+              <p className="text-[0.85rem] md:text-base text-gray-700 leading-loose md:leading-relaxed whitespace-pre-line">
+                {t("kanonSection.paragraph7")}
               </p>
             </div>
           </div>
 
           {/* Producer Photo - Hanataba */}
-          <div className="mb-16 w-full max-w-md mx-auto">
+          {/* <div className="mb-16 w-full max-w-md mx-auto">
             <div className="relative w-full overflow-hidden bg-gray-100">
               <Image
                 src="/aboutus/hanataba.webp"
@@ -181,10 +174,10 @@ export default async function AboutUsPage({ params }: Props) {
                 sizes="(max-width: 768px) 90vw, 448px"
               />
             </div>
-          </div>
+          </div> */}
 
           {/* Producer Section */}
-          <div className="text-center space-y-12 max-w-3xl mx-auto pb-24">
+          {/* <div className="text-center space-y-12 max-w-3xl mx-auto pb-24">
             <h3 className="text-[1.02rem] md:text-[1.2rem] font-bold text-gray-900">
               私たちがプロデュースしています
             </h3>
@@ -198,7 +191,7 @@ export default async function AboutUsPage({ params }: Props) {
                 着物の個性を生かしたデザインを生み出しています。
               </p>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </section>
