@@ -185,7 +185,7 @@ export default async function Page({ params }: Props) {
           <div className="mb-16 w-full">
             <div className="relative aspect-[16/9] md:aspect-[21/9] w-full overflow-hidden bg-gray-100">
               <Image
-                src="/aboutus/group_with_hanataba.webp"
+                src="/aboutus/kanon_cheerful_top.webp"
                 alt="Our Team"
                 fill
                 className="object-cover"

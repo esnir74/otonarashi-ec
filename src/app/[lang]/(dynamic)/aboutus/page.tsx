@@ -45,7 +45,7 @@ export default async function AboutUsPage({ params }: Props) {
           style={{ aspectRatio: "16 / 9" }}
         >
           <Image
-            src="/aboutus/group_with_hanataba.webp"
+            src="/aboutus/kanon_cheerful_top.webp"
             alt="Our Team"
             fill
             className="object-cover"
