@@ -68,7 +68,7 @@
         "kimono": {
           "main1": "なかでも家庭のタンスに眠る着物は、",
           "main2": "約8兆円分にのぼると報道されています。",
-          "source": "日本経済新聞2024年1月5日"
+          "source": "日本経済新聞2024年1月6日"
         },
         "story": {
           "line1": "思い出のつまったもの、",
@@ -114,14 +114,6 @@
       "address": "〒615-0863 京都市右京区西京極堤町24",
       "representative": "代表者：北村雅子",
       "inquiry": "お問い合わせは以下のフォームよりお寄せください。"
-    },
-    "hanataba": {
-      "name": "ハナタバプロジェクト",
-      "from": "From：Office＠",
-      "representative": "ハナタバプロジェクト 代表",
-      "university": "京都光華女子大学",
-      "department": "キャリア形成学部 キャリア形成学科４年",
-      "person": "坂本 遼香 | Sakamoto Haruka"
     },
     "form": {
       "labels": {

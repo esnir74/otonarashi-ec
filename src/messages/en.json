@@ -71,9 +71,9 @@
           "source": "Nikkei Newspaper, January 6, 2024"
         },
         "story": {
-          "line1": "Filled with cherished memories,",
-          "line2": "or recalling someone dear,",
-          "line3": "each kimono holds an irreplaceable story."
+          "line1": "Each kimono holds irreplaceable stories—",
+          "line2": "filled with memories, or recalling someone dear.",
+          "line3": "We breathe new life into these kimonos."
         }
       },
       "mission": {
@@ -85,7 +85,7 @@
     "aboutUs": {
       "sectionTitle": "Each piece,\n carefully crafted",
       "paragraph1": "No two things in this world are exactly alike.",
-      "paragraph2": "The kimonos that become Otonarashi products\nare donated by people from the local community.\n\nEach kimono holds irreplaceable stories—\nfilled with memories or recalling someone dear.\nWe breathe new life into these kimonos.",
+      "paragraph2": "The kimonos that become Otonarashi products\nare donated by people from the local community.\n\nEach kimono holds irreplaceable stories—\nfilled with memories, or recalling someone dear.\nWe breathe new life into these kimonos.",
       "paragraph3": "Each pattern and texture is truly one-of-a-kind.",
       "paragraph4": "Otonarashi items are special,\nexisting only once in this world."
     }
@@ -93,7 +93,7 @@
   "aboutus": {
     "sectionTitle": "Each piece,\n carefully crafted",
     "paragraph1": "No two things in this world are exactly alike.",
-    "paragraph2": "The kimonos that become Otonarashi products\nare donated by people from the local community.\n\nEach kimono holds irreplaceable stories—\nfilled with memories or recalling someone dear.\nWe breathe new life into these kimonos.",
+    "paragraph2": "The kimonos that become Otonarashi products\nare donated by people from the local community.\n\nEach kimono holds irreplaceable stories—\nfilled with memories, or recalling someone dear.\nWe breathe new life into these kimonos.",
     "paragraph3": "Each pattern and texture is truly one-of-a-kind.",
     "paragraph4": "Otonarashi items are special,\nexisting only once in this world.",
     "kanonSection": {
@@ -110,18 +110,10 @@
   "contact": {
     "formTitle": "Contact Form",
     "kanon": {
-      "name": "Kanon Nishikyogoku Sagyosho",
+      "name": "Kanon Nishikyo-goku Workshop",
       "address": "24 Tsutsumi-cho, Nishikyogoku, Ukyo-ku, Kyoto 615-0863",
       "representative": "Representative: Masako Kitamura",
       "inquiry": "Please use the form below to contact us."
-    },
-    "hanataba": {
-      "name": "Hanataba Project",
-      "from": "From: Office@",
-      "representative": "Hanataba Project Representative",
-      "university": "Kyoto Koka Women's University",
-      "department": "Faculty of Career Development, Department of Career Development, 4th Year",
-      "person": "Haruka Sakamoto | Sakamoto Haruka"
     },
     "form": {
       "labels": {
